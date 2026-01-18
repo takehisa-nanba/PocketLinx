@@ -93,6 +93,25 @@ func (b *WSLBackend) Pull(image string) error {
 	return nil
 }
 
+func (b *WSLBackend) Images() ([]string, error) {
+	files, err := os.ReadDir("images")
+	if err != nil {
+		if os.IsNotExist(err) {
+			return []string{}, nil
+		}
+		return nil, err
+	}
+
+	var images []string
+	for _, f := range files {
+		if !f.IsDir() && strings.HasSuffix(f.Name(), ".tar.gz") {
+			name := strings.TrimSuffix(f.Name(), ".tar.gz")
+			images = append(images, name)
+		}
+	}
+	return images, nil
+}
+
 func (b *WSLBackend) Run(opts RunOptions) error {
 	containerId := fmt.Sprintf("c-%d", os.Getpid())
 	fmt.Printf("Running %v in container %s (WSL2)...\n", opts.Args, containerId)

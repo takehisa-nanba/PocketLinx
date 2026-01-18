@@ -48,6 +48,16 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Pull failed: %v\n", err)
 			os.Exit(1)
 		}
+	case "images":
+		images, err := engine.Images()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to list images: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("%-20s\n", "IMAGE NAME")
+		for _, img := range images {
+			fmt.Printf("%-20s\n", img)
+		}
 	case "run":
 		args := os.Args[2:]
 		var mounts []container.Mount
@@ -126,6 +136,7 @@ func printUsage() {
 	fmt.Println("Usage:")
 	fmt.Println("  plx setup                        Initialize environment")
 	fmt.Println("  plx pull <image>                 Download an image (alpine, ubuntu)")
+	fmt.Println("  plx images                       List downloaded images")
 	fmt.Println("  plx run [--image <name>] [-v src:dst] <cmd>...  Run command")
 	fmt.Println("  plx ps                           List containers")
 	fmt.Println("  plx rm <id>                      Remove container")

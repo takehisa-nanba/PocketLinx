@@ -35,6 +35,11 @@ func (e *Engine) Pull(image string) error {
 	return e.backend.Pull(image)
 }
 
+// Images は利用可能なイメージの一覧を取得します。
+func (e *Engine) Images() ([]string, error) {
+	return e.backend.Images()
+}
+
 // Run はコンテナ内でコマンドを実行します。
 func (e *Engine) Run(opts RunOptions) error {
 	return e.backend.Run(opts)

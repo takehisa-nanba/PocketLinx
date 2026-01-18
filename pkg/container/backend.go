@@ -27,6 +27,7 @@ type RunOptions struct {
 type Backend interface {
 	Setup() error
 	Pull(image string) error
+	Images() ([]string, error)
 	Run(opts RunOptions) error
 	List() ([]Container, error)
 	Remove(id string) error
