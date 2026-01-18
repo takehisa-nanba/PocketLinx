@@ -3,7 +3,7 @@ plx
 plx.exe
 
 # WSL rootfs and distro
-alpine-rootfs.tar.gz
+images/
 distro/
 
 # Temporary run logs or go specific

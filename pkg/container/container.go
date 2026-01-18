@@ -2,9 +2,12 @@ package container
 
 const (
 	DistroName = "pocketlinx"
-	RootfsUrl  = "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-minirootfs-3.21.0-x86_64.tar.gz"
-	RootfsFile = "alpine-rootfs.tar.gz"
 )
+
+var SupportedImages = map[string]string{
+	"alpine": "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-minirootfs-3.21.0-x86_64.tar.gz",
+	"ubuntu": "https://partner-images.canonical.com/core/jammy/current/ubuntu-jammy-core-cloudimg-amd64-root.tar.gz",
+}
 
 // Engine はコンテナのライフサイクルを管理します。
 type Engine struct {
@@ -20,7 +23,16 @@ func NewEngine(backend Backend) *Engine {
 
 // Setup は開発環境の初期化を行います。
 func (e *Engine) Setup() error {
-	return e.backend.Setup()
+	if err := e.backend.Setup(); err != nil {
+		return err
+	}
+	// デフォルトイメージとして alpine を準備
+	return e.backend.Pull("alpine")
+}
+
+// Pull はイメージをダウンロードします。
+func (e *Engine) Pull(image string) error {
+	return e.backend.Pull(image)
 }
 
 // Run はコンテナ内でコマンドを実行します。

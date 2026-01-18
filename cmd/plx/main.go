@@ -38,10 +38,21 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Setup failed: %v\n", err)
 			os.Exit(1)
 		}
+	case "pull":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: plx pull <image_name>")
+			fmt.Println("Supported images: alpine, ubuntu")
+			os.Exit(1)
+		}
+		if err := engine.Pull(os.Args[2]); err != nil {
+			fmt.Fprintf(os.Stderr, "Pull failed: %v\n", err)
+			os.Exit(1)
+		}
 	case "run":
 		args := os.Args[2:]
 		var mounts []container.Mount
 		var cmdArgs []string
+		image := "alpine"
 
 		for i := 0; i < len(args); i++ {
 			if args[i] == "-v" && i+1 < len(args) {
@@ -54,6 +65,9 @@ func main() {
 					})
 				}
 				i++
+			} else if args[i] == "--image" && i+1 < len(args) {
+				image = args[i+1]
+				i++
 			} else {
 				cmdArgs = args[i:]
 				break
@@ -61,11 +75,12 @@ func main() {
 		}
 
 		if len(cmdArgs) == 0 {
-			fmt.Println("Usage: plx run [-v host_path:container_path] <command> [args...]")
+			fmt.Println("Usage: plx run [--image <name>] [-v host:container] <command> [args...]")
 			os.Exit(1)
 		}
 
 		opts := container.RunOptions{
+			Image:  image,
 			Args:   cmdArgs,
 			Mounts: mounts,
 		}
@@ -109,8 +124,9 @@ func main() {
 func printUsage() {
 	fmt.Println("PocketLinx (plx) - Portable Container Runtime")
 	fmt.Println("Usage:")
-	fmt.Println("  plx setup                      Initialize environment")
-	fmt.Println("  plx run [-v src:dst] <cmd>...  Run command in container")
-	fmt.Println("  plx ps                         List containers")
-	fmt.Println("  plx rm <id>                    Remove container")
+	fmt.Println("  plx setup                        Initialize environment")
+	fmt.Println("  plx pull <image>                 Download an image (alpine, ubuntu)")
+	fmt.Println("  plx run [--image <name>] [-v src:dst] <cmd>...  Run command")
+	fmt.Println("  plx ps                           List containers")
+	fmt.Println("  plx rm <id>                      Remove container")
 }

@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 
 	"encoding/json"
+	"io"
+	"net/http"
 	"strings"
 	"time"
 
@@ -29,45 +31,63 @@ func NewWSLBackend() *WSLBackend {
 func (b *WSLBackend) Setup() error {
 	fmt.Println("Setting up PocketLinx environment (WSL2)...")
 
-	// 1. Download rootfs
-	if _, err := os.Stat(RootfsFile); os.IsNotExist(err) {
-		fmt.Printf("Downloading Alpine rootfs from %s...\n", RootfsUrl)
-		// wslClient.Run は内部で wsl.exe を呼ぶので、コマンドライン引数として渡す
-		err := b.wslClient.Run("powershell", "-Command", fmt.Sprintf("Invoke-WebRequest -Uri %s -OutFile %s", RootfsUrl, RootfsFile))
-		if err != nil {
-			return fmt.Errorf("error downloading rootfs: %w", err)
-		}
+	// 1. Create images directory
+	if err := os.MkdirAll("images", 0755); err != nil {
+		return fmt.Errorf("failed to create images directory: %w", err)
 	}
 
-	// 2. Import to WSL
-	installDir := "distro"
-	absInstallDir, _ := filepath.Abs(installDir)
-	absRootfsFile, _ := filepath.Abs(RootfsFile)
+	// 2. Import a dummy/minimal distro if not exists or just prepare
+	// Actually, we use the rootfs from 'images/' during 'run'.
+	// But we still need a distro to run 'unshare' etc.
+	// The current design uses a single 'pocketlinx' distro as the "host" for containers.
+	// So we need to import a basic alpine rootfs for the system distro first.
+	return nil
+}
 
-	fmt.Printf("Importing %s into WSL as '%s'...\n", absRootfsFile, DistroName)
-
-	// Clean up existing distro
-	b.wslClient.Run("--unregister", DistroName)
-
-	os.RemoveAll(absInstallDir)
-	if err := os.MkdirAll(absInstallDir, 0755); err != nil {
-		return fmt.Errorf("error creating install directory: %w", err)
+func (b *WSLBackend) Pull(image string) error {
+	url, ok := SupportedImages[image]
+	if !ok {
+		return fmt.Errorf("image '%s' is not supported", image)
 	}
 
-	err := b.wslClient.Run("--import", DistroName, absInstallDir, absRootfsFile, "--version", "2")
+	targetFile := filepath.Join("images", image+".tar.gz")
+	if _, err := os.Stat(targetFile); err == nil {
+		fmt.Printf("Image '%s' already exists.\n", image)
+		return nil
+	}
+
+	fmt.Printf("Pulling image '%s' from %s...\n", image, url)
+	// WSL 経由ではなく、ホストの PowerShell を直接使ってダウンロードする
+	cmd := exec.Command("powershell.exe", "-Command", fmt.Sprintf("Invoke-WebRequest -Uri %s -OutFile %s", url, targetFile))
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
 	if err != nil {
+		return fmt.Errorf("error pulling image: %w", err)
+	}
+
+	// If it's the system default (alpine), we might want to import it as the system distro
+	if image == "alpine" {
+		installDir := "distro"
+		absInstallDir, _ := filepath.Abs(installDir)
+		absRootfsFile, _ := filepath.Abs(targetFile)
+
+		fmt.Printf("Importing system distro '%s'...\n", DistroName)
+		b.wslClient.Run("--unregister", DistroName)
 		os.RemoveAll(absInstallDir)
-		return fmt.Errorf("error importing distro: %w", err)
-	}
+		os.MkdirAll(absInstallDir, 0755)
 
-	// 3. Create container-shim
-	fmt.Println("Installing container-shim...")
-	err = b.wslClient.RunDistroCommandWithInput(
-		shim.Content,
-		"sh", "-c", "cat > /usr/local/bin/container-shim && chmod +x /usr/local/bin/container-shim",
-	)
-	if err != nil {
-		return fmt.Errorf("error installing shim: %w", err)
+		err := b.wslClient.Run("--import", DistroName, absInstallDir, absRootfsFile, "--version", "2")
+		if err != nil {
+			return fmt.Errorf("error importing system distro: %w", err)
+		}
+
+		// Install shim
+		fmt.Println("Installing container-shim...")
+		return b.wslClient.RunDistroCommandWithInput(
+			shim.Content,
+			"sh", "-c", "cat > /usr/local/bin/container-shim && chmod +x /usr/local/bin/container-shim",
+		)
 	}
 
 	return nil
@@ -87,7 +107,17 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 	}
 	userCmd := strings.Join(quotedArgs, " ")
 
-	wslRootfsPath, err := wsl.WindowsToWslPath(RootfsFile)
+	image := opts.Image
+	if image == "" {
+		image = "alpine"
+	}
+
+	imageFile := filepath.Join("images", image+".tar.gz")
+	if _, err := os.Stat(imageFile); os.IsNotExist(err) {
+		return fmt.Errorf("image '%s' not found. Please run 'plx pull %s' first", image, image)
+	}
+
+	wslRootfsPath, err := wsl.WindowsToWslPath(imageFile)
 	if err != nil {
 		return fmt.Errorf("path resolving error: %w", err)
 	}
@@ -183,4 +213,25 @@ func (b *WSLBackend) List() ([]Container, error) {
 func (b *WSLBackend) Remove(id string) error {
 	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
 	return b.wslClient.RunDistroCommand("rm", "-rf", containerDir)
+}
+
+func downloadFile(url string, filepath string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad status: %s", resp.Status)
+	}
+
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
