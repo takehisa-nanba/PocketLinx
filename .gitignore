@@ -1,0 +1,16 @@
+# Binaries & Artifacts
+alpine-rootfs.tar.gz
+distro/
+*.exe
+*.dll
+
+# Temporary Scripts
+install-shim.sh
+container-shim
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Brain/Agent Artifacts (optional, depending on user preference, but usually good to ignore if personal)
+# .gemini/ 
