@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"strings"
 
 	"PocketLinx/pkg/container"
 )
@@ -38,11 +39,38 @@ func main() {
 			os.Exit(1)
 		}
 	case "run":
-		if len(os.Args) < 3 {
-			fmt.Println("Usage: plx run <command> [args...]")
+		args := os.Args[2:]
+		var mounts []container.Mount
+		var cmdArgs []string
+
+		for i := 0; i < len(args); i++ {
+			if args[i] == "-v" && i+1 < len(args) {
+				val := args[i+1]
+				lastColon := strings.LastIndex(val, ":")
+				if lastColon != -1 && lastColon > 1 {
+					mounts = append(mounts, container.Mount{
+						Source: val[:lastColon],
+						Target: val[lastColon+1:],
+					})
+				}
+				i++
+			} else {
+				cmdArgs = args[i:]
+				break
+			}
+		}
+
+		if len(cmdArgs) == 0 {
+			fmt.Println("Usage: plx run [-v host_path:container_path] <command> [args...]")
 			os.Exit(1)
 		}
-		if err := engine.Run(os.Args[2:]); err != nil {
+
+		opts := container.RunOptions{
+			Args:   cmdArgs,
+			Mounts: mounts,
+		}
+
+		if err := engine.Run(opts); err != nil {
 			fmt.Fprintf(os.Stderr, "Run failed: %v\n", err)
 			os.Exit(1)
 		}
@@ -81,8 +109,8 @@ func main() {
 func printUsage() {
 	fmt.Println("PocketLinx (plx) - Portable Container Runtime")
 	fmt.Println("Usage:")
-	fmt.Println("  plx setup             Initialize environment")
-	fmt.Println("  plx run <cmd> ...     Run command in container")
-	fmt.Println("  plx ps                List containers")
-	fmt.Println("  plx rm <id>           Remove container")
+	fmt.Println("  plx setup                      Initialize environment")
+	fmt.Println("  plx run [-v src:dst] <cmd>...  Run command in container")
+	fmt.Println("  plx ps                         List containers")
+	fmt.Println("  plx rm <id>                    Remove container")
 }

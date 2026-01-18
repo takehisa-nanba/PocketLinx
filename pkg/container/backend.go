@@ -10,15 +10,22 @@ type Container struct {
 	Status  string    `json:"status"`
 }
 
+// Mount はホストパスとコンテナパスのペアを表します。
+type Mount struct {
+	Source string
+	Target string
+}
+
+// RunOptions はコンテナ実行時の詳細設定を保持する構造体です。
+type RunOptions struct {
+	Args   []string
+	Mounts []Mount
+}
+
 // Backend はコンテナ実行の基盤（WSL2, Linux Native等）を抽象化するインターフェースです。
 type Backend interface {
 	Setup() error
-	Run(args []string) error
+	Run(opts RunOptions) error
 	List() ([]Container, error)
 	Remove(id string) error
-}
-
-// RunOptions は将来的にコンテナ実行時の詳細設定（メモリ制限等）を追加するための構造体です。
-type RunOptions struct {
-	// 将来的に追加: MemoryLimit, CPUQuota, EnvVars, etc.
 }

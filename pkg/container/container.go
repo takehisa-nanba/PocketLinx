@@ -24,8 +24,8 @@ func (e *Engine) Setup() error {
 }
 
 // Run はコンテナ内でコマンドを実行します。
-func (e *Engine) Run(args []string) error {
-	return e.backend.Run(args)
+func (e *Engine) Run(opts RunOptions) error {
+	return e.backend.Run(opts)
 }
 
 // List はコンテナの一覧を取得します。

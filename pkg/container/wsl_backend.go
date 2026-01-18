@@ -73,32 +73,50 @@ func (b *WSLBackend) Setup() error {
 	return nil
 }
 
-func (b *WSLBackend) Run(args []string) error {
+func (b *WSLBackend) Run(opts RunOptions) error {
 	containerId := fmt.Sprintf("c-%d", os.Getpid())
-	fmt.Printf("Running %v in container %s (WSL2)...\n", args, containerId)
+	fmt.Printf("Running %v in container %s (WSL2)...\n", opts.Args, containerId)
 
 	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", containerId)
 	rootfsDir := path.Join(containerDir, "rootfs")
 
 	// Get original command as a string
-	userCmd := ""
-	for _, arg := range args {
-		userCmd += fmt.Sprintf(" %q", arg)
+	var quotedArgs []string
+	for _, arg := range opts.Args {
+		quotedArgs = append(quotedArgs, fmt.Sprintf("%q", arg))
 	}
+	userCmd := strings.Join(quotedArgs, " ")
 
 	wslRootfsPath, err := wsl.WindowsToWslPath(RootfsFile)
 	if err != nil {
 		return fmt.Errorf("path resolving error: %w", err)
 	}
 
-	// Provisioning
+	// 1. Provisioning
 	// 明示的にコンテナディレクトリ（親）を作成してからrootfsを作成する
 	setupCmd := fmt.Sprintf("mkdir -p %s && mkdir -p %s && tar -xf %s -C %s", containerDir, rootfsDir, wslRootfsPath, rootfsDir)
 	if err := b.wslClient.RunDistroCommand("sh", "-c", setupCmd); err != nil {
 		return fmt.Errorf("provisioning failed (path: %s): %w", containerDir, err)
 	}
 
-	// メタデータの作成と保存（ディレクトリ作成後に行う）
+	// 2. Process Mounts
+	mountsStr := "none"
+	if len(opts.Mounts) > 0 {
+		var mParts []string
+		for _, m := range opts.Mounts {
+			srcWsl, err := wsl.WindowsToWslPath(m.Source)
+			if err != nil {
+				fmt.Printf("Warning: Failed to convert mount path %s: %v\n", m.Source, err)
+				continue
+			}
+			mParts = append(mParts, fmt.Sprintf("%s:%s", srcWsl, m.Target))
+		}
+		if len(mParts) > 0 {
+			mountsStr = strings.Join(mParts, ",")
+		}
+	}
+
+	// 3. Metadata
 	meta := Container{
 		ID:      containerId,
 		Command: userCmd,
@@ -108,10 +126,11 @@ func (b *WSLBackend) Run(args []string) error {
 	metaJSON, _ := json.Marshal(meta)
 	b.wslClient.RunDistroCommandWithInput(string(metaJSON), "sh", "-c", fmt.Sprintf("cat > %s/config.json", containerDir))
 
-	shimCmd := fmt.Sprintf("/bin/sh /usr/local/bin/container-shim %s %s", rootfsDir, userCmd)
+	// 4. Execution via shim
+	shimCmd := fmt.Sprintf("/bin/sh /usr/local/bin/container-shim %s %s %s", rootfsDir, mountsStr, userCmd)
 
 	unshareArgs := []string{
-		"unshare", "--pid", "--fork", "--mount-proc", "--mount", "--uts",
+		"unshare", "--mount", "--pid", "--fork", "--uts",
 		"sh", "-c", shimCmd,
 	}
 
