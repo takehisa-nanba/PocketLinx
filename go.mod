@@ -1,3 +1,3 @@
-module github.com/takehisa-nanba/PocketLinx
+module PocketLinx
 
 go 1.25.6

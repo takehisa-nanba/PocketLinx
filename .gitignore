@@ -1,16 +1,19 @@
-# Binaries & Artifacts
+# Binaries
+plx
+plx.exe
+
+# WSL rootfs and distro
 alpine-rootfs.tar.gz
 distro/
-*.exe
-*.dll
 
-# Temporary Scripts
-install-shim.sh
-container-shim
+# Temporary run logs or go specific
+*.log
+vendor/
+.gemini/
 
-# Editor/IDE
-.vscode/
-.idea/
-
-# Brain/Agent Artifacts (optional, depending on user preference, but usually good to ignore if personal)
-# .gemini/ 
+# Container runtime data (IMPORTANT: avoid pushing user container data)
+# Note: WSL backend creates these inside the distro, but if they are mounted 
+# or created in the workspace, we should ignore them.
+containers/
+var/
+varlib*

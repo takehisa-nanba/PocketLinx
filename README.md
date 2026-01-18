@@ -15,14 +15,13 @@ Using Go and WSL2, it creates isolated Alpine Linux containers without the overh
 - **ポータブル**: WSL2が有効なWindowsマシンならどこでも動作します。
 - **深い隔離**: Linux Namespace (PID, Mount等) と `chroot` を使用して環境を隔離します。
 
-### 前提条件
-- Windows 10/11
-- WSL2 が有効であること
+### 前提条件 (現在の実装)
+- **Windows 10/11** + **WSL2** (バックエンドとして利用)
+- *※将来的に Linux / macOS へのネイティブ対応も視野に入れた設計を目指しています。*
 
-### 使い方
-
+###Usage / 使い方
 #### 1. セットアップ
-環境を初期化します。Alpine Linuxのrootfsをダウンロードし、WSLディストリビューションを登録します。
+環境を初期化します。現在はWindows/WSL2環境をターゲットに、Alpine Linux環境を構築します。
 
 ```powershell
 go run cmd/plx/main.go setup
@@ -45,14 +44,13 @@ go run cmd/plx/main.go run ps aux
 - **Portable**: Works on any Windows machine with WSL2.
 - **Deep Isolation**: Uses Linux Namespaces (PID, Mount, etc.) and `chroot` for isolation.
 
-### Prerequisites
-- Windows 10/11
-- WSL2 enabled
+### Prerequisites (Current Implementation)
+- **Windows 10/11** with **WSL2** enabled.
+- *Goal: Native support for Linux and macOS in future iterations.*
 
 ### Usage
-
 #### 1. Setup
-Initialize the environment. This downloads the Alpine rootfs and registers the WSL distribution.
+Initialize the environment. Currently targets Windows/WSL2 to build the Alpine-based environment.
 
 ```powershell
 go run cmd/plx/main.go setup
