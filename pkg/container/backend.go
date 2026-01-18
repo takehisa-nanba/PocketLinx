@@ -16,11 +16,19 @@ type Mount struct {
 	Target string
 }
 
+// PortMapping はホストとコンテナのポート対応を表します。
+type PortMapping struct {
+	Host      int
+	Container int
+}
+
 // RunOptions はコンテナ実行時の詳細設定を保持する構造体です。
 type RunOptions struct {
 	Image       string
 	Args        []string
 	Mounts      []Mount
+	Env         map[string]string
+	Ports       []PortMapping
 	Interactive bool
 }
 

@@ -41,6 +41,13 @@ plx setup
 # 基本実行
 plx run uname -a
 
+# 環境変数の設定 (-e)
+plx run -e DATABASE_URL=postgres://localhost:5432 alpine printenv DATABASE_URL
+
+# ポートフォワーディング (-p)
+# ホストの 8080 をコンテナの 80 に繋ぐ
+plx run -p 8080:80 alpine busybox httpd -f -p 80
+
 # インタラクティブ・シェル（コンテナの中に入る）
 plx run -it --image ubuntu bash
 

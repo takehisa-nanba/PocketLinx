@@ -175,21 +175,45 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 	// 4. Execution via shim
 	shimCmd := fmt.Sprintf("/bin/sh /usr/local/bin/container-shim %s %s %s", rootfsDir, mountsStr, userCmd)
 
-	unshareArgs := []string{
-		"unshare", "--mount", "--pid", "--fork", "--uts",
-		"sh", "-c", shimCmd,
+	// ポート転送コマンドの組み立て
+	portCmd := ""
+	if len(opts.Ports) > 0 {
+		// socat があるか確認し、なければインストール
+		portCmd = "command -v socat >/dev/null || apk add --no-cache socat >/dev/null; "
+		for _, p := range opts.Ports {
+			// socat を起動し、その PID を控えておく
+			portCmd += fmt.Sprintf("socat TCP-LISTEN:%d,fork,reuseaddr TCP:localhost:%d & ", p.Host, p.Container)
+		}
+		// 終了時にバックグラウンドプロセスが存在する場合のみ終了させる
+		portCmd = "trap 'JOBS=$(jobs -p); [ -n \"$JOBS\" ] && kill $JOBS' EXIT; " + portCmd
 	}
 
-	// インタラクティブモードの場合、TERM 環境変数を引き継ぐ
+	unshareArgs := []string{
+		"unshare", "--mount", "--pid", "--fork", "--uts",
+		"sh", "-c", portCmd + shimCmd,
+	}
+
+	// インタラクティブモードや環境変数を WSL 側に渡す設定
+	wslEnvList := os.Getenv("WSLENV")
 	if opts.Interactive {
 		term := os.Getenv("TERM")
 		if term == "" {
-			term = "xterm-256color" // フォールバック
+			term = "xterm-256color"
 		}
-		// WSLENV を設定して WSL 側に TERM を渡す
-		os.Setenv("WSLENV", "TERM/u:"+os.Getenv("WSLENV"))
 		os.Setenv("TERM", term)
+		if !strings.Contains(wslEnvList, "TERM") {
+			wslEnvList = "TERM/u:" + wslEnvList
+		}
 	}
+
+	// ユーザー指定の環境変数をセット
+	for k, v := range opts.Env {
+		os.Setenv(k, v)
+		if !strings.Contains(wslEnvList, k) {
+			wslEnvList = k + "/u:" + wslEnvList
+		}
+	}
+	os.Setenv("WSLENV", wslEnvList)
 
 	err = b.wslClient.RunDistroCommand(unshareArgs...)
 

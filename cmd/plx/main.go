@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 
 	"PocketLinx/pkg/container"
@@ -71,7 +72,9 @@ func main() {
 
 		args := os.Args[2:]
 		var mounts []container.Mount
+		env := make(map[string]string)
 		var cmdArgs []string
+		var portMappings []container.PortMapping
 		image := ""
 		interactive := false
 
@@ -85,6 +88,7 @@ func main() {
 		}
 
 		// 2. Parse command line flags (overrides config)
+		imageSetByFlag := false
 		for i := 0; i < len(args); i++ {
 			arg := args[i]
 			if arg == "-v" && i+1 < len(args) {
@@ -97,19 +101,50 @@ func main() {
 					})
 				}
 				i++
+			} else if arg == "-p" && i+1 < len(args) {
+				val := args[i+1]
+				parts := strings.Split(val, ":")
+				if len(parts) == 2 {
+					hPort, _ := strconv.Atoi(parts[0])
+					cPort, _ := strconv.Atoi(parts[1])
+					if hPort > 0 && cPort > 0 {
+						portMappings = append(portMappings, container.PortMapping{
+							Host:      hPort,
+							Container: cPort,
+						})
+					}
+				}
+				i++
+			} else if arg == "-e" && i+1 < len(args) {
+				val := args[i+1]
+				parts := strings.SplitN(val, "=", 2)
+				if len(parts) == 2 {
+					env[parts[0]] = parts[1]
+				}
+				i++
 			} else if arg == "--image" && i+1 < len(args) {
 				image = args[i+1]
+				imageSetByFlag = true
 				i++
 			} else if arg == "-it" || arg == "-i" || arg == "-t" {
 				interactive = true
+			} else if strings.HasPrefix(arg, "-") {
+				// Unknown flag
+				fmt.Printf("Unknown flag: %s\n", arg)
 			} else {
-				cmdArgs = args[i:]
+				// Non-flag argument: This is the image name if not set via flag, or the start of the command
+				if !imageSetByFlag {
+					image = arg
+					cmdArgs = args[i+1:]
+				} else {
+					cmdArgs = args[i:]
+				}
 				break
 			}
 		}
 
 		if len(cmdArgs) == 0 {
-			fmt.Println("Usage: plx run [-it] [--image <name>] [-v host:container] <command> [args...]")
+			fmt.Println("Usage: plx run [-it] [-e KEY=VAL] [-p HOST:CONT] [IMAGE] <command> [args...]")
 			os.Exit(1)
 		}
 
@@ -117,6 +152,8 @@ func main() {
 			Image:       image,
 			Args:        cmdArgs,
 			Mounts:      mounts,
+			Env:         env,
+			Ports:       portMappings,
 			Interactive: interactive,
 		}
 

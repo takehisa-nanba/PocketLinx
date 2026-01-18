@@ -19,14 +19,19 @@ mount --rbind /dev "$ROOTFS/dev"
 mount -t devpts devpts "$ROOTFS/dev/pts" -o newinstance,ptmxmode=0666
 mount -t tmpfs tmpfs "$ROOTFS/tmp"
 
-# 2. Setup Network (DNS)
-rm -f "$ROOTFS/etc/resolv.conf"
+# 2. Setup Network (DNS & Hosts)
+rm -f "$ROOTFS/etc/resolv.conf" "$ROOTFS/etc/hosts"
 if [ -f /etc/resolv.conf ]; then
   cat /etc/resolv.conf > "$ROOTFS/etc/resolv.conf"
 fi
 # Fallback/Append public DNS to ensure resolution
 echo "nameserver 8.8.8.8" >> "$ROOTFS/etc/resolv.conf"
 echo "nameserver 1.1.1.1" >> "$ROOTFS/etc/resolv.conf"
+
+# Generate basic hosts file
+echo "127.0.0.1 localhost" > "$ROOTFS/etc/hosts"
+echo "::1       localhost ip6-localhost ip6-loopback" >> "$ROOTFS/etc/hosts"
+echo "127.0.1.1 plx-container" >> "$ROOTFS/etc/hosts"
 
 # 3. Dynamic Bind Mounts (Volumes)
 # Format: src1:dst1,src2:dst2
