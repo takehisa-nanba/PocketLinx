@@ -28,6 +28,10 @@ func NewWSLBackend() *WSLBackend {
 	}
 }
 
+func (b *WSLBackend) Install() error {
+	return InstallBinary()
+}
+
 func (b *WSLBackend) Setup() error {
 	fmt.Println("Setting up PocketLinx environment (WSL2)...")
 

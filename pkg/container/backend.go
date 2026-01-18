@@ -27,6 +27,7 @@ type RunOptions struct {
 // Backend はコンテナ実行の基盤（WSL2, Linux Native等）を抽象化するインターフェースです。
 type Backend interface {
 	Setup() error
+	Install() error
 	Pull(image string) error
 	Images() ([]string, error)
 	Run(opts RunOptions) error

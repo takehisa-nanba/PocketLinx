@@ -38,6 +38,11 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Setup failed: %v\n", err)
 			os.Exit(1)
 		}
+	case "install":
+		if err := engine.Install(); err != nil {
+			fmt.Fprintf(os.Stderr, "Installation failed: %v\n", err)
+			os.Exit(1)
+		}
 	case "pull":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: plx pull <image_name>")
@@ -157,6 +162,7 @@ func printUsage() {
 	fmt.Println("PocketLinx (plx) - Portable Container Runtime")
 	fmt.Println("Usage:")
 	fmt.Println("  plx setup                        Initialize environment")
+	fmt.Println("  plx install                      Add plx to your system PATH")
 	fmt.Println("  plx pull <image>                 Download an image (alpine, ubuntu)")
 	fmt.Println("  plx images                       List downloaded images")
 	fmt.Println("  plx run [-it] [--image <name>] [-v src:dst] <cmd>...  Run command")

@@ -30,6 +30,11 @@ func (e *Engine) Setup() error {
 	return e.backend.Pull("alpine")
 }
 
+// Install はバイナリをインストールします。
+func (e *Engine) Install() error {
+	return e.backend.Install()
+}
+
 // Pull はイメージをダウンロードします。
 func (e *Engine) Pull(image string) error {
 	return e.backend.Pull(image)
