@@ -3,7 +3,10 @@ name: Release
 on:
   push:
     tags:
-      - 'v*' # v1.0.0 のようなタグが付いた時に発動
+      - 'v*'
+
+permissions:
+  contents: write # リリース作成のために書き込み権限が必要
 
 jobs:
   build:
