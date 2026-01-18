@@ -54,17 +54,32 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Failed to list images: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("%-20s\n", "IMAGE NAME")
+		headers := []string{"IMAGE NAME"}
+		var rows [][]string
 		for _, img := range images {
-			fmt.Printf("%-20s\n", img)
+			rows = append(rows, []string{img})
 		}
+		container.PrintTable(headers, rows)
 	case "run":
+		// 1. Load plx.json if exists (as defaults)
+		config, _ := container.LoadProjectConfig()
+
 		args := os.Args[2:]
 		var mounts []container.Mount
 		var cmdArgs []string
-		image := "alpine"
+		image := ""
 		interactive := false
 
+		// Apply config defaults
+		if config != nil {
+			image = config.Image
+			mounts = append(mounts, config.Mounts...)
+		}
+		if image == "" {
+			image = "alpine"
+		}
+
+		// 2. Parse command line flags (overrides config)
 		for i := 0; i < len(args); i++ {
 			arg := args[i]
 			if arg == "-v" && i+1 < len(args) {
@@ -110,15 +125,17 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Failed to list containers: %v\n", err)
 			os.Exit(1)
 		}
-		fmt.Printf("%-15s %-20s %-25s %-10s\n", "CONTAINER ID", "COMMAND", "CREATED", "STATUS")
+		headers := []string{"CONTAINER ID", "COMMAND", "CREATED", "STATUS"}
+		var rows [][]string
 		for _, c := range containers {
-			fmt.Printf("%-15s %-20s %-25s %-10s\n",
+			rows = append(rows, []string{
 				c.ID,
 				c.Command,
 				c.Created.Format("2006-01-02 15:04:05"),
 				c.Status,
-			)
+			})
 		}
+		container.PrintTable(headers, rows)
 	case "rm":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: plx rm <container_id>")

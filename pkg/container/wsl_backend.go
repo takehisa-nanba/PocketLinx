@@ -31,16 +31,9 @@ func NewWSLBackend() *WSLBackend {
 func (b *WSLBackend) Setup() error {
 	fmt.Println("Setting up PocketLinx environment (WSL2)...")
 
-	// 1. Create images directory
-	if err := os.MkdirAll("images", 0755); err != nil {
-		return fmt.Errorf("failed to create images directory: %w", err)
-	}
-
-	// 2. Import a dummy/minimal distro if not exists or just prepare
-	// Actually, we use the rootfs from 'images/' during 'run'.
-	// But we still need a distro to run 'unshare' etc.
-	// The current design uses a single 'pocketlinx' distro as the "host" for containers.
-	// So we need to import a basic alpine rootfs for the system distro first.
+	// 1. Create necessary directories
+	_ = GetImagesDir()
+	_ = GetDistroDir()
 	return nil
 }
 
@@ -50,7 +43,7 @@ func (b *WSLBackend) Pull(image string) error {
 		return fmt.Errorf("image '%s' is not supported", image)
 	}
 
-	targetFile := filepath.Join("images", image+".tar.gz")
+	targetFile := filepath.Join(GetImagesDir(), image+".tar.gz")
 	if _, err := os.Stat(targetFile); err == nil {
 		fmt.Printf("Image '%s' already exists.\n", image)
 		return nil
@@ -68,7 +61,7 @@ func (b *WSLBackend) Pull(image string) error {
 
 	// If it's the system default (alpine), we might want to import it as the system distro
 	if image == "alpine" {
-		installDir := "distro"
+		installDir := GetDistroDir()
 		absInstallDir, _ := filepath.Abs(installDir)
 		absRootfsFile, _ := filepath.Abs(targetFile)
 
@@ -94,7 +87,7 @@ func (b *WSLBackend) Pull(image string) error {
 }
 
 func (b *WSLBackend) Images() ([]string, error) {
-	files, err := os.ReadDir("images")
+	files, err := os.ReadDir(GetImagesDir())
 	if err != nil {
 		if os.IsNotExist(err) {
 			return []string{}, nil
@@ -131,7 +124,7 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 		image = "alpine"
 	}
 
-	imageFile := filepath.Join("images", image+".tar.gz")
+	imageFile := filepath.Join(GetImagesDir(), image+".tar.gz")
 	if _, err := os.Stat(imageFile); os.IsNotExist(err) {
 		return fmt.Errorf("image '%s' not found. Please run 'plx pull %s' first", image, image)
 	}
