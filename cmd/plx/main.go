@@ -63,9 +63,11 @@ func main() {
 		var mounts []container.Mount
 		var cmdArgs []string
 		image := "alpine"
+		interactive := false
 
 		for i := 0; i < len(args); i++ {
-			if args[i] == "-v" && i+1 < len(args) {
+			arg := args[i]
+			if arg == "-v" && i+1 < len(args) {
 				val := args[i+1]
 				lastColon := strings.LastIndex(val, ":")
 				if lastColon != -1 && lastColon > 1 {
@@ -75,9 +77,11 @@ func main() {
 					})
 				}
 				i++
-			} else if args[i] == "--image" && i+1 < len(args) {
+			} else if arg == "--image" && i+1 < len(args) {
 				image = args[i+1]
 				i++
+			} else if arg == "-it" || arg == "-i" || arg == "-t" {
+				interactive = true
 			} else {
 				cmdArgs = args[i:]
 				break
@@ -85,14 +89,15 @@ func main() {
 		}
 
 		if len(cmdArgs) == 0 {
-			fmt.Println("Usage: plx run [--image <name>] [-v host:container] <command> [args...]")
+			fmt.Println("Usage: plx run [-it] [--image <name>] [-v host:container] <command> [args...]")
 			os.Exit(1)
 		}
 
 		opts := container.RunOptions{
-			Image:  image,
-			Args:   cmdArgs,
-			Mounts: mounts,
+			Image:       image,
+			Args:        cmdArgs,
+			Mounts:      mounts,
+			Interactive: interactive,
 		}
 
 		if err := engine.Run(opts); err != nil {
@@ -137,7 +142,7 @@ func printUsage() {
 	fmt.Println("  plx setup                        Initialize environment")
 	fmt.Println("  plx pull <image>                 Download an image (alpine, ubuntu)")
 	fmt.Println("  plx images                       List downloaded images")
-	fmt.Println("  plx run [--image <name>] [-v src:dst] <cmd>...  Run command")
+	fmt.Println("  plx run [-it] [--image <name>] [-v src:dst] <cmd>...  Run command")
 	fmt.Println("  plx ps                           List containers")
 	fmt.Println("  plx rm <id>                      Remove container")
 }

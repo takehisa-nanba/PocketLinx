@@ -183,6 +183,17 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 		"sh", "-c", shimCmd,
 	}
 
+	// インタラクティブモードの場合、TERM 環境変数を引き継ぐ
+	if opts.Interactive {
+		term := os.Getenv("TERM")
+		if term == "" {
+			term = "xterm-256color" // フォールバック
+		}
+		// WSLENV を設定して WSL 側に TERM を渡す
+		os.Setenv("WSLENV", "TERM/u:"+os.Getenv("WSLENV"))
+		os.Setenv("TERM", term)
+	}
+
 	err = b.wslClient.RunDistroCommand(unshareArgs...)
 
 	// 終了後のステータス更新

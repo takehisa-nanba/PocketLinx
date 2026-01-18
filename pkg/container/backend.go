@@ -18,9 +18,10 @@ type Mount struct {
 
 // RunOptions はコンテナ実行時の詳細設定を保持する構造体です。
 type RunOptions struct {
-	Image  string
-	Args   []string
-	Mounts []Mount
+	Image       string
+	Args        []string
+	Mounts      []Mount
+	Interactive bool
 }
 
 // Backend はコンテナ実行の基盤（WSL2, Linux Native等）を抽象化するインターフェースです。
