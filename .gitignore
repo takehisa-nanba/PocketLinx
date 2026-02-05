@@ -1,6 +1,8 @@
 # Binaries
 plx
 plx.exe
+plx_linux
+plx_new
 
 # WSL rootfs and distro
 images/
