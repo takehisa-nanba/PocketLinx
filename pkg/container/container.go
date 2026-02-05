@@ -59,3 +59,15 @@ func (e *Engine) List() ([]Container, error) {
 func (e *Engine) Remove(id string) error {
 	return e.backend.Remove(id)
 }
+
+func (e *Engine) Stop(id string) error {
+	return e.backend.Stop(id)
+}
+
+func (e *Engine) Logs(id string) (string, error) {
+	return e.backend.Logs(id)
+}
+
+func (e *Engine) Build(ctxDir string) (string, error) {
+	return e.backend.Build(ctxDir)
+}

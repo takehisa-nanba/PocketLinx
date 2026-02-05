@@ -30,6 +30,7 @@ type RunOptions struct {
 	Env         map[string]string
 	Ports       []PortMapping
 	Interactive bool
+	Detach      bool
 }
 
 // Backend はコンテナ実行の基盤（WSL2, Linux Native等）を抽象化するインターフェースです。
@@ -40,5 +41,19 @@ type Backend interface {
 	Images() ([]string, error)
 	Run(opts RunOptions) error
 	List() ([]Container, error)
+	Stop(id string) error
+	Logs(id string) (string, error)
 	Remove(id string) error
+	Build(ctxDir string) (string, error) // Dockerfileからビルドしてイメージ名を返す
+}
+
+// Dockerfile represents the parsed content of a Dockerfile
+type Dockerfile struct {
+	Base    string
+	Run     []string
+	Env     map[string]string
+	Expose  []int
+	Cmd     []string
+	Workdir string
+	Copy    [][2]string // [source, dest]
 }

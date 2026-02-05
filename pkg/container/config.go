@@ -7,8 +7,9 @@ import (
 
 // ProjectConfig は plx.json の構造を定義します。
 type ProjectConfig struct {
-	Image  string  `json:"image"`
-	Mounts []Mount `json:"mounts"`
+	Image   string   `json:"image"`
+	Mounts  []Mount  `json:"mounts"`
+	Command []string `json:"command"`
 }
 
 // LoadProjectConfig はカレントディレクトリから plx.json を読み込みます。

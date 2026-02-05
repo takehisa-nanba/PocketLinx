@@ -2,6 +2,8 @@ package container
 
 import (
 	"fmt"
+	"os/exec"
+	"runtime"
 	"strings"
 )
 
@@ -55,4 +57,28 @@ func printSeparator(widths []int) {
 		fmt.Print(strings.Repeat("-", w+2) + "+")
 	}
 	fmt.Println()
+}
+
+// CheckRequirements checks if the system meets the requirements for PocketLinx.
+func CheckRequirements() error {
+	if runtime.GOOS == "linux" {
+		return nil
+	}
+
+	// 1. Check BIOS Virtualization (Windows only)
+	cmd := exec.Command("powershell.exe", "-Command", "(Get-WmiObject Win32_Processor).VirtualizationFirmwareEnabled")
+	out, err := cmd.Output()
+	if err == nil {
+		if strings.TrimSpace(string(out)) == "False" {
+			return fmt.Errorf("virtualization is disabled in BIOS. Please enable VT-x/AMD-V in your BIOS/UEFI settings")
+		}
+	}
+
+	// 2. Check WSL command availability
+	cmd = exec.Command("wsl.exe", "--status")
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("WSL2 is not installed or enabled. Please install WSL2 first (run 'wsl --install')")
+	}
+
+	return nil
 }

@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 
+	"PocketLinx/pkg/api"
 	"PocketLinx/pkg/container"
 )
 
@@ -23,9 +26,10 @@ func main() {
 	case "windows":
 		backend = container.NewWSLBackend()
 	case "linux":
-		// 将来的に LinuxNativeBackend を実装予定
-		fmt.Println("Native Linux backend is not yet implemented. Please use WSL2 for now.")
-		os.Exit(1)
+		if os.Geteuid() != 0 {
+			fmt.Println("Warning: PocketLinx on Linux requires root privileges (for unshare/mount). Please run with sudo.")
+		}
+		backend = container.NewLinuxBackend()
 	default:
 		fmt.Printf("OS %s is not supported yet.\n", runtime.GOOS)
 		os.Exit(1)
@@ -35,6 +39,10 @@ func main() {
 
 	switch os.Args[1] {
 	case "setup":
+		if err := container.CheckRequirements(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: System requirements not met:\n  %v\n", err)
+			os.Exit(1)
+		}
 		if err := engine.Setup(); err != nil {
 			fmt.Fprintf(os.Stderr, "Setup failed: %v\n", err)
 			os.Exit(1)
@@ -77,11 +85,15 @@ func main() {
 		var portMappings []container.PortMapping
 		image := ""
 		interactive := false
+		detach := false
 
 		// Apply config defaults
 		if config != nil {
 			image = config.Image
 			mounts = append(mounts, config.Mounts...)
+			if len(config.Command) > 0 {
+				cmdArgs = config.Command
+			}
 		}
 		if image == "" {
 			image = "alpine"
@@ -128,6 +140,8 @@ func main() {
 				i++
 			} else if arg == "-it" || arg == "-i" || arg == "-t" {
 				interactive = true
+			} else if arg == "-d" {
+				detach = true
 			} else if strings.HasPrefix(arg, "-") {
 				// Unknown flag
 				fmt.Printf("Unknown flag: %s\n", arg)
@@ -139,7 +153,30 @@ func main() {
 				} else {
 					cmdArgs = args[i:]
 				}
+				// Explicit CLI args override config default
 				break
+			}
+		}
+
+		// Dockerfile Auto-detection if image/args are missing
+		if image == "alpine" && len(cmdArgs) == 0 {
+			if df, err := container.ParseDockerfile("Dockerfile"); err == nil {
+				fmt.Println("Dockerfile detected. Using its configuration...")
+				// Apply Dockerfile defaults
+				absPath, _ := filepath.Abs(".")
+				image = strings.ToLower(filepath.Base(absPath))
+				if len(df.Cmd) > 0 {
+					cmdArgs = df.Cmd
+				}
+				for k, v := range df.Env {
+					if _, exists := env[k]; !exists {
+						env[k] = v
+					}
+				}
+				for _, p := range df.Expose {
+					// Default mapping: host port same as container port
+					portMappings = append(portMappings, container.PortMapping{Host: p, Container: p})
+				}
 			}
 		}
 
@@ -155,6 +192,7 @@ func main() {
 			Env:         env,
 			Ports:       portMappings,
 			Interactive: interactive,
+			Detach:      detach,
 		}
 
 		if err := engine.Run(opts); err != nil {
@@ -170,14 +208,38 @@ func main() {
 		headers := []string{"CONTAINER ID", "COMMAND", "CREATED", "STATUS"}
 		var rows [][]string
 		for _, c := range containers {
+			displayCmd := c.Command
+			if len(displayCmd) > 30 {
+				displayCmd = displayCmd[:27] + "..."
+			}
 			rows = append(rows, []string{
 				c.ID,
-				c.Command,
+				displayCmd,
 				c.Created.Format("2006-01-02 15:04:05"),
 				c.Status,
 			})
 		}
 		container.PrintTable(headers, rows)
+	case "stop":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: plx stop <container_id>")
+			os.Exit(1)
+		}
+		if err := engine.Stop(os.Args[2]); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to stop container: %v\n", err)
+			os.Exit(1)
+		}
+	case "logs":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: plx logs <container_id>")
+			os.Exit(1)
+		}
+		logs, err := engine.Logs(os.Args[2])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to get logs: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Print(logs)
 	case "rm":
 		if len(os.Args) < 3 {
 			fmt.Println("Usage: plx rm <container_id>")
@@ -188,6 +250,33 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Printf("Container %s removed.\n", os.Args[2])
+	case "build":
+		ctxDir := "."
+		if len(os.Args) >= 3 {
+			ctxDir = os.Args[2]
+		}
+		img, err := engine.Build(ctxDir)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Build failed: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Successfully built image: %s\n", img)
+	case "dashboard":
+		port := 3000
+		server := api.NewServer(engine)
+		fmt.Printf("Starting PocketLinx Dashboard on port %d...\n", port)
+
+		// Windows: 自動でブラウザを開く
+		if runtime.GOOS == "windows" {
+			go func() {
+				exec.Command("cmd", "/c", "start", fmt.Sprintf("http://localhost:%d", port)).Run()
+			}()
+		}
+
+		if err := server.Start(port); err != nil {
+			fmt.Fprintf(os.Stderr, "Dashboard failed: %v\n", err)
+			os.Exit(1)
+		}
 
 	default:
 		printUsage()
@@ -202,7 +291,11 @@ func printUsage() {
 	fmt.Println("  plx install                      Add plx to your system PATH")
 	fmt.Println("  plx pull <image>                 Download an image (alpine, ubuntu)")
 	fmt.Println("  plx images                       List downloaded images")
-	fmt.Println("  plx run [-it] [--image <name>] [-v src:dst] <cmd>...  Run command")
+	fmt.Println("  plx run [-it] [-e K=V] [-p H:C] [-v S:D] [image] <cmd>...  Run command")
 	fmt.Println("  plx ps                           List containers")
+	fmt.Println("  plx stop <id>                    Stop container")
+	fmt.Println("  plx logs <id>                    View container logs")
 	fmt.Println("  plx rm <id>                      Remove container")
+	fmt.Println("  plx build [path]                 Build image from Dockerfile")
+	fmt.Println("  plx dashboard                    Launch visual Control Center")
 }

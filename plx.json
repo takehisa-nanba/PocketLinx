@@ -1,1 +1,15 @@
-{"image": "ubuntu", "mounts": [{"Source": ".", "Target": "/app"}]}
+{
+  "name": "pocketlinx-dev",
+  "image": "pocketlinx-dev",
+  "mounts": [
+    {
+      "source": ".",
+      "target": "/app",
+      "type": "bind"
+    }
+  ],
+  "env": {
+    "CGO_ENABLED": "0"
+  },
+  "command": ["bash"]
+}
