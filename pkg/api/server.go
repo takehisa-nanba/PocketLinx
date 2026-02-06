@@ -24,6 +24,7 @@ func (s *Server) Start(port int) error {
 	http.HandleFunc("/api/stop", s.handleStop)
 	http.HandleFunc("/api/remove", s.handleRemove)
 	http.HandleFunc("/api/logs", s.handleLogs)
+	http.HandleFunc("/api/version", s.handleVersion) // Added
 	http.HandleFunc("/", s.handleUI)
 
 	fmt.Printf("Dashboard available at http://localhost:%d\n", port)
@@ -66,6 +67,12 @@ func (s *Server) handleLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "%s", logs)
+}
+
+func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	// For now, hardcoding here to match main.go. ideally should be shared const.
+	fmt.Fprintf(w, `{"version": "v0.3.0 (WSL Native Architecture)"}`)
 }
 
 func (s *Server) handleUI(w http.ResponseWriter, r *http.Request) {

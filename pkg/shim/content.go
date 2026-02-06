@@ -34,6 +34,11 @@ echo "127.0.0.1 localhost" > "$ROOTFS/etc/hosts"
 echo "::1       localhost ip6-localhost ip6-loopback" >> "$ROOTFS/etc/hosts"
 echo "127.0.1.1 plx-container" >> "$ROOTFS/etc/hosts"
 
+# Service Discovery Injection
+if [ -f "$ROOTFS/etc/hosts-extra" ]; then
+  cat "$ROOTFS/etc/hosts-extra" >> "$ROOTFS/etc/hosts"
+fi
+
 # 3. Dynamic Bind Mounts (Volumes)
 # Format: src1:dst1,src2:dst2
 if [ "$MOUNTS" != "none" ]; then

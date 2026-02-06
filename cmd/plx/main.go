@@ -82,7 +82,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Failed to list containers: %v\n", err)
 			os.Exit(1)
 		}
-		headers := []string{"CONTAINER ID", "COMMAND", "CREATED", "STATUS"}
+		headers := []string{"CONTAINER ID", "NAME", "COMMAND", "CREATED", "STATUS"}
 		var rows [][]string
 		for _, c := range containers {
 			displayCmd := c.Command
@@ -91,6 +91,7 @@ func main() {
 			}
 			rows = append(rows, []string{
 				c.ID,
+				c.Name,
 				displayCmd,
 				c.Created.Format("2006-01-02 15:04:05"),
 				c.Status,
@@ -147,7 +148,7 @@ func main() {
 		}
 		fmt.Printf("Successfully built image: %s\n", img)
 	case "version":
-		fmt.Println("PocketLinx v0.2.0 (WSL Native Architecture)")
+		fmt.Println("PocketLinx v0.3.0 (WSL Native Architecture)")
 	case "dashboard":
 		port := 3000
 		server := api.NewServer(engine)
@@ -164,7 +165,15 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Dashboard failed: %v\n", err)
 			os.Exit(1)
 		}
-
+	case "prune":
+		fmt.Println("Pruning build cache...")
+		if err := engine.Prune(); err != nil {
+			fmt.Fprintf(os.Stderr, "Prune failed: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("Build cache cleared.")
+	case "volume":
+		handleVolume(engine, os.Args[2:])
 	default:
 		printUsage()
 		os.Exit(1)
@@ -186,6 +195,53 @@ func printUsage() {
 	fmt.Println("  plx build [path]                 Build image from Dockerfile")
 	fmt.Println("  plx version                      Show version")
 	fmt.Println("  plx dashboard                    Launch visual Control Center")
+	fmt.Println("  plx prune                        Clear build cache")
+	fmt.Println("  plx volume <create|ls|rm>        Manage persistent volumes")
+}
+
+func handleVolume(engine *container.Engine, args []string) {
+	if len(args) < 1 {
+		fmt.Println("Usage: plx volume <create|ls|rm> [args...]")
+		os.Exit(1)
+	}
+
+	switch args[0] {
+	case "create":
+		if len(args) < 2 {
+			fmt.Println("Usage: plx volume create <name>")
+			os.Exit(1)
+		}
+		name := args[1]
+		if err := engine.CreateVolume(name); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to create volume: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Volume '%s' created.\n", name)
+	case "rm":
+		if len(args) < 2 {
+			fmt.Println("Usage: plx volume rm <name>")
+			os.Exit(1)
+		}
+		name := args[1]
+		if err := engine.RemoveVolume(name); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to remove volume: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Printf("Volume '%s' removed.\n", name)
+	case "ls":
+		vols, err := engine.ListVolumes()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to list volumes: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("VOLUMES")
+		for _, v := range vols {
+			fmt.Println(v)
+		}
+	default:
+		fmt.Printf("Unknown volume command: %s\n", args[0])
+		os.Exit(1)
+	}
 }
 
 func handleRun(engine *container.Engine, args []string) {
@@ -231,6 +287,8 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 
 	// 2. Parse command line flags (overrides config)
 	imageSetByFlag := false
+	name := "" // Parse --name
+
 	for i := 0; i < len(args); i++ {
 		arg := args[i]
 		if arg == "-v" && i+1 < len(args) {
@@ -267,6 +325,9 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 		} else if arg == "--image" && i+1 < len(args) {
 			image = args[i+1]
 			imageSetByFlag = true
+			i++
+		} else if arg == "--name" && i+1 < len(args) { // Parse Name
+			name = args[i+1]
 			i++
 		} else if arg == "-it" || arg == "-i" || arg == "-t" {
 			interactive = true
@@ -355,6 +416,7 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 
 	return &container.RunOptions{
 		Image:       image,
+		Name:        name,
 		Args:        cmdArgs,
 		Mounts:      mounts,
 		Env:         env,

@@ -1,31 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PocketLinx Dashboard</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --primary: #3b82f6; --danger: #ef4444; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; margin: 0; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        h1 { display: flex; align-items: center; gap: 0.5rem; }
-        .card { background: var(--card); border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #334155; }
-        th { background: #0f172a; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; color: #94a3b8; }
-        tr:last-child td { border-bottom: none; }
-        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; }
-        .status-Running { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .status-Exited { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
-        button { border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 500; transition: opacity 0.2s; }
-        button:hover { opacity: 0.8; }
-        .btn-stop { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-        .btn-rm { background: rgba(148, 163, 184, 0.2); color: #94a3b8; margin-left: 0.5rem; }
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --primary: #3b82f6;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background: #0f172a;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-Running {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .status-Exited {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+        }
+
+        button {
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .btn-stop {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .btn-rm {
+            background: rgba(148, 163, 184, 0.2);
+            color: #94a3b8;
+            margin-left: 0.5rem;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>🚀 PocketLinx <span style="font-size: 1rem; color: #64748b; font-weight: normal;">v0.2.0</span></h1>
+        <h1>🚀 PocketLinx <span id="version-display"
+                style="font-size: 1rem; color: #64748b; font-weight: normal;">loading...</span></h1>
         <div class="card">
             <table>
                 <thead>
@@ -43,6 +129,17 @@
     </div>
 
     <script>
+        async function fetchVersion() {
+            try {
+                const res = await fetch('/api/version');
+                const data = await res.json();
+                document.getElementById('version-display').textContent = data.version;
+            } catch (e) {
+                console.error(e);
+                document.getElementById('version-display').textContent = 'unknown';
+            }
+        }
+
         async function fetchContainers() {
             try {
                 const res = await fetch('/api/containers');
@@ -61,19 +158,19 @@
             }
             tbody.innerHTML = containers.map(c => {
                 // Parse command if it's array
-                const cmd = Array.isArray(c.Command) ? c.Command.join(' ') : c.Command;
+                const cmd = Array.isArray(c.command) ? c.command.join(' ') : c.command;
                 return `
                 <tr>
-                    <td style="font-family: monospace; color: #3b82f6;">${c.ID}</td>
-                    <td>${c.Image || 'unknown'}</td>
+                    <td style="font-family: monospace; color: #3b82f6;">${c.id}</td>
+                    <td>${c.image || 'unknown'}</td>
                     <td style="font-family: monospace; font-size: 0.9em;">${cmd}</td>
-                    <td><span class="status-badge status-${c.Status}">${c.Status}</span></td>
+                    <td><span class="status-badge status-${c.status}">${c.status}</span></td>
                     <td>
                         <div style="display: flex;">
-                        ${c.Status === 'Running' 
-                            ? `<button class="btn-stop" onclick="stopContainer('${c.ID}')">Stop</button>` 
-                            : ''}
-                        <button class="btn-rm" onclick="removeContainer('${c.ID}')">Rm</button>
+                        ${c.status === 'Running'
+                        ? `<button class="btn-stop" onclick="stopContainer('${c.id}')">Stop</button>`
+                        : ''}
+                        <button class="btn-rm" onclick="removeContainer('${c.id}')">Rm</button>
                         </div>
                     </td>
                 </tr>
@@ -94,6 +191,8 @@
 
         setInterval(fetchContainers, 2000);
         fetchContainers();
+        fetchVersion();
     </script>
 </body>
+
 </html>

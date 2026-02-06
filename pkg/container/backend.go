@@ -5,6 +5,8 @@ import "time"
 // Container はコンテナの情報を保持する構造体です。
 type Container struct {
 	ID      string    `json:"id"`
+	Name    string    `json:"name"`
+	Image   string    `json:"image"`
 	Command string    `json:"command"`
 	Created time.Time `json:"created"`
 	Status  string    `json:"status"`
@@ -25,6 +27,7 @@ type PortMapping struct {
 // RunOptions はコンテナ実行時の詳細設定を保持する構造体です。
 type RunOptions struct {
 	Image       string
+	Name        string // Added Name
 	Args        []string
 	Mounts      []Mount
 	Env         map[string]string
@@ -46,6 +49,12 @@ type Backend interface {
 	Logs(id string) (string, error)
 	Remove(id string) error
 	Build(ctxDir string, tag string) (string, error) // Dockerfileからビルドしてイメージ名を返す
+	Prune() error
+
+	// Volume Management
+	CreateVolume(name string) error
+	RemoveVolume(name string) error
+	ListVolumes() ([]string, error)
 }
 
 // Dockerfile represents the parsed content of a Dockerfile

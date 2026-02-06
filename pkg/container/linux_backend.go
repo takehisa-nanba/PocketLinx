@@ -277,6 +277,33 @@ func (b *LinuxBackend) Remove(id string) error {
 	return os.RemoveAll(containerDir)
 }
 
+func (b *LinuxBackend) Prune() error {
+	// Simple implementation for Linux: remove cache dir
+	return os.RemoveAll(filepath.Join(b.rootDir, "cache"))
+}
+
+func (b *LinuxBackend) CreateVolume(name string) error {
+	return os.MkdirAll(filepath.Join(b.rootDir, "volumes", name), 0755)
+}
+
+func (b *LinuxBackend) RemoveVolume(name string) error {
+	return os.RemoveAll(filepath.Join(b.rootDir, "volumes", name))
+}
+
+func (b *LinuxBackend) ListVolumes() ([]string, error) {
+	entries, err := os.ReadDir(filepath.Join(b.rootDir, "volumes"))
+	if err != nil {
+		return []string{}, nil
+	}
+	var vols []string
+	for _, e := range entries {
+		if e.IsDir() {
+			vols = append(vols, e.Name())
+		}
+	}
+	return vols, nil
+}
+
 func (b *LinuxBackend) Build(ctxDir string, tag string) (string, error) {
 	// Re-implement simplified Build logic for Linux
 	// (Skipping full build implementation for this specific turn to save space, will implement if requested

@@ -1,15 +1,15 @@
 package container
 
 import (
+	"crypto/sha256"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
-
-	"encoding/json"
-	"io"
-	"net/http"
 	"strings"
 	"time"
 
@@ -224,11 +224,33 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 	if len(opts.Mounts) > 0 {
 		var mParts []string
 		for _, m := range opts.Mounts {
-			srcWsl, err := wsl.WindowsToWslPath(m.Source)
-			if err != nil {
-				fmt.Printf("Warning: Failed to convert mount path %s: %v\n", m.Source, err)
-				continue
+			var srcWsl string
+
+			// Detect if Named Volume
+			// Heuristic: If it has "C:\" or "/" or ".", it's a path. Else assume named volume (simple alphanumeric).
+			isPath := strings.Contains(m.Source, "/") || strings.Contains(m.Source, "\\") || strings.Contains(m.Source, ".")
+
+			if !isPath {
+				// Named Volume
+				volName := m.Source
+				srcWsl = path.Join(GetWslVolumesDir(), volName)
+				// Ensure volume exists (Auto-create on Run)
+				if err := b.wslClient.RunDistroCommand("mkdir", "-p", srcWsl); err != nil {
+					fmt.Printf("Warning: Failed to create/ensure volume %s: %v\n", volName, err)
+					continue
+				}
+			} else {
+				// Bind Mount (Windows Path)
+				// We need to resolve absolute path first because input might be relative "."
+				absSource, _ := filepath.Abs(m.Source)
+				var err error
+				srcWsl, err = wsl.WindowsToWslPath(absSource)
+				if err != nil {
+					fmt.Printf("Warning: Failed to convert mount path %s: %v\n", m.Source, err)
+					continue
+				}
 			}
+
 			mParts = append(mParts, fmt.Sprintf("%s:%s", srcWsl, m.Target))
 		}
 		if len(mParts) > 0 {
@@ -237,8 +259,34 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 	}
 
 	// 3. Metadata
+	// Service Discovery: Scan other containers to build /etc/hosts aliases
+	hostsContent := ""
+	// Add self
+	if opts.Name != "" {
+		containerId = opts.Name // Use Name as ID if provided? No, keep ID unique, just use Name as alias.
+		// Actually, if Name is provided, we should probably ensure uniqueness?
+		// For simplicity v0.3.0, we just trust user or overwrite.
+		// Let's keep ID as c-PID but add Name to metadata.
+		hostsContent += fmt.Sprintf("127.0.0.1 %s\n", opts.Name)
+	}
+
+	// List running containers to add their names
+	if containers, err := b.List(); err == nil {
+		for _, c := range containers {
+			if c.Status == "Running" && c.Name != "" {
+				hostsContent += fmt.Sprintf("127.0.0.1 %s\n", c.Name)
+			}
+		}
+	}
+	// Write hosts-extra
+	if hostsContent != "" {
+		b.wslClient.RunDistroCommandWithInput(hostsContent, "sh", "-c", fmt.Sprintf("cat > %s/etc/hosts-extra", rootfsDir))
+	}
+
 	meta := Container{
 		ID:      containerId,
+		Name:    opts.Name,
+		Image:   image, // Save Image
 		Command: userCmd,
 		Created: time.Now(),
 		Status:  "Running",
@@ -447,52 +495,109 @@ func (b *WSLBackend) Build(ctxDir string, tag string) (string, error) {
 		return "", fmt.Errorf("failed to parse Dockerfile: %w", err)
 	}
 
-	// 1. ベースイメージの準備
+	// 1. Calculate Hash Chain to determine where to resume
+	// parentHash starts with the Base Image + "FROM"
+	parentHash := fmt.Sprintf("%x", sha256.Sum256([]byte("FROM "+df.Base)))
+
+	// Hashes for each instruction index
+	stepHashes := make([]string, len(df.Instructions))
+
+	for i, instr := range df.Instructions {
+		h, err := CalculateInstructionHash(parentHash, instr, ctxDir)
+		if err != nil {
+			return "", fmt.Errorf("failed to calculate hash for step %d: %w", i, err)
+		}
+		stepHashes[i] = h
+		parentHash = h
+	}
+
+	// 2. Find the last cache hit (Fast Forward)
+	lastHitIndex := -1
+	for i := len(stepHashes) - 1; i >= 0; i-- {
+		cacheFile := path.Join(GetWslCacheDir(), stepHashes[i]+".tar.gz")
+		if err := b.wslClient.RunDistroCommand("test", "-f", cacheFile); err == nil {
+			lastHitIndex = i
+			break
+		}
+	}
+
+	// 3. Prepare Build Directory
 	imageName := tag
 	if imageName == "" {
 		imageName = strings.ToLower(filepath.Base(ctxDir))
 	}
 	fmt.Printf("Building image '%s' from %s...\n", imageName, df.Base)
 
-	// Check if base image exists in WSL
-	baseTarWsl := path.Join(GetWslImagesDir(), df.Base+".tar.gz")
-	if err := b.wslClient.RunDistroCommand("test", "-f", baseTarWsl); err != nil {
-		// Not found, try pull
-		fmt.Printf("Base image not found, pulling %s...\n", df.Base)
-		if err := b.Pull(df.Base); err != nil {
-			return "", fmt.Errorf("failed to pull base image %s: %w", df.Base, err)
-		}
-	}
-
-	// ビルドディレクトリの作成 (WSL内)
 	buildId := fmt.Sprintf("build-%d", os.Getpid())
 	buildDir := fmt.Sprintf("/var/lib/pocketlinx/builds/%s", buildId)
 	rootfsDir := path.Join(buildDir, "rootfs")
 	b.wslClient.RunDistroCommand("mkdir", "-p", rootfsDir)
-	defer b.wslClient.RunDistroCommand("rm", "-rf", buildDir) // 終了時に掃除
+	defer b.wslClient.RunDistroCommand("rm", "-rf", buildDir)
 
-	// ベースイメージの展開 (Inter-WSL copy/extract is fast)
-	fmt.Println("Extracting base image...")
-	if err := b.wslClient.RunDistroCommand("tar", "-xf", baseTarWsl, "-C", rootfsDir); err != nil {
-		return "", fmt.Errorf("failed to extract base image: %w", err)
+	// 4. Restore state OR Initialize Base
+	if lastHitIndex >= 0 {
+		hitHash := stepHashes[lastHitIndex]
+		fmt.Printf("CACHED: Resuming from step %d (Hash: %s)\n", lastHitIndex+1, hitHash[:12])
+		if _, err := b.LoadCache(hitHash, rootfsDir); err != nil {
+			return "", fmt.Errorf("failed to load cache %s: %w", hitHash, err)
+		}
+	} else {
+		// Initialize from Base Image
+		baseTarWsl := path.Join(GetWslImagesDir(), df.Base+".tar.gz")
+		if err := b.wslClient.RunDistroCommand("test", "-f", baseTarWsl); err != nil {
+			fmt.Printf("Base image not found, pulling %s...\n", df.Base)
+			if err := b.Pull(df.Base); err != nil {
+				return "", fmt.Errorf("failed to pull base image %s: %w", df.Base, err)
+			}
+		}
+		if err := b.wslClient.RunDistroCommand("tar", "-xf", baseTarWsl, "-C", rootfsDir); err != nil {
+			return "", fmt.Errorf("failed to extract base image: %w", err)
+		}
 	}
 
+	// 5. Execute Remaining Steps
 	currentWorkdir := "/"
+	envPrefix := "" // Need to reconstruct ENV from scratch or cache?
+	// PROBLEM: Reconstruct ENV if we skipped steps!
+	// We must iterate ALL instructions to build up ENV, even if we skip execution.
 
-	// 2. 構築ステップの実行
-	envPrefix := ""
-	for _, instr := range df.Instructions {
-		switch instr.Type {
-		case "ENV":
-			for i := 0; i < len(instr.Args); i += 2 {
-				k := instr.Args[i]
+	for i, instr := range df.Instructions {
+		// Always process ENV state
+		if instr.Type == "ENV" {
+			for j := 0; j < len(instr.Args); j += 2 {
+				k := instr.Args[j]
 				v := ""
-				if i+1 < len(instr.Args) {
-					v = instr.Args[i+1]
+				if j+1 < len(instr.Args) {
+					v = instr.Args[j+1]
 				}
 				envPrefix += fmt.Sprintf("export %s=%q; ", k, v)
 			}
-			fmt.Printf("STEP: ENV (Accumulated for subsequent RUNs)\n")
+		}
+
+		// Skip execution if covered by cache
+		if i <= lastHitIndex {
+			// If it was WORKDIR, we need to update currentWorkdir tracking?
+			// Actually WORKDIR doesn't persist in FS in a way that affects *path strings* in our Go code,
+			// but it affects where `Run` executes.
+			// But since we restore `rootfs`, the directories Created by WORKDIR exist.
+			// However `currentWorkdir` variable needs to be updated.
+			if instr.Type == "WORKDIR" && len(instr.Args) > 0 {
+				currentWorkdir = instr.Args[0]
+			}
+			continue
+		}
+
+		// Execute Step
+		fmt.Printf("[%d/%d] %s %s\n", i+1, len(df.Instructions), instr.Type, instr.Raw)
+
+		switch instr.Type {
+		// ENV is already handled above for prefix string
+		case "ENV":
+			fmt.Println("Applying ENV...")
+			// No FS change usually, but we treat it as a step that creates a layer
+			// so that subsequent steps have a distinct parent hash.
+			// To be consistent with "Layer Caching":
+			// If we modify ENV, we save the current state as a new layer.
 
 		case "RUN":
 			if err := b.executeBuildRun(envPrefix, instr.Raw, rootfsDir, currentWorkdir); err != nil {
@@ -507,24 +612,80 @@ func (b *WSLBackend) Build(ctxDir string, tag string) (string, error) {
 		case "WORKDIR":
 			if len(instr.Args) > 0 {
 				currentWorkdir = instr.Args[0]
-				fmt.Printf("STEP: WORKDIR %s\n", currentWorkdir)
-				// Create directory
 				workdirPath := path.Join(rootfsDir, strings.TrimPrefix(currentWorkdir, "/"))
 				b.wslClient.RunDistroCommand("mkdir", "-p", workdirPath)
 			}
 		}
+
+		// Save Cache after execution
+		stepHash := stepHashes[i]
+		if err := b.SaveCache(stepHash, rootfsDir); err != nil {
+			fmt.Printf("Warning: Failed to save cache for step %d: %v\n", i, err)
+		}
 	}
 
-	// 4. 新イメージの保存 (WSL内部に保存)
+	// 6. Final Save
 	outputTarWsl := path.Join(GetWslImagesDir(), imageName+".tar.gz")
-	fmt.Printf("Saving image to %s (WSL)...\n", outputTarWsl)
 
+	// Ideally we just symlink the last cache layer to the image name?
+	// or Copy it. Copy is safer.
+	// Actually we have the rootfs fully built.
+	fmt.Printf("Saving image to %s (WSL)...\n", outputTarWsl)
 	if err := b.wslClient.RunDistroCommand("tar", "-czf", outputTarWsl, "-C", rootfsDir, "."); err != nil {
 		return "", fmt.Errorf("failed to save image: %w", err)
 	}
 
 	fmt.Printf("Successfully built image '%s'\n", imageName)
 	return imageName, nil
+}
+
+// Volume Management
+
+func GetWslVolumesDir() string {
+	return "/var/lib/pocketlinx/volumes"
+}
+
+func (b *WSLBackend) CreateVolume(name string) error {
+	volDir := path.Join(GetWslVolumesDir(), name)
+	// Check if already exists
+	if err := b.wslClient.RunDistroCommand("test", "-d", volDir); err == nil {
+		return fmt.Errorf("volume '%s' already exists", name)
+	}
+	return b.wslClient.RunDistroCommand("mkdir", "-p", volDir)
+}
+
+func (b *WSLBackend) RemoveVolume(name string) error {
+	volDir := path.Join(GetWslVolumesDir(), name)
+	// Check before remove
+	if err := b.wslClient.RunDistroCommand("test", "-d", volDir); err != nil {
+		return fmt.Errorf("volume '%s' not found", name)
+	}
+	return b.wslClient.RunDistroCommand("rm", "-rf", volDir)
+}
+
+func (b *WSLBackend) ListVolumes() ([]string, error) {
+	volBase := GetWslVolumesDir()
+	// Ensure base dir exists
+	b.wslClient.RunDistroCommand("mkdir", "-p", volBase)
+
+	// List directories in volumes dir
+	cmd := exec.Command("wsl", "-d", b.wslClient.DistroName, "ls", "-1", volBase)
+	output, err := cmd.Output()
+	if err != nil {
+		// If ls fails (e.g. empty? no, ls on empty dir is fine usually)
+		// But if dir doesn't exist it fails.
+		return []string{}, nil
+	}
+
+	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
+	var volumes []string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" {
+			volumes = append(volumes, line)
+		}
+	}
+	return volumes, nil
 }
 
 func downloadFile(url string, filepath string) error {

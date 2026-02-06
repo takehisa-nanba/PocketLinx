@@ -71,3 +71,19 @@ func (e *Engine) Logs(id string) (string, error) {
 func (e *Engine) Build(ctxDir string, tag string) (string, error) {
 	return e.backend.Build(ctxDir, tag)
 }
+
+func (e *Engine) Prune() error {
+	return e.backend.Prune()
+}
+
+func (e *Engine) CreateVolume(name string) error {
+	return e.backend.CreateVolume(name)
+}
+
+func (e *Engine) RemoveVolume(name string) error {
+	return e.backend.RemoveVolume(name)
+}
+
+func (e *Engine) ListVolumes() ([]string, error) {
+	return e.backend.ListVolumes()
+}
