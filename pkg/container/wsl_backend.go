@@ -40,7 +40,7 @@ func (b *WSLBackend) Setup() error {
 	_ = GetDistroDir()
 
 	// 2. Distro side initialization
-	fmt.Println("Fixing filesystem and network in pocketlinx distro...")
+	fmt.Println("Fixing filesystem and network in pocketlinx distro... (PATCHED)")
 	initCmds := `
 		# A. Fix WSL Configuration to prevent automatic overwrites
 		cat <<EOF > /etc/wsl.conf
@@ -184,6 +184,11 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 		return fmt.Errorf("provisioning failed (path: %s): %w", containerDir, err)
 	}
 
+	// Update Shim to ensure it matches the current binary version
+	if err := b.wslClient.RunDistroCommandWithInput(shim.Content, "sh", "-c", "cat > /usr/local/bin/container-shim && chmod +x /usr/local/bin/container-shim"); err != nil {
+		fmt.Printf("Warning: Failed to update shim: %v\n", err)
+	}
+
 	// 2. Process Mounts
 	mountsStr := "none"
 	if len(opts.Mounts) > 0 {
@@ -229,14 +234,19 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 		"unshare", "--mount", "--pid", "--fork", "--uts",
 	}
 
+	workdirArg := "none"
+	if opts.Workdir != "" {
+		workdirArg = opts.Workdir
+	}
+
 	if portCmd != "" {
 		// Use sh -c to setup port forwarding, then exec the shim
-		// "$@" receives the trailing arguments (rootfs, mounts, and container command)
+		// "$@" receives the trailing arguments (rootfs, mounts, workdir, and container command)
 		shellCmd := portCmd + "exec /bin/sh /usr/local/bin/container-shim \"$@\""
-		unshareArgs = append(unshareArgs, "sh", "-c", shellCmd, "container-shim", rootfsDir, mountsStr)
+		unshareArgs = append(unshareArgs, "sh", "-c", shellCmd, "container-shim", rootfsDir, mountsStr, workdirArg)
 	} else {
 		// No ports, call shim directly
-		unshareArgs = append(unshareArgs, "/bin/sh", "/usr/local/bin/container-shim", rootfsDir, mountsStr)
+		unshareArgs = append(unshareArgs, "/bin/sh", "/usr/local/bin/container-shim", rootfsDir, mountsStr, workdirArg)
 	}
 	unshareArgs = append(unshareArgs, opts.Args...)
 
@@ -452,14 +462,22 @@ func (b *WSLBackend) Build(ctxDir string) (string, error) {
 			"mkdir -p %s/proc %s/sys %s/dev %s%s && "+
 				"mount -t proc proc %s/proc && "+
 				"mount -t sysfs sys %s/sys && "+
-				"mount --bind /dev %s/dev && "+
-				"cp /etc/resolv.conf %s/etc/resolv.conf && "+
+				"mknod -m 666 %s/dev/null c 1 3 && "+
+				"mknod -m 666 %s/dev/zero c 1 5 && "+
+				"mknod -m 666 %s/dev/random c 1 8 && "+
+				"mknod -m 666 %s/dev/urandom c 1 9 && "+
+				"mkdir -p %s/etc && "+
+				"cat /etc/resolv.conf > %s/etc/resolv.conf && "+
 				"chroot %s sh -c 'cd %s && %s %s'; "+
-				"RET=$?; umount %s/proc %s/sys %s/dev; exit $RET",
+				"RET=$?; umount %s/proc %s/sys; exit $RET",
 			rootfsDir, rootfsDir, rootfsDir, rootfsDir, currentWorkdir,
-			rootfsDir, rootfsDir, rootfsDir, rootfsDir, rootfsDir,
+			rootfsDir, rootfsDir,
+			rootfsDir, rootfsDir, rootfsDir, rootfsDir, // for mknod
+			rootfsDir, // for mkdir -p %s/etc
+			rootfsDir, // for cat /etc/resolv.conf > ...
+			rootfsDir,
 			currentWorkdir, envPrefix, runCmd,
-			rootfsDir, rootfsDir, rootfsDir,
+			rootfsDir, rootfsDir,
 		)
 
 		err := b.wslClient.RunDistroCommand("unshare", "--mount", "sh", "-c", fullCmd)

@@ -10,6 +10,7 @@ type ProjectConfig struct {
 	Image   string   `json:"image"`
 	Mounts  []Mount  `json:"mounts"`
 	Command []string `json:"command"`
+	Workdir string   `json:"workdir"`
 }
 
 // LoadProjectConfig はカレントディレクトリから plx.json を読み込みます。

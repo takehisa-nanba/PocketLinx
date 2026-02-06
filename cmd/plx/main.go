@@ -86,6 +86,7 @@ func main() {
 		image := ""
 		interactive := false
 		detach := false
+		workdir := ""
 
 		// Apply config defaults
 		if config != nil {
@@ -93,6 +94,9 @@ func main() {
 			mounts = append(mounts, config.Mounts...)
 			if len(config.Command) > 0 {
 				cmdArgs = config.Command
+			}
+			if config.Workdir != "" {
+				workdir = config.Workdir
 			}
 		}
 		if image == "" {
@@ -177,12 +181,25 @@ func main() {
 					// Default mapping: host port same as container port
 					portMappings = append(portMappings, container.PortMapping{Host: p, Container: p})
 				}
+				if df.Workdir != "" {
+					workdir = df.Workdir
+				}
 			}
 		}
 
 		if len(cmdArgs) == 0 {
 			fmt.Println("Usage: plx run [-it] [-e KEY=VAL] [-p HOST:CONT] [IMAGE] <command> [args...]")
 			os.Exit(1)
+		}
+
+		// Heuristic: If workdir is empty and we have a mount to /app, default to /app
+		if workdir == "" {
+			for _, m := range mounts {
+				if m.Target == "/app" {
+					workdir = "/app"
+					break
+				}
+			}
 		}
 
 		opts := container.RunOptions{
@@ -193,6 +210,7 @@ func main() {
 			Ports:       portMappings,
 			Interactive: interactive,
 			Detach:      detach,
+			Workdir:     workdir,
 		}
 
 		if err := engine.Run(opts); err != nil {

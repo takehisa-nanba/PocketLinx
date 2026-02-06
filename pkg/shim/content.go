@@ -4,7 +4,8 @@ package shim
 const Content = `#!/bin/sh
 ROOTFS=$1
 MOUNTS=$2
-shift 2
+WORKDIR=$3
+shift 3
 
 if [ ! -d "$ROOTFS" ]; then
   echo "Error: Rootfs $ROOTFS not found"
@@ -46,6 +47,15 @@ if [ "$MOUNTS" != "none" ]; then
   done
 fi
 
-# 3. Execution
-exec chroot "$ROOTFS" "$@"
+# 4. Working Directory
+if [ "$WORKDIR" != "none" ] && [ -n "$WORKDIR" ]; then
+  mkdir -p "$ROOTFS/$WORKDIR"
+  # Change directory using chroot logic (append cd to command or use --chdir if available)
+  # But chroot usually doesn't take --chdir in older versions or busybox.
+  # So we wrap the command.
+  exec chroot "$ROOTFS" sh -c "cd \"$WORKDIR\" && exec \"\$@\"" -- "$@"
+else
+  # 5. Execution
+  exec chroot "$ROOTFS" "$@"
+fi
 `

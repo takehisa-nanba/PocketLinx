@@ -31,6 +31,7 @@ type RunOptions struct {
 	Ports       []PortMapping
 	Interactive bool
 	Detach      bool
+	Workdir     string
 }
 
 // Backend はコンテナ実行の基盤（WSL2, Linux Native等）を抽象化するインターフェースです。

@@ -36,6 +36,8 @@ go build -o plx.exe cmd/plx/main.go
 # ターミナルを再起動すると 'plx' コマンドが有効になります
 ```
 
+> **注意**: `plx run` を正常に動作させるには、必ず `install` サブコマンドを実行してシステムの PATH に登録・更新する必要があります。
+
 ### 2. 環境の初期化 (Setup)
 コンテナ実行に必要なバックエンドを自動構築します（デフォルトで Alpine が取得されます）。
 
@@ -138,9 +140,10 @@ go build -o plx_linux ./cmd/plx
 ## 🏗️ 内部アーキテクチャ (Internal Architecture)
 
 - **`cmd/plx/`**: CLI エントリポイントおよびサブコマンドのルーティング。
-- **`pkg/wsl/`**: WSL インタラクション（実行、パス変換）の抽象化レイヤー。
 - **`pkg/container/`**: プロビジョニング、名前空間の隔離、データ管理のビジネスロジック。
-- **`pkg/shim/`**: コンテナ起動スクリプト (container-shim) の管理。
+    - `wsl_backend.go`: WSL2 固有の実装（`mknod`, `unshare`, ネットワーク設定）。
+    - `df_parser.go`: Dockerfile パーサー。
+- **`pkg/shim/`**: コンテナ起動スクリプト (container-shim) の管理。`WORKDIR` 変更や環境変数の注入を担当。
 
 ---
 
