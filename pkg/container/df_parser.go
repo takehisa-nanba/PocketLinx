@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -17,12 +16,18 @@ func ParseDockerfile(path string) (*Dockerfile, error) {
 	defer file.Close()
 
 	df := &Dockerfile{
-		Env: make(map[string]string),
+		Instructions: make([]Instruction, 0),
 	}
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
+
+		// Handle line continuation
+		for strings.HasSuffix(line, "\\") && scanner.Scan() {
+			line = strings.TrimSuffix(line, "\\") + " " + strings.TrimSpace(scanner.Text())
+		}
+
 		if line == "" || strings.HasPrefix(line, "#") {
 			continue
 		}
@@ -40,48 +45,57 @@ func ParseDockerfile(path string) (*Dockerfile, error) {
 		switch instruction {
 		case "FROM":
 			df.Base = args
-		case "RUN":
-			df.Run = append(df.Run, args)
-		case "ENV":
-			// Handle ENV KEY VALUE and ENV KEY=VALUE
-			if strings.Contains(args, "=") {
-				kv := strings.SplitN(args, "=", 2)
-				df.Env[strings.TrimSpace(kv[0])] = strings.TrimSpace(kv[1])
-			} else {
-				kv := strings.Fields(args)
-				if len(kv) >= 2 {
-					df.Env[kv[0]] = strings.Join(kv[1:], " ")
+		default:
+			// Parse specific args for better structure if needed, but store everything in order
+			parsedArgs := []string{}
+
+			switch instruction {
+			case "ENV":
+				// Handle ENV KEY VALUE and ENV KEY=VALUE
+				if strings.Contains(args, "=") {
+					kv := strings.SplitN(args, "=", 2)
+					parsedArgs = append(parsedArgs, strings.TrimSpace(kv[0]), strings.TrimSpace(kv[1]))
+				} else {
+					kv := strings.Fields(args)
+					if len(kv) >= 2 {
+						parsedArgs = append(parsedArgs, kv[0], strings.Join(kv[1:], " "))
+					}
 				}
-			}
-		case "EXPOSE":
-			// Handle multiple ports like EXPOSE 80 443
-			ports := strings.Fields(args)
-			for _, pStr := range ports {
-				if p, err := strconv.Atoi(pStr); err == nil {
-					df.Expose = append(df.Expose, p)
+			case "COPY":
+				copyParts := strings.Fields(args)
+				if len(copyParts) >= 2 {
+					dest := copyParts[len(copyParts)-1]
+					src := strings.Join(copyParts[:len(copyParts)-1], " ")
+					parsedArgs = append(parsedArgs, src, dest)
 				}
-			}
-		case "CMD":
-			// Simple shell/exec form detection
-			if strings.HasPrefix(args, "[") && strings.HasSuffix(args, "]") {
-				trimmed := strings.Trim(args, "[]")
-				parts := strings.Split(trimmed, ",")
-				for i, p := range parts {
-					parts[i] = strings.Trim(strings.TrimSpace(p), "\"")
+			case "CMD":
+				// Simple shell/exec form detection
+				if strings.HasPrefix(args, "[") && strings.HasSuffix(args, "]") {
+					trimmed := strings.Trim(args, "[]")
+					parts := strings.Split(trimmed, ",")
+					for i, p := range parts {
+						parts[i] = strings.Trim(strings.TrimSpace(p), "\"")
+					}
+					parsedArgs = parts
+				} else {
+					parsedArgs = []string{"sh", "-c", args}
 				}
-				df.Cmd = parts
-			} else {
-				df.Cmd = []string{"sh", "-c", args}
+			case "WORKDIR":
+				parsedArgs = []string{args}
+			case "RUN":
+				parsedArgs = []string{args}
+			case "EXPOSE":
+				parsedArgs = strings.Fields(args)
+			default:
+				// Generic fallback
+				parsedArgs = []string{args}
 			}
-		case "WORKDIR":
-			df.Workdir = args
-		case "COPY":
-			copyParts := strings.Fields(args)
-			if len(copyParts) >= 2 {
-				dest := copyParts[len(copyParts)-1]
-				src := strings.Join(copyParts[:len(copyParts)-1], " ")
-				df.Copy = append(df.Copy, [2]string{src, dest})
-			}
+
+			df.Instructions = append(df.Instructions, Instruction{
+				Type: instruction,
+				Args: parsedArgs,
+				Raw:  args,
+			})
 		}
 	}
 

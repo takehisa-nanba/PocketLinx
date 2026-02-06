@@ -2,6 +2,7 @@ package api
 
 import (
 	"PocketLinx/pkg/container"
+	_ "embed" // Required for go:embed
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,6 +15,9 @@ type Server struct {
 func NewServer(engine *container.Engine) *Server {
 	return &Server{engine: engine}
 }
+
+//go:embed index.html
+var uiHTML string
 
 func (s *Server) Start(port int) error {
 	http.HandleFunc("/api/containers", s.handleList)
@@ -66,7 +70,9 @@ func (s *Server) handleLogs(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleUI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
+	if uiHTML == "" {
+		fmt.Fprintf(w, "<h1>Error: Dashboard UI not embedded</h1>")
+		return
+	}
 	fmt.Fprintf(w, uiHTML)
 }
-
-var uiHTML = "<html><body><h1>PocketLinx Dashboard</h1><p>API is ready.</p></body></html>"

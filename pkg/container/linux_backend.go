@@ -277,7 +277,7 @@ func (b *LinuxBackend) Remove(id string) error {
 	return os.RemoveAll(containerDir)
 }
 
-func (b *LinuxBackend) Build(ctxDir string) (string, error) {
+func (b *LinuxBackend) Build(ctxDir string, tag string) (string, error) {
 	// Re-implement simplified Build logic for Linux
 	// (Skipping full build implementation for this specific turn to save space, will implement if requested
 	// OR implementing a very basic version now)
@@ -293,10 +293,13 @@ func (b *LinuxBackend) Build(ctxDir string) (string, error) {
 		return "", fmt.Errorf("failed to parse Dockerfile: %w", err)
 	}
 
-	imageName := strings.ToLower(filepath.Base(ctxDir))
-	if imageName == "." {
-		abs, _ := filepath.Abs(ctxDir)
-		imageName = strings.ToLower(filepath.Base(abs))
+	imageName := tag
+	if imageName == "" {
+		imageName = strings.ToLower(filepath.Base(ctxDir))
+		if imageName == "." {
+			abs, _ := filepath.Abs(ctxDir)
+			imageName = strings.ToLower(filepath.Base(abs))
+		}
 	}
 
 	buildId := fmt.Sprintf("build-%d", os.Getpid())
@@ -316,70 +319,55 @@ func (b *LinuxBackend) Build(ctxDir string) (string, error) {
 	exec.Command("tar", "-xf", baseTar, "-C", rootfsDir).Run()
 
 	// 2. Build Steps
-	// Environment setup
 	envPrefix := ""
-	for k, v := range df.Env {
-		envPrefix += fmt.Sprintf("export %s=%q; ", k, v)
-	}
 
-	for _, runCmd := range df.Run {
-		fmt.Printf("STEP: RUN %s\n", runCmd)
+	for _, instr := range df.Instructions {
+		switch instr.Type {
+		case "ENV":
+			for i := 0; i < len(instr.Args); i += 2 {
+				k := instr.Args[i]
+				v := ""
+				if i+1 < len(instr.Args) {
+					v = instr.Args[i+1]
+				}
+				envPrefix += fmt.Sprintf("export %s=%q; ", k, v)
+			}
+		case "WORKDIR":
+			// Skip for now in simplified linux build
+		case "RUN":
+			runCmd := instr.Raw
+			fmt.Printf("STEP: RUN %s\n", runCmd)
 
-		// Prepare command to run inside unshare
-		// We use unshare to create a container-like environment but share the network namespace
-		// by omitting --net (or strictly speaking, unshare default is to share net unless --net is passed)
-		// We DO want --mount and --pid for isolation.
+			// Same simplified RUN logic as before
+			resolvConfPath := filepath.Join(rootfsDir, "etc/resolv.conf")
+			_ = os.MkdirAll(filepath.Dir(resolvConfPath), 0755)
+			exec.Command("cp", "/etc/resolv.conf", resolvConfPath).Run()
 
-		// Setup resolve.conf for DNS
-		resolvConfPath := filepath.Join(rootfsDir, "etc/resolv.conf")
-		_ = os.MkdirAll(filepath.Dir(resolvConfPath), 0755)
-		// We copy the host's resolv.conf to the container
-		// In self-hosting (nested), /etc/resolv.conf is from the outer container
-		copyCmd := exec.Command("cp", "/etc/resolv.conf", resolvConfPath)
-		if err := copyCmd.Run(); err != nil {
-			fmt.Printf("Warning: failed to copy resolv.conf: %v\n", err)
-		}
+			shimPath := "/usr/local/bin/container-shim"
+			if _, err := os.Stat(shimPath); os.IsNotExist(err) {
+				return "", fmt.Errorf("container-shim not found at %s. Please run 'plx setup' first", shimPath)
+			}
 
-		// Validation: Check if shim exists
-		shimPath := "/usr/local/bin/container-shim"
-		if _, err := os.Stat(shimPath); os.IsNotExist(err) {
-			// Fallback: create a temporary shim if missing (system wide install might be skipped)
-			// But for now assume Setup() was run.
-			return "", fmt.Errorf("container-shim not found at %s. Please run 'plx setup' first", shimPath)
-		}
+			fullUserCmd := fmt.Sprintf("%s%s", envPrefix, runCmd)
+			cmdArgs := []string{"--mount", "--pid", "--fork", "--uts", "--propagation", "unchanged"}
+			cmdArgs = append(cmdArgs, shimPath, rootfsDir, "none", "/bin/sh", "-c", fullUserCmd)
 
-		// Construct the command using shim
-		// The shim does pivot_root/chroot.
-		// We need to execute the user's runCmd inside that.
-		// "sh -c ..." is passed as arguments to the shim.
-		fullUserCmd := fmt.Sprintf("%s%s", envPrefix, runCmd)
+			runExec := exec.Command("unshare", cmdArgs...)
+			runExec.Stdin = os.Stdin
+			runExec.Stdout = os.Stdout
+			runExec.Stderr = os.Stderr
 
-		// Unshare args
-		// Note: We deliberately EXCLUDE --net to allow network access
-		cmdArgs := []string{"--mount", "--pid", "--fork", "--uts", "--propagation", "unchanged"}
+			if err := runExec.Run(); err != nil {
+				return "", fmt.Errorf("RUN failed: %w", err)
+			}
 
-		// Call shim
-		// shim <rootfs> <mounts> <command>...
-		cmdArgs = append(cmdArgs, shimPath, rootfsDir, "none", "/bin/sh", "-c", fullUserCmd)
-
-		runExec := exec.Command("unshare", cmdArgs...)
-		runExec.Stdin = os.Stdin
-		runExec.Stdout = os.Stdout
-		runExec.Stderr = os.Stderr
-
-		if err := runExec.Run(); err != nil {
-			return "", fmt.Errorf("RUN failed: %w", err)
-		}
-	}
-
-	// 3. COPY
-	for _, cp := range df.Copy {
-		src := filepath.Join(ctxDir, cp[0])
-		dst := filepath.Join(rootfsDir, cp[1])
-		// Ensure parent dir
-		_ = os.MkdirAll(filepath.Dir(dst), 0755)
-		if err := exec.Command("cp", "-r", src, dst).Run(); err != nil {
-			return "", fmt.Errorf("COPY failed: %w", err)
+		case "COPY":
+			src := filepath.Join(ctxDir, instr.Args[0])
+			dst := filepath.Join(rootfsDir, instr.Args[1])
+			_ = os.MkdirAll(filepath.Dir(dst), 0755)
+			if err := exec.Command("cp", "-r", src, dst).Run(); err != nil {
+				return "", fmt.Errorf("COPY failed: %w", err)
+			}
 		}
 	}
 

@@ -31,3 +31,9 @@ func GetDistroDir() string {
 	_ = os.MkdirAll(dir, 0755)
 	return dir
 }
+
+// GetWslImagesDir returns the path to the images directory inside WSL.
+// Should be: /var/lib/pocketlinx/images
+func GetWslImagesDir() string {
+	return "/var/lib/pocketlinx/images"
+}

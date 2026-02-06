@@ -1,177 +1,107 @@
 # PocketLinx (plx)
 
-**PocketLinx** は、どこでも一貫した Linux 開発環境を持ち運べるように設計された、超軽量でポータブルな次世代のコンテナランタイムです。
-Windows 環境において、Docker Desktop のような重いデーモンを必要とせず、WSL2 のパワーを最大限に引き出した隔離環境を瞬時に提供します。
+<p align="center">
+  <strong>Portable, Instant, and Clean Container Runtime for WSL2.</strong>
+  <br>
+  <em>Windows is just a remote control. Linux does the heavy lifting.</em>
+</p>
 
 ---
 
-## 🚀 主な機能 (Features)
-
-- **シングルバイナリ**: `plx.exe` ひとつで動作。複雑な依存関係はありません。
-- **インスタント・セットアップ**: `plx setup` 一発で Linux 環境（Alpine/Ubuntu）が整います。
-- **WSL2 安定化エンジン**: 起動エラーの自動修復、DNS固定化、時刻同期を統合。
-- **マルチ OS サポート**: 複数の Linux ディストリビューションを瞬時に切り替え可能。
-- **ポータブル・データ**: イメージや設定は `%USERPROFILE%\.pocketlinx` で一元管理。
-- **プロジェクト・コンフィグ**: `plx.json` でプロジェクトごとの環境設定を自動化。
-
-## 🌟 現在のステータス (Status)
-
-- [x] **WSL2 バックエンド基盤 (Phase 1)**: 安定したディストリビューション管理とエラー解決。
-- [x] **コンテナ実行**: 標準的な Rootfs の実行と隔離。
-- [x] **ネットワーク**: DNS 設定の永続化とホストとの通信。
-- [x] **ライフサイクル管理 (Phase 2)**: `ps`, `stop`, `rm` コマンドの実装。
-- [x] **バックグラウンド実行 (Phase 3)**: デタッチモード（`-d`）とログ閲覧。
-- [ ] **パフォーマンス最適化 (Phase 4)**: 起動速度とファイル I/O の向上。
-
----
-
-## 🛠️ 使い方 (Usage)
-
-### 1. インストール (Global Install)
-バイナリをビルドした後、システム PATH に追加してどこからでも呼び出せるようにします。
-
-```powershell
-go build -o plx.exe cmd/plx/main.go
-.\plx.exe install
-# ターミナルを再起動すると 'plx' コマンドが有効になります
-```
-
-> **注意**: `plx run` を正常に動作させるには、必ず `install` サブコマンドを実行してシステムの PATH に登録・更新する必要があります。
-
-### 2. 環境の初期化 (Setup)
-コンテナ実行に必要なバックエンドを自動構築します（デフォルトで Alpine が取得されます）。
-
-```powershell
-plx setup
-```
-
-### 3. コンテナの実行 (Run)
-隔離された空間でコマンドを実行します。
-
-```powershell
-# 基本実行
-plx run uname -a
-
-# 環境変数の設定 (-e)
-plx run -e DATABASE_URL=postgres://localhost:5432 alpine printenv DATABASE_URL
-
-# ポートフォワーディング (-p)
-# ホストの 8080 をコンテナの 80 に繋ぐ
-plx run -p 8080:80 alpine busybox httpd -f -p 80
-
-# インタラクティブ・シェル（コンテナの中に入る）
-plx run -it --image ubuntu bash
-
-# ホストのディレクトリをマウントして実行
-plx run -v C:\project:/app --image alpine ls /app
-```
-
-### 4. イメージ管理 (Image Management)
-好きなディストリビューションをダウンロードして管理できます。
-
-```powershell
-# Ubuntu イメージを取得
-plx pull ubuntu
-
-# ダウンロード済みイメージの一覧
-plx images
-```
-
-### 5. コンテナ管理 (Lifecycle)
-実行履歴の確認や、不要になった環境の停止・削除が可能です。
-
-```powershell
-plx ps
-plx stop <container_id>
-```powershell
-plx rm <container_id>
-```
-
-### 6. セルフホスティング (Self-Hosting)
-PocketLinx 自身を使って PocketLinx を開発することができます。
-開発環境には Native Linux Backend が使用され、コンテナの入れ子実行（Docker-in-Dockerのような構成）が可能です。
-
-```powershell
-# 1. 開発用イメージのビルド
-plx build .
-
-# 2. 開発環境の起動
-plx run -it --image . bash
-
-# --- ここからコンテナ内 ---
-# 3. Linux用バイナリのビルド
-go build -o plx_linux ./cmd/plx
-
-# 4. セットアップ（Native Linux Backendが自動選択されます）
-./plx_linux setup
-
-# 5. 入れ子コンテナの実行
-./plx_linux run -it alpine /bin/sh
-```
-
----
-
-## 📦 プロジェクト設定 (plx.json)
-プロジェクトのルートに `plx.json` を置くことで、オプションを省略できます。
-
-```json
-{
-  "image": "ubuntu",
-  "mounts": [
-    { "Source": ".", "Target": "/app" }
-  ]
-}
-```
-このファイルがあるフォルダで `plx run bash` を叩くと、自動的に Ubuntu で起動し、カレントディレクトリが `/app` にマウントされます。
-
----
-
-## 🛣️ ロードマップ (Roadmap)
-
-1.  **Phase 1: Foundation (Done)**
-    - WSL2 基盤の安定化、OS起動エラーの完全解消、ネットワーク設定の固定化。
-2.  **Phase 2: Management (In Progress)**
-    - `stop`, `ps`, `rm` の実装によるコンテナ・ライフサイクルの完全制御。
-3.  **Phase 3: Daemon & Logs**
-    - コンテナのバックグラウンド実行と、切り離された環境のログ監視機能。
-4.  **Phase 4: Polish**
-    - エラーメッセージの洗練、ドキュメントの充実、CLI UX の向上。
-
-## 🏗️ 内部アーキテクチャ (Internal Architecture)
-
-- **`cmd/plx/`**: CLI エントリポイントおよびサブコマンドのルーティング。
-- **`pkg/container/`**: プロビジョニング、名前空間の隔離、データ管理のビジネスロジック。
-    - `wsl_backend.go`: WSL2 固有の実装（`mknod`, `unshare`, ネットワーク設定）。
-    - `df_parser.go`: Dockerfile パーサー。
-- **`pkg/shim/`**: コンテナ起動スクリプト (container-shim) の管理。`WORKDIR` 変更や環境変数の注入を担当。
-
----
-
-## 🛡️ ライセンス & ビジネスパートナー募集 (License & Partnership)
-
-### 🇯🇵 日本語
-#### 個人・非営利利用
-個人での学習、オープンソースプロジェクト、および非営利目的での利用に関しては、**MIT ライセンス**に基づき、自由に無償でご利用いただけます。
-
-#### 商用利用 & ビジネスパートナー
-法人での業務利用や、本ソフトウェアを用いた収益活動については、別途合意が必要です。作者（@takehisa-nanba）は「最高の技術を作る」ことに情熱を注いでいますが、同時に**「この技術をいかに市場に広め、価値を最大化するか」という知見をお持ちのビジネスパートナーを募集しています。**
-
-「PocketLinx でこんなビジネスができる」「面白いマネタイズのアイディアがある」という方は、ぜひ GitHub の Issue やメールでコンタクトしてください。相乗り、大歓迎です！
-
----
+### 🇯🇵 日本語 (Japanese)
+**PocketLinx (v0.2.0)** は、WSL2 (Windows Subsystem for Linux) の性能をネイティブに引き出す次世代のコンテナランタイムです。
+従来の「Windowsファイルシステム上で開発する」という常識を覆し、**「Windowsはただのリモコンとして使い、ビルドも実行もすべてWSL2内部の高速なLinuxファイルシステムで完結させる」** というアーキテクチャを採用しました。これにより、Git for Windows対比で数十倍のディスクI/O速度と、完全に隔離されたクリーンな開発環境を実現します。
 
 ### 🇺🇸 English
-#### For Individuals & OSS Developers
-For personal learning, open-source projects, and non-commercial use, this software is released under the **MIT License**. Feel free to use, modify, and explore!
-
-#### Commercial Use & Business Partnership
-For commercial or enterprise use, or if you intend to generate revenue using PocketLinx, prior agreement is required. 
-
-**I am actively looking for business partners!** While my focus and passion lie in engineering the best possible container technology, I am eager to collaborate with those who have expertise in **growth, marketing, and monetization strategies.** 
-
-If you see a business opportunity here or have a brilliant plan to scale PocketLinx, let's talk. I'm looking for partners who want to build something big together. Reach out via GitHub Issues or email!
+**PocketLinx (v0.2.0)** is a next-generation container runtime designed to leverage the native performance of WSL2.
+It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck. This delivers blazing fast performance compared to traditional Windows-based workflows while keeping your host OS clean.
 
 ---
 
-## 🛡️ 免責事項 (Disclaimer)
-MIT License
+## 🚀 Features (主な機能)
+
+- **WSL-Native Architecture**: No more slow NTFS mounts. Builds and Runs happen on ext4.
+- **Single Binary**: One `plx.exe` rules them all. No complex dependencies.
+- **Instant Setup**: `plx setup` gets you a full Linux environment in seconds.
+- **Project Config**: `plx.json` automates environment setup for teams.
+- **Zero Bloat**: Keeps your Windows host clean. Everything lives in WSL.
+
+---
+
+## 🛠️ Installation (インストール)
+
+1.  **Build** the binary:
+    ```powershell
+    go build -o plx.exe cmd/plx/main.go
+    ```
+2.  **Install** (Add to PATH):
+    ```powershell
+    .\plx.exe install
+    ```
+    *(Restart your terminal after this)*
+
+3.  **Setup** environment:
+    ```powershell
+    plx setup
+    ```
+
+---
+
+## 📖 Usage (使い方)
+
+### 1. Basic Run
+Run a command in an isolated container. (Images are stored in WSL, not Windows!)
+```powershell
+plx run alpine uname -a
+# Linux pocketlinx ... x86_64 Linux
+```
+
+### 2. Native Build (v0.2.0 New!)
+Build an image from a Dockerfile. The source code is temporarily streamed to WSL, built there, and the result is saved directly into WSL storage (`/var/lib/pocketlinx/images`). No heavy `tar.gz` is ever written to Windows.
+```powershell
+plx build -t my-app .
+```
+
+### 3. Managed Volumes (Coming Soon)
+Instead of mounting slow Windows folders, plan to use managed volumes that live in WSL.
+```powershell
+# (Proposed)
+plx volume create my-deps
+plx run -v my-deps:/app/node_modules ...
+```
+
+---
+
+## 🏗️ Architecture: "Windows as Remote Control"
+
+### v0.1.0 (Old)
+- **Flow**: Download to Windows -> Convert to WSL path -> Run.
+- **Bottleneck**: Heavy I/O traffic across the Windows/WSL boundary.
+
+### v0.2.0 (New)
+- **Flow**: `plx` command (Windows) -> Signal WSL -> **Download/Build/Run inside WSL**.
+- **Result**: Zero heavy files on Windows. Native Linux speed.
+
+---
+
+## 🛣️ Roadmap (ロードマップ)
+
+| Phase | Feature | Status |
+| :--- | :--- | :--- |
+| **Phase 1** | **Foundation** (WSL2 Backend, Stable Engine) | ✅ Done |
+| **Phase 2** | **Lifecycle** (`start`, `stop`, `ps`, `rm`) | ✅ Done |
+| **Phase 3** | **Architecture v2** (WSL-Native Storage) | ✅ Done (v0.2.0) |
+| **Phase 4** | **Ecosystem** (Managed Volumes, Networks) | 🚧 Planned |
+
+---
+
+## 🛡️ License & Partnership
+
+### 🇯🇵 ビジネスパートナー募集
+**「この技術で世界を変えたい」**
+作者（@takehisa-nanba）は技術に特化していますが、これをビジネスとして広めるためのパートナー（マーケティング、商品化戦略、資金調達など）を真剣に探しています。もし PocketLinx に可能性を感じていただけたなら、ぜひご連絡ください。
+
+### 🇺🇸 Call for Partners
+I am actively looking for **business partners**! While I focus on engineering the best possible container technology, I need collaborators with expertise in growth, marketing, and monetization strategies. If you see a business opportunity here, let's build something big together.
+
+**License**: MIT (Free for personal/OSS use. Commercial use requires agreement.)

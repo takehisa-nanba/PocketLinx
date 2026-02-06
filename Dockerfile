@@ -5,8 +5,9 @@ FROM ubuntu
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install Go and build tools
-# Install Go manually (Ubuntu 22.04 only has 1.18)
-RUN apt-get update && apt-get install -y git make bash wget && wget https://go.dev/dl/go1.23.0.linux-amd64.tar.gz && tar -C /usr/local -xzf go1.23.0.linux-amd64.tar.gz && rm go1.23.0.linux-amd64.tar.gz && ln -s /usr/local/go/bin/go /usr/bin/go && ln -s /usr/local/go/bin/gofmt /usr/bin/gofmt
+# Install Go manually (from local file to avoid network issues)
+COPY go1.23.0.linux-amd64.tar.gz /tmp/
+RUN apt-get update && apt-get install -y git make bash && tar -C /usr/local -xzf /tmp/go1.23.0.linux-amd64.tar.gz && rm /tmp/go1.23.0.linux-amd64.tar.gz && ln -s /usr/local/go/bin/go /usr/bin/go && ln -s /usr/local/go/bin/gofmt /usr/bin/gofmt
 
 ENV PATH=$PATH:/usr/local/go/bin
 
@@ -15,5 +16,10 @@ WORKDIR /app
 
 COPY go.mod ./
 # COPY go.sum ./ # Optional as before
+
+# Add plx wrapper for dogfooding
+RUN echo '#!/bin/sh' > /usr/local/bin/plx && \
+    echo 'exec go run /app/cmd/plx/main.go "$@"' >> /usr/local/bin/plx && \
+    chmod +x /usr/local/bin/plx
 
 CMD ["bash"]

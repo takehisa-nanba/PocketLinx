@@ -90,24 +90,19 @@ func (b *WSLBackend) Pull(image string) error {
 		return fmt.Errorf("image '%s' is not supported", image)
 	}
 
-	targetFile := filepath.Join(GetImagesDir(), image+".tar.gz")
-	if _, err := os.Stat(targetFile); err == nil {
-		fmt.Printf("Image '%s' already exists.\n", image)
-		return nil
-	}
+	wslImagesDir := GetWslImagesDir()
 
-	fmt.Printf("Pulling image '%s' from %s...\n", image, url)
-	// WSL 経由ではなく、ホストの PowerShell を直接使ってダウンロードする
-	cmd := exec.Command("powershell.exe", "-Command", fmt.Sprintf("Invoke-WebRequest -Uri %s -OutFile %s", url, targetFile))
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	if err != nil {
-		return fmt.Errorf("error pulling image: %w", err)
-	}
-
-	// If it's the system default (alpine), we might want to import it as the system distro
+	// Special handling for System Distro bootstrap (Alpine)
 	if image == "alpine" {
+		targetFile := filepath.Join(GetImagesDir(), image+".tar.gz")
+		if _, err := os.Stat(targetFile); err != nil {
+			fmt.Printf("Downloading bootstrap image '%s'...\n", image)
+			cmd := exec.Command("powershell.exe", "-Command", fmt.Sprintf("Invoke-WebRequest -Uri %s -OutFile %s", url, targetFile))
+			if err := cmd.Run(); err != nil {
+				return fmt.Errorf("error downloading bootstrap image: %w", err)
+			}
+		}
+
 		installDir := GetDistroDir()
 		absInstallDir, _ := filepath.Abs(installDir)
 		absRootfsFile, _ := filepath.Abs(targetFile)
@@ -117,36 +112,71 @@ func (b *WSLBackend) Pull(image string) error {
 		os.RemoveAll(absInstallDir)
 		os.MkdirAll(absInstallDir, 0755)
 
-		err := b.wslClient.Run("--import", DistroName, absInstallDir, absRootfsFile, "--version", "2")
-		if err != nil {
+		if err := b.wslClient.Run("--import", DistroName, absInstallDir, absRootfsFile, "--version", "2"); err != nil {
 			return fmt.Errorf("error importing system distro: %w", err)
 		}
 
-		// Install shim
 		fmt.Println("Installing container-shim...")
-		return b.wslClient.RunDistroCommandWithInput(
-			shim.Content,
-			"sh", "-c", "cat > /usr/local/bin/container-shim && chmod +x /usr/local/bin/container-shim",
-		)
+		if err := b.wslClient.RunDistroCommandWithInput(shim.Content, "sh", "-c", "cat > /usr/local/bin/container-shim && chmod +x /usr/local/bin/container-shim"); err != nil {
+			return err
+		}
+
+		// Distro exists now. Ensure directory exists inside WSL
+		if err := b.wslClient.RunDistroCommand("mkdir", "-p", wslImagesDir); err != nil {
+			return fmt.Errorf("failed to create images dir in WSL: %w", err)
+		}
+
+		// Cache this image into WSL storage for Run/Build to use
+		fmt.Println("Caching bootstrap image to WSL storage...")
+		wslWinPath, _ := wsl.WindowsToWslPath(targetFile)
+		targetWslFile := path.Join(wslImagesDir, image+".tar.gz")
+		b.wslClient.RunDistroCommand("cp", wslWinPath, targetWslFile)
+		return nil
+	}
+
+	// Normal flow for other images (Distro assumed to exist)
+	// Ensure directory exists
+	if err := b.wslClient.RunDistroCommand("mkdir", "-p", wslImagesDir); err != nil {
+		return fmt.Errorf("failed to create images dir in WSL (is PocketLinx setup?): %w", err)
+	}
+	targetWslFile := path.Join(wslImagesDir, image+".tar.gz")
+
+	// Check if exists in WSL
+	if err := b.wslClient.RunDistroCommand("test", "-f", targetWslFile); err == nil {
+		fmt.Printf("Image '%s' already exists.\n", image)
+		return nil
+	}
+
+	// Native Download for other images
+	fmt.Printf("Pulling image '%s' inside WSL...\n", image)
+	downloadCmd := fmt.Sprintf("wget -O %s %s || curl -L -o %s %s", targetWslFile, url, targetWslFile, url)
+	if err := b.wslClient.RunDistroCommand("sh", "-c", downloadCmd); err != nil {
+		return fmt.Errorf("error downloading image in WSL: %w", err)
 	}
 
 	return nil
 }
 
 func (b *WSLBackend) Images() ([]string, error) {
-	files, err := os.ReadDir(GetImagesDir())
+	// List files in WSL images directory
+	cmd := fmt.Sprintf("ls %s/*.tar.gz", GetWslImagesDir())
+	out, err := b.wslClient.RunDistroCommandOutput("sh", "-c", cmd)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return []string{}, nil
-		}
-		return nil, err
+		// If explicit ls fails, it might mean empty dir or no files
+		return []string{}, nil
 	}
 
 	var images []string
-	for _, f := range files {
-		if !f.IsDir() && strings.HasSuffix(f.Name(), ".tar.gz") {
-			name := strings.TrimSuffix(f.Name(), ".tar.gz")
-			images = append(images, name)
+	lines := strings.Split(strings.ReplaceAll(out, "\r\n", "\n"), "\n")
+	for _, l := range lines {
+		l = strings.TrimSpace(l)
+		if l == "" {
+			continue
+		}
+		// /var/lib/pocketlinx/images/alpine.tar.gz -> alpine
+		base := path.Base(l)
+		if strings.HasSuffix(base, ".tar.gz") {
+			images = append(images, strings.TrimSuffix(base, ".tar.gz"))
 		}
 	}
 	return images, nil
@@ -167,15 +197,15 @@ func (b *WSLBackend) Run(opts RunOptions) error {
 		image = "alpine"
 	}
 
-	imageFile := filepath.Join(GetImagesDir(), image+".tar.gz")
-	if _, err := os.Stat(imageFile); os.IsNotExist(err) {
+	wslImgPath := path.Join(GetWslImagesDir(), image+".tar.gz")
+
+	// Check existence in WSL
+	if err := b.wslClient.RunDistroCommand("test", "-f", wslImgPath); err != nil {
 		return fmt.Errorf("image '%s' not found. Please run 'plx pull %s' first", image, image)
 	}
 
-	wslRootfsPath, err := wsl.WindowsToWslPath(imageFile)
-	if err != nil {
-		return fmt.Errorf("path resolving error: %w", err)
-	}
+	wslRootfsPath := wslImgPath
+	var err error // Declared for use in subsequent blocks
 
 	// 1. Provisioning
 	// 明示的にコンテナディレクトリ（親）を作成してからrootfsを作成する
@@ -410,7 +440,7 @@ func (b *WSLBackend) Remove(id string) error {
 	return b.wslClient.RunDistroCommand("rm", "-rf", containerDir)
 }
 
-func (b *WSLBackend) Build(ctxDir string) (string, error) {
+func (b *WSLBackend) Build(ctxDir string, tag string) (string, error) {
 	dockerfilePath := filepath.Join(ctxDir, "Dockerfile")
 	df, err := ParseDockerfile(dockerfilePath)
 	if err != nil {
@@ -418,11 +448,20 @@ func (b *WSLBackend) Build(ctxDir string) (string, error) {
 	}
 
 	// 1. ベースイメージの準備
-	imageName := strings.ToLower(filepath.Base(ctxDir))
+	imageName := tag
+	if imageName == "" {
+		imageName = strings.ToLower(filepath.Base(ctxDir))
+	}
 	fmt.Printf("Building image '%s' from %s...\n", imageName, df.Base)
 
-	if err := b.Pull(df.Base); err != nil {
-		return "", fmt.Errorf("failed to pull base image %s: %w", df.Base, err)
+	// Check if base image exists in WSL
+	baseTarWsl := path.Join(GetWslImagesDir(), df.Base+".tar.gz")
+	if err := b.wslClient.RunDistroCommand("test", "-f", baseTarWsl); err != nil {
+		// Not found, try pull
+		fmt.Printf("Base image not found, pulling %s...\n", df.Base)
+		if err := b.Pull(df.Base); err != nil {
+			return "", fmt.Errorf("failed to pull base image %s: %w", df.Base, err)
+		}
 	}
 
 	// ビルドディレクトリの作成 (WSL内)
@@ -432,79 +471,55 @@ func (b *WSLBackend) Build(ctxDir string) (string, error) {
 	b.wslClient.RunDistroCommand("mkdir", "-p", rootfsDir)
 	defer b.wslClient.RunDistroCommand("rm", "-rf", buildDir) // 終了時に掃除
 
-	// ベースイメージの展開
-	baseTar := filepath.Join(GetImagesDir(), df.Base+".tar.gz")
-	wslBaseTar, _ := wsl.WindowsToWslPath(baseTar)
+	// ベースイメージの展開 (Inter-WSL copy/extract is fast)
 	fmt.Println("Extracting base image...")
-	if err := b.wslClient.RunDistroCommand("tar", "-xf", wslBaseTar, "-C", rootfsDir); err != nil {
+	if err := b.wslClient.RunDistroCommand("tar", "-xf", baseTarWsl, "-C", rootfsDir); err != nil {
 		return "", fmt.Errorf("failed to extract base image: %w", err)
 	}
 
 	currentWorkdir := "/"
-	if df.Workdir != "" {
-		currentWorkdir = df.Workdir
-	}
 
 	// 2. 構築ステップの実行
-	// 環境変数の準備
 	envPrefix := ""
-	for k, v := range df.Env {
-		envPrefix += fmt.Sprintf("export %s=%q; ", k, v)
-	}
+	for _, instr := range df.Instructions {
+		switch instr.Type {
+		case "ENV":
+			for i := 0; i < len(instr.Args); i += 2 {
+				k := instr.Args[i]
+				v := ""
+				if i+1 < len(instr.Args) {
+					v = instr.Args[i+1]
+				}
+				envPrefix += fmt.Sprintf("export %s=%q; ", k, v)
+			}
+			fmt.Printf("STEP: ENV (Accumulated for subsequent RUNs)\n")
 
-	for _, runCmd := range df.Run {
-		fmt.Printf("STEP: RUN %s\n", runCmd)
+		case "RUN":
+			if err := b.executeBuildRun(envPrefix, instr.Raw, rootfsDir, currentWorkdir); err != nil {
+				return "", fmt.Errorf("RUN failed: %w", err)
+			}
 
-		// 隔離環境のセットアップと実行
-		// mount /proc, /sys, /dev, cp resolv.conf, then chroot
-		// 最後に念のため umount する（unshare --mount なので終了時に消えるはずだが明示的に）
-		fullCmd := fmt.Sprintf(
-			"mkdir -p %s/proc %s/sys %s/dev %s%s && "+
-				"mount -t proc proc %s/proc && "+
-				"mount -t sysfs sys %s/sys && "+
-				"mknod -m 666 %s/dev/null c 1 3 && "+
-				"mknod -m 666 %s/dev/zero c 1 5 && "+
-				"mknod -m 666 %s/dev/random c 1 8 && "+
-				"mknod -m 666 %s/dev/urandom c 1 9 && "+
-				"mkdir -p %s/etc && "+
-				"cat /etc/resolv.conf > %s/etc/resolv.conf && "+
-				"chroot %s sh -c 'cd %s && %s %s'; "+
-				"RET=$?; umount %s/proc %s/sys; exit $RET",
-			rootfsDir, rootfsDir, rootfsDir, rootfsDir, currentWorkdir,
-			rootfsDir, rootfsDir,
-			rootfsDir, rootfsDir, rootfsDir, rootfsDir, // for mknod
-			rootfsDir, // for mkdir -p %s/etc
-			rootfsDir, // for cat /etc/resolv.conf > ...
-			rootfsDir,
-			currentWorkdir, envPrefix, runCmd,
-			rootfsDir, rootfsDir,
-		)
+		case "COPY":
+			if err := b.executeBuildCopy(ctxDir, instr.Args[0], instr.Args[1], rootfsDir, currentWorkdir); err != nil {
+				return "", fmt.Errorf("COPY failed: %w", err)
+			}
 
-		err := b.wslClient.RunDistroCommand("unshare", "--mount", "sh", "-c", fullCmd)
-		if err != nil {
-			return "", fmt.Errorf("RUN failed: %w", err)
+		case "WORKDIR":
+			if len(instr.Args) > 0 {
+				currentWorkdir = instr.Args[0]
+				fmt.Printf("STEP: WORKDIR %s\n", currentWorkdir)
+				// Create directory
+				workdirPath := path.Join(rootfsDir, strings.TrimPrefix(currentWorkdir, "/"))
+				b.wslClient.RunDistroCommand("mkdir", "-p", workdirPath)
+			}
 		}
 	}
 
-	// 3. COPY命令の実行
-	for _, cp := range df.Copy {
-		src := filepath.Join(ctxDir, cp[0])
-		dest := path.Join(rootfsDir, strings.TrimPrefix(path.Join(currentWorkdir, cp[1]), "/"))
-		fmt.Printf("STEP: COPY %s to %s\n", cp[0], cp[1])
+	// 4. 新イメージの保存 (WSL内部に保存)
+	outputTarWsl := path.Join(GetWslImagesDir(), imageName+".tar.gz")
+	fmt.Printf("Saving image to %s (WSL)...\n", outputTarWsl)
 
-		srcWsl, _ := wsl.WindowsToWslPath(src)
-		// ホストからrootfs内へコピー
-		if err := b.wslClient.RunDistroCommand("sh", "-c", fmt.Sprintf("mkdir -p $(dirname %s) && cp -r %s %s", dest, srcWsl, dest)); err != nil {
-			return "", fmt.Errorf("COPY failed: %w", err)
-		}
-	}
-
-	// 4. 新イメージの保存
-	outputTar := filepath.Join(GetImagesDir(), imageName+".tar.gz")
-	wslOutputTar, _ := wsl.WindowsToWslPath(outputTar)
-	fmt.Printf("Saving image to %s...\n", outputTar)
-
-	if err := b.wslClient.RunDistroCommand("tar", "-czf", wslOutputTar, "-C", rootfsDir, "."); err != nil {
+	if err := b.wslClient.RunDistroCommand("tar", "-czf", outputTarWsl, "-C", rootfsDir, "."); err != nil {
 		return "", fmt.Errorf("failed to save image: %w", err)
 	}
 
@@ -531,4 +546,77 @@ func downloadFile(url string, filepath string) error {
 
 	_, err = io.Copy(out, resp.Body)
 	return err
+}
+
+func (b *WSLBackend) executeBuildRun(envPrefix string, runCmd string, rootfsDir string, currentWorkdir string) error {
+	fmt.Printf("STEP: RUN %s\n", runCmd)
+
+	// 3. Create a temporary script for the command to avoid quoting issues
+	scriptName := fmt.Sprintf("build_step_%d.sh", time.Now().UnixNano())
+
+	// Use ToSlash to ensure Linux-style paths for WSL commands
+	tmpDir := filepath.ToSlash(filepath.Join(rootfsDir, "tmp"))
+	scriptDstPath := filepath.ToSlash(filepath.Join(tmpDir, scriptName))
+
+	// Ensure tmp exists
+	if err := b.wslClient.RunDistroCommand("mkdir", "-p", tmpDir); err != nil {
+		return fmt.Errorf("failed to creating tmp dir: %w", err)
+	}
+
+	// Write the script
+	scriptContent := fmt.Sprintf("#!/bin/sh\nset -e\n%s\n%s", envPrefix, runCmd)
+
+	// Write using cat
+	cmd := exec.Command("wsl", "-d", b.wslClient.DistroName, "sh", "-c", fmt.Sprintf("cat > %s", scriptDstPath))
+	cmd.Stdin = strings.NewReader(scriptContent)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to write build script: %w", err)
+	}
+
+	// Make executable
+	if err := b.wslClient.RunDistroCommand("chmod", "+x", scriptDstPath); err != nil {
+		return fmt.Errorf("failed to chmod script: %w", err)
+	}
+
+	// 隔離環境のセットアップと実行
+	fullCmd := fmt.Sprintf(
+		"mkdir -p %s/proc %s/sys %s/dev %s%s && "+
+			"mount -t proc proc %s/proc && "+
+			"mount -t sysfs sys %s/sys && "+
+			"rm -f %s/dev/null %s/dev/zero %s/dev/random %s/dev/urandom && "+
+			"mknod -m 666 %s/dev/null c 1 3 && "+
+			"mknod -m 666 %s/dev/zero c 1 5 && "+
+			"mknod -m 666 %s/dev/random c 1 8 && "+
+			"mknod -m 666 %s/dev/urandom c 1 9 && "+
+			"mkdir -p %s/etc && "+
+			"cat /etc/resolv.conf > %s/etc/resolv.conf && "+
+			"chroot %s /tmp/%s; "+
+			"RET=$?; umount %s/proc %s/sys; exit $RET",
+		rootfsDir, rootfsDir, rootfsDir, rootfsDir, currentWorkdir,
+		rootfsDir, rootfsDir,
+		rootfsDir, rootfsDir, rootfsDir, rootfsDir, // for rm -f
+		rootfsDir, rootfsDir, rootfsDir, rootfsDir, // for mknod
+		rootfsDir, // for mkdir -p %s/etc
+		rootfsDir, // for cat /etc/resolv.conf > ...
+		rootfsDir, scriptName,
+		rootfsDir, rootfsDir,
+	)
+
+	return b.wslClient.RunDistroCommand("unshare", "--mount", "sh", "-c", fullCmd)
+}
+
+func (b *WSLBackend) executeBuildCopy(ctxDir, srcArg, destArg, rootfsDir, currentWorkdir string) error {
+	src := filepath.Join(ctxDir, srcArg)
+	dest := path.Join(rootfsDir, strings.TrimPrefix(path.Join(currentWorkdir, destArg), "/"))
+	fmt.Printf("STEP: COPY %s to %s\n", srcArg, destArg)
+
+	srcWsl, err := wsl.WindowsToWslPath(src)
+	if err != nil {
+		return fmt.Errorf("failed to convert src path: %w", err)
+	}
+
+	// ホストからrootfs内へコピー
+	// mkdir -p で親ディレクトリを作成し、cp -r で再帰的にコピー
+	cmd := fmt.Sprintf("mkdir -p $(dirname %s) && cp -r %s %s", dest, srcWsl, dest)
+	return b.wslClient.RunDistroCommand("sh", "-c", cmd)
 }

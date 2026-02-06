@@ -45,6 +45,17 @@ func (c *Client) RunDistroCommandWithInput(input string, args ...string) error {
 	return cmd.Run()
 }
 
+// RunDistroCommandOutput executes a command INSIDE the specific distro and returns output
+func (c *Client) RunDistroCommandOutput(args ...string) (string, error) {
+	wslArgs := append([]string{"-d", c.DistroName, "--"}, args...)
+	cmd := exec.Command("wsl.exe", wslArgs...)
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
+}
+
 // WindowsToWslPath converts a Windows path (e.g. C:\Users) to a WSL path (/mnt/c/Users)
 func WindowsToWslPath(path string) (string, error) {
 	abs, err := filepath.Abs(path)

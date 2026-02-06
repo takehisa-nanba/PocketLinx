@@ -45,16 +45,18 @@ type Backend interface {
 	Stop(id string) error
 	Logs(id string) (string, error)
 	Remove(id string) error
-	Build(ctxDir string) (string, error) // Dockerfileからビルドしてイメージ名を返す
+	Build(ctxDir string, tag string) (string, error) // Dockerfileからビルドしてイメージ名を返す
 }
 
 // Dockerfile represents the parsed content of a Dockerfile
 type Dockerfile struct {
-	Base    string
-	Run     []string
-	Env     map[string]string
-	Expose  []int
-	Cmd     []string
-	Workdir string
-	Copy    [][2]string // [source, dest]
+	Base         string
+	Instructions []Instruction
+}
+
+// Instruction represents a single step in the Dockerfile
+type Instruction struct {
+	Type string   // "RUN", "COPY", "ENV", "WORKDIR", "CMD", "EXPOSE"
+	Args []string // For COPY: [src, dest], For ENV: [key, value]
+	Raw  string   // Original command string (useful for RUN)
 }

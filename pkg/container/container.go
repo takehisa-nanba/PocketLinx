@@ -68,6 +68,6 @@ func (e *Engine) Logs(id string) (string, error) {
 	return e.backend.Logs(id)
 }
 
-func (e *Engine) Build(ctxDir string) (string, error) {
-	return e.backend.Build(ctxDir)
+func (e *Engine) Build(ctxDir string, tag string) (string, error) {
+	return e.backend.Build(ctxDir, tag)
 }
