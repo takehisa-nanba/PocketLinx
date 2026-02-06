@@ -19,7 +19,7 @@ func NewLinuxRuntimeService(rootDir string) *LinuxRuntimeService {
 }
 
 func (s *LinuxRuntimeService) Run(opts RunOptions) error {
-	containerId := fmt.Sprintf("c-%d", os.Getpid())
+	containerId := fmt.Sprintf("c-%x", time.Now().UnixNano())
 
 	containerDir := filepath.Join(s.rootDir, "containers", containerId)
 	rootfsDir := filepath.Join(containerDir, "rootfs")
@@ -70,6 +70,36 @@ func (s *LinuxRuntimeService) Run(opts RunOptions) error {
 			mParts = append(mParts, fmt.Sprintf("%s:%s", absSrc, m.Target))
 		}
 		mountsStr = strings.Join(mParts, ",")
+	}
+
+	// Service Discovery (Hosts)
+	hostsPath := filepath.Join(rootfsDir, "etc", "hosts")
+	_ = os.MkdirAll(filepath.Dir(hostsPath), 0755)
+
+	// Default hosts
+	hostsContent := "127.0.0.1 localhost\n::1 localhost ip6-localhost ip6-loopback\nfe00::0 ip6-localnet\nff00::0 ip6-mcastprefix\nff02::1 ip6-allnodes\nff02::2 ip6-allrouters\n"
+	if opts.Name != "" {
+		hostsContent += fmt.Sprintf("127.0.0.1 %s\n", opts.Name)
+	}
+
+	// Scan siblings
+	if containers, err := s.List(); err == nil {
+		for _, c := range containers {
+			if c.Status == "Running" && c.Name != "" {
+				hostsContent += fmt.Sprintf("127.0.0.1 %s\n", c.Name)
+			}
+		}
+	}
+	// Explicit ExtraHosts
+	for _, h := range opts.ExtraHosts {
+		parts := strings.Split(h, ":")
+		if len(parts) == 2 {
+			hostsContent += fmt.Sprintf("%s %s\n", parts[1], parts[0])
+		}
+	}
+
+	if err := os.WriteFile(hostsPath, []byte(hostsContent), 0644); err != nil {
+		fmt.Printf("Warning: Failed to write hosts file: %v\n", err)
 	}
 
 	// 4. Execution
@@ -139,4 +169,8 @@ func (s *LinuxRuntimeService) Logs(id string) (string, error) {
 func (s *LinuxRuntimeService) Remove(id string) error {
 	containerDir := filepath.Join(s.rootDir, "containers", id)
 	return os.RemoveAll(containerDir)
+}
+
+func (s *LinuxRuntimeService) GetIP(id string) (string, error) {
+	return "127.0.0.1", nil
 }

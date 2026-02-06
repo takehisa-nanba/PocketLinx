@@ -104,3 +104,5 @@ func (b *WSLBackend) Prune() error { return b.Image.Prune() }
 func (b *WSLBackend) CreateVolume(name string) error { return b.Volume.Create(name) }
 func (b *WSLBackend) RemoveVolume(name string) error { return b.Volume.Remove(name) }
 func (b *WSLBackend) ListVolumes() ([]string, error) { return b.Volume.List() }
+
+func (b *WSLBackend) GetIP(id string) (string, error) { return b.Runtime.GetIP(id) }

@@ -32,7 +32,7 @@ func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
 }
 
 func (s *WSLRuntimeService) Run(opts RunOptions) error {
-	containerId := fmt.Sprintf("c-%d", os.Getpid())
+	containerId := fmt.Sprintf("c-%x", time.Now().UnixNano())
 	fmt.Printf("Running %v in container %s (WSL2)...\n", opts.Args, containerId)
 
 	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", containerId)
@@ -117,6 +117,13 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 			if c.Status == "Running" && c.Name != "" {
 				hostsContent += fmt.Sprintf("127.0.0.1 %s\n", c.Name)
 			}
+		}
+	}
+	// Add explicit ExtraHosts
+	for _, h := range opts.ExtraHosts {
+		parts := strings.Split(h, ":")
+		if len(parts) == 2 {
+			hostsContent += fmt.Sprintf("%s %s\n", parts[1], parts[0])
 		}
 	}
 	if hostsContent != "" {
@@ -301,4 +308,11 @@ func (s *WSLRuntimeService) Logs(id string) (string, error) {
 func (s *WSLRuntimeService) Remove(id string) error {
 	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
 	return s.wslClient.RunDistroCommand("rm", "-rf", containerDir)
+}
+
+func (s *WSLRuntimeService) GetIP(id string) (string, error) {
+	// In the shared network namespace model of PocketLinx (v0.3/0.4),
+	// all containers share the distro's IP. Thus, they are accessible via localhost (127.0.0.1)
+	// from each other.
+	return "127.0.0.1", nil
 }

@@ -7,6 +7,7 @@ type RuntimeService interface {
 	List() ([]Container, error)
 	Logs(id string) (string, error)
 	Remove(id string) error
+	GetIP(id string) (string, error)
 }
 
 // ImageService handles image management (pull, build, cache)

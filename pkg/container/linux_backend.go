@@ -129,3 +129,5 @@ func (b *LinuxBackend) Prune() error { return b.Image.Prune() }
 func (b *LinuxBackend) CreateVolume(name string) error { return b.Volume.Create(name) }
 func (b *LinuxBackend) RemoveVolume(name string) error { return b.Volume.Remove(name) }
 func (b *LinuxBackend) ListVolumes() ([]string, error) { return b.Volume.List() }
+
+func (b *LinuxBackend) GetIP(id string) (string, error) { return b.Runtime.GetIP(id) }

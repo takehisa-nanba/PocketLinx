@@ -9,6 +9,8 @@ var SupportedImages = map[string]string{
 	"ubuntu": "https://partner-images.canonical.com/core/jammy/current/ubuntu-jammy-core-cloudimg-amd64-root.tar.gz",
 }
 
+// RunOptions defined in backend.go
+
 // Engine はコンテナのライフサイクルを管理します。
 type Engine struct {
 	backend Backend
@@ -86,4 +88,10 @@ func (e *Engine) RemoveVolume(name string) error {
 
 func (e *Engine) ListVolumes() ([]string, error) {
 	return e.backend.ListVolumes()
+}
+
+func (e *Engine) GetIP(id string) (string, error) {
+	// We need to extend Backend interface as well if Engine uses it.
+	// But actually Engine talks to Backend.
+	return e.backend.GetIP(id)
 }

@@ -27,7 +27,7 @@ type PortMapping struct {
 // RunOptions はコンテナ実行時の詳細設定を保持する構造体です。
 type RunOptions struct {
 	Image       string
-	Name        string // Added Name
+	Name        string
 	Args        []string
 	Mounts      []Mount
 	Env         map[string]string
@@ -35,6 +35,7 @@ type RunOptions struct {
 	Interactive bool
 	Detach      bool
 	Workdir     string
+	ExtraHosts  []string // List of "hostname:ip" mappings
 }
 
 // Backend はコンテナ実行の基盤（WSL2, Linux Native等）を抽象化するインターフェースです。
@@ -55,6 +56,8 @@ type Backend interface {
 	CreateVolume(name string) error
 	RemoveVolume(name string) error
 	ListVolumes() ([]string, error)
+
+	GetIP(id string) (string, error)
 }
 
 // Dockerfile represents the parsed content of a Dockerfile

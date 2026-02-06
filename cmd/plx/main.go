@@ -63,6 +63,8 @@ func main() {
 		handlePrune(engine)
 	case "volume":
 		handleVolume(engine, args)
+	case "compose":
+		handleCompose(engine, args)
 	default:
 		printUsage()
 		os.Exit(1)
@@ -86,4 +88,5 @@ func printUsage() {
 	fmt.Println("  plx dashboard                    Launch visual Control Center")
 	fmt.Println("  plx prune                        Clear build cache")
 	fmt.Println("  plx volume <create|ls|rm>        Manage persistent volumes")
+	fmt.Println("  plx compose <up|down>            Orchestrate multiple containers")
 }
