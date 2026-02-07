@@ -1,8 +1,8 @@
 version: "3"
 services:
-  app:
-    image: alpine
-    command: ["ping", "-c", "4", "google.com"]
   db:
     image: alpine
-    command: ["echo", "Database Mock Started"]
+    command: ["sleep", "60"]
+  app:
+    image: alpine
+    command: ["sh", "-c", "ping -c 3 db && echo SUCCESS"]

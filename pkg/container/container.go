@@ -25,11 +25,12 @@ func NewEngine(backend Backend) *Engine {
 
 // Setup は開発環境の初期化を行います。
 func (e *Engine) Setup() error {
-	if err := e.backend.Setup(); err != nil {
+	// 1. デフォルトイメージとして alpine を準備 (これにより pocketlinx ディストロが作成される)
+	if err := e.backend.Pull("alpine"); err != nil {
 		return err
 	}
-	// デフォルトイメージとして alpine を準備
-	return e.backend.Pull("alpine")
+	// 2. ディストロ内部の設定やパッチを適用
+	return e.backend.Setup()
 }
 
 // Install はバイナリをインストールします。
@@ -50,6 +51,10 @@ func (e *Engine) Images() ([]string, error) {
 // Run はコンテナ内でコマンドを実行します。
 func (e *Engine) Run(opts RunOptions) error {
 	return e.backend.Run(opts)
+}
+
+func (e *Engine) Start(id string) error {
+	return e.backend.Start(id)
 }
 
 // List はコンテナの一覧を取得します。
@@ -94,4 +99,8 @@ func (e *Engine) GetIP(id string) (string, error) {
 	// We need to extend Backend interface as well if Engine uses it.
 	// But actually Engine talks to Backend.
 	return e.backend.GetIP(id)
+}
+
+func (e *Engine) Update(id string, opts RunOptions) error {
+	return e.backend.Update(id, opts)
 }

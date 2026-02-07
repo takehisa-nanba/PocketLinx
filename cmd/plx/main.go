@@ -88,5 +88,5 @@ func printUsage() {
 	fmt.Println("  plx dashboard                    Launch visual Control Center")
 	fmt.Println("  plx prune                        Clear build cache")
 	fmt.Println("  plx volume <create|ls|rm>        Manage persistent volumes")
-	fmt.Println("  plx compose <up|down>            Orchestrate multiple containers")
+	fmt.Println("  plx compose <up|down>            Orchestrate multiple containers (YAML-based)")
 }

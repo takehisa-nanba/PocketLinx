@@ -3,11 +3,13 @@ package container
 // RuntimeService handles container lifecycle operations (execution, process management)
 type RuntimeService interface {
 	Run(opts RunOptions) error
+	Start(id string) error
 	Stop(id string) error
 	List() ([]Container, error)
 	Logs(id string) (string, error)
 	Remove(id string) error
 	GetIP(id string) (string, error)
+	Update(id string, opts RunOptions) error
 }
 
 // ImageService handles image management (pull, build, cache)
@@ -23,4 +25,12 @@ type VolumeService interface {
 	Create(name string) error
 	Remove(name string) error
 	List() ([]string, error)
+}
+
+// NetworkService handles container network isolation and connectivity
+type NetworkService interface {
+	SetupBridge() error
+	AllocateIP() (string, error)
+	ReleaseIP(ip string) error
+	ConnectContainer(id string, ip string) error
 }

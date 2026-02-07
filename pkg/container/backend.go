@@ -4,12 +4,15 @@ import "time"
 
 // Container はコンテナの情報を保持する構造体です。
 type Container struct {
-	ID      string    `json:"id"`
-	Name    string    `json:"name"`
-	Image   string    `json:"image"`
-	Command string    `json:"command"`
-	Created time.Time `json:"created"`
-	Status  string    `json:"status"`
+	ID      string        `json:"id"`
+	Name    string        `json:"name"`
+	Image   string        `json:"image"`
+	Command string        `json:"command"`
+	Created time.Time     `json:"created"`
+	Status  string        `json:"status"`
+	Ports   []PortMapping `json:"ports"`
+	IP      string        `json:"ip"`
+	Config  RunOptions    `json:"config"`
 }
 
 // Mount はホストパスとコンテナパスのペアを表します。
@@ -45,6 +48,7 @@ type Backend interface {
 	Pull(image string) error
 	Images() ([]string, error)
 	Run(opts RunOptions) error
+	Start(id string) error
 	List() ([]Container, error)
 	Stop(id string) error
 	Logs(id string) (string, error)
@@ -58,6 +62,7 @@ type Backend interface {
 	ListVolumes() ([]string, error)
 
 	GetIP(id string) (string, error)
+	Update(id string, opts RunOptions) error
 }
 
 // Dockerfile represents the parsed content of a Dockerfile

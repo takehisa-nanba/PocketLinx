@@ -65,12 +65,12 @@ func CheckRequirements() error {
 		return nil
 	}
 
-	// 1. Check BIOS Virtualization (Windows only)
+	// 1. Check BIOS Virtualization (Windows only) - Warning only
 	cmd := exec.Command("powershell.exe", "-Command", "(Get-WmiObject Win32_Processor).VirtualizationFirmwareEnabled")
 	out, err := cmd.Output()
 	if err == nil {
 		if strings.TrimSpace(string(out)) == "False" {
-			return fmt.Errorf("virtualization is disabled in BIOS. Please enable VT-x/AMD-V in your BIOS/UEFI settings")
+			fmt.Println("Warning: VirtualizationFirmwareEnabled reported False. If WSL2 works, you can ignore this.")
 		}
 	}
 

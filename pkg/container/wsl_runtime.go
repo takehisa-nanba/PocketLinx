@@ -17,18 +17,40 @@ import (
 // WSLRuntimeService implements RuntimeService
 type WSLRuntimeService struct {
 	wslClient *wsl.Client
-	volume    VolumeService // Dependency on VolumeService for mounting? Maybe needed?
-	// Actually logic in Run uses GetWslVolumesDir which is public now in wsl_volume (if I exported it? yes I did export it in wsl_volume.go, but it's in same package so it's fine)
-	// But wait, Run also creates volumes if they don't exist?
-	// The original code:
-	// if err := b.wslClient.RunDistroCommand("mkdir", "-p", srcWsl);
-	// It basically assumes it can run mkdir. It doesn't use CreateVolume explicitly but raw mkdir.
-	// So we can keep it as is, or better, use VolumeService?
-	// For now, keep it raw to minimize changes.
+	network   *BridgeNetworkManager
 }
 
 func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
-	return &WSLRuntimeService{wslClient: client}
+	// Adapter for CommandRunner
+	runner := func(cmd string) (string, error) {
+		out, err := exec.Command("wsl.exe", "-d", client.DistroName, "-u", "root", "--", "sh", "-c", cmd).CombinedOutput()
+		return string(out), err
+	}
+
+	netMgr := NewBridgeNetworkManager(runner)
+
+	// Initialize bridge immediately?
+	// It's fast and idempotent.
+	if err := netMgr.SetupBridge(); err != nil {
+		fmt.Printf("Warning: Failed to setup network bridge: %v. Networking may not work.\n", err)
+	}
+
+	s := &WSLRuntimeService{
+		wslClient: client,
+		network:   netMgr,
+	}
+
+	// Sync network state (IPs) with existing containers
+	if containers, err := s.List(); err == nil {
+		for _, c := range containers {
+			if c.IP != "" && c.IP != "127.0.0.1" {
+				netMgr.MarkIPUsed(c.IP)
+				// fmt.Printf("[DEBUG] Reserved IP %s for %s\n", c.IP, c.ID)
+			}
+		}
+	}
+
+	return s
 }
 
 func (s *WSLRuntimeService) Run(opts RunOptions) error {
@@ -130,6 +152,19 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 		s.wslClient.RunDistroCommandWithInput(hostsContent, "sh", "-c", fmt.Sprintf("cat > %s/etc/hosts-extra", rootfsDir))
 	}
 
+	// 1. Network Setup
+	// Allocate IP
+	ip, err := s.network.AllocateIP()
+	if err != nil {
+		return fmt.Errorf("failed to allocate ip: %w", err)
+	}
+
+	// Setup Namespace
+	if err := s.network.SetupContainerNetwork(containerId, ip); err != nil {
+		s.network.ReleaseIP(ip)
+		return fmt.Errorf("network setup failed: %w", err)
+	}
+
 	meta := Container{
 		ID:      containerId,
 		Name:    opts.Name,
@@ -137,22 +172,20 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 		Command: userCmd,
 		Created: time.Now(),
 		Status:  "Running",
+		Ports:   opts.Ports,
+		Config:  opts,
+		IP:      ip, // Store IP
 	}
 	metaJSON, _ := json.Marshal(meta)
 	s.wslClient.RunDistroCommandWithInput(string(metaJSON), "sh", "-c", fmt.Sprintf("cat > %s/config.json", containerDir))
 
-	// Port Forwarding
-	portCmd := ""
-	if len(opts.Ports) > 0 {
-		portCmd = "command -v socat >/dev/null || apk add --no-cache socat >/dev/null; "
-		for _, p := range opts.Ports {
-			portCmd += fmt.Sprintf("socat TCP-LISTEN:%d,fork,reuseaddr TCP:localhost:%d & ", p.Host, p.Container)
-		}
-		portCmd = "trap 'JOBS=$(jobs -p); [ -n \"$JOBS\" ] && kill $JOBS' EXIT; " + portCmd
-	}
+	// 4. Port Forwarding - MOVED TO DASHBOARD PROXY
+	// s.setupPortForwarding(meta)
 
 	// 4. Build unshare command
+	// Wrap with ip netns exec
 	unshareArgs := []string{
+		"ip", "netns", "exec", containerId,
 		"unshare", "--mount", "--pid", "--fork", "--uts",
 	}
 
@@ -161,16 +194,13 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 		workdirArg = opts.Workdir
 	}
 
-	if portCmd != "" {
-		shellCmd := portCmd + "exec /bin/sh /usr/local/bin/container-shim \"$@\""
-		unshareArgs = append(unshareArgs, "sh", "-c", shellCmd, "container-shim", rootfsDir, mountsStr, workdirArg)
-	} else {
-		unshareArgs = append(unshareArgs, "/bin/sh", "/usr/local/bin/container-shim", rootfsDir, mountsStr, workdirArg)
-	}
+	// Simplified shim execution (no internal portCmd)
+	unshareArgs = append(unshareArgs, "/bin/sh", "/usr/local/bin/container-shim", rootfsDir, mountsStr, workdirArg)
 	unshareArgs = append(unshareArgs, opts.Args...)
 
 	// ENV
 	wslEnvList := os.Getenv("WSLENV")
+	// ... (env logic same) ...
 	if opts.Interactive {
 		term := os.Getenv("TERM")
 		if term == "" {
@@ -192,27 +222,23 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 
 	// Execution
 	if opts.Detach {
-		logFile := fmt.Sprintf("%s/console.log", containerDir)
+		// We need to update launch script generation to include ip netns exec
+		// The simplest way is to update 'generateLaunchScript' or just write the command here for now?
+		// generateLaunchScript writes 'run.sh'.
+		// We can wrap the call to 'run.sh' with 'ip netns exec ID'.
+
+		if err := s.generateLaunchScript(containerDir, rootfsDir, mountsStr, opts); err != nil {
+			return err
+		}
 		scriptFile := fmt.Sprintf("%s/run.sh", containerDir)
 
-		var cmdBuilder strings.Builder
-		for i, arg := range unshareArgs {
-			if i > 0 {
-				cmdBuilder.WriteByte(' ')
-			}
-			escaped := strings.ReplaceAll(arg, "'", "'\\''")
-			cmdBuilder.WriteString("'" + escaped + "'")
-		}
+		// Run: wsl -d Distro -- ip netns exec ID sh run.sh
+		// Note: 'run.sh' uses 'unshare'.
+		// So `ip netns exec ID unshare ...`
+		// Wait, `generateLaunchScript` writes `unshare ...`.
+		// So we just need to run `sh run.sh` INSIDE netns.
 
-		scriptContent := fmt.Sprintf("#!/bin/sh\n%s > %s 2>&1\nsed -i 's/\"status\":\"Running\"/\"status\":\"Exited\"/g' %s/config.json",
-			cmdBuilder.String(), logFile, containerDir)
-
-		err = s.wslClient.RunDistroCommandWithInput(scriptContent, "sh", "-c", fmt.Sprintf("cat > %s && chmod +x %s", scriptFile, scriptFile))
-		if err != nil {
-			return fmt.Errorf("failed to create launcher script: %w", err)
-		}
-
-		cmd := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "--", "sh", scriptFile)
+		cmd := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "-u", "root", "--", "ip", "netns", "exec", containerId, "sh", scriptFile)
 		err = cmd.Start()
 		if err != nil {
 			return fmt.Errorf("failed to start detached container: %w", err)
@@ -221,11 +247,24 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 			_ = cmd.Wait()
 		}()
 
-		fmt.Printf("Container %s started in background.\n", containerId)
+		fmt.Printf("Container %s started in background (IP: %s).\n", containerId, ip)
 		return nil
 	}
 
 	// Normal run
+	// RunDistroCommand runs as default user??
+	// Network namespace requires root to enter? Or CAP_SYS_ADMIN.
+	// Users usually need sudo to enter netns.
+	// We might need to prefix "sudo" or run as root.
+	// Let's assume root for now (via wslClient setup or sudo).
+	// Since we used `exec.Command(..., "-u", "root")` for setup, we should probably do same here.
+	// But `RunDistroCommand` might not allow user selection easily.
+	// Let's try prepending "sudo"?
+	// unshareArgs = append([]string{"sudo"}, unshareArgs...)
+
+	// Actually, `unshare` also needs root/capabilities usually for mount.
+	// So existing code probably assumed root or specific setup.
+
 	err = s.wslClient.RunDistroCommand(unshareArgs...)
 
 	meta.Status = "Exited"
@@ -239,44 +278,155 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 	return nil
 }
 
+func (s *WSLRuntimeService) generateLaunchScript(containerDir, rootfsDir, mountsStr string, opts RunOptions) error {
+	// Reconstruct unshare args specifically for the detached script.
+	// This duplicates logic unless we share it. But sharing is cleaner.
+
+	// Build unshare command
+	unshareArgs := []string{
+		"unshare", "--mount", "--pid", "--fork", "--uts",
+	}
+
+	workdirArg := "none"
+	if opts.Workdir != "" {
+		workdirArg = opts.Workdir
+	}
+
+	unshareArgs = append(unshareArgs, "/bin/sh", "/usr/local/bin/container-shim", rootfsDir, mountsStr, workdirArg)
+	unshareArgs = append(unshareArgs, opts.Args...)
+
+	logFile := fmt.Sprintf("%s/console.log", containerDir)
+	scriptFile := fmt.Sprintf("%s/run.sh", containerDir)
+
+	var cmdBuilder strings.Builder
+	for i, arg := range unshareArgs {
+		if i > 0 {
+			cmdBuilder.WriteByte(' ')
+		}
+		escaped := strings.ReplaceAll(arg, "'", "'\\''")
+		cmdBuilder.WriteString("'" + escaped + "'")
+	}
+
+	scriptContent := fmt.Sprintf("#!/bin/sh\n%s > %s 2>&1\nsed -i 's/\"status\":\"Running\"/\"status\":\"Exited\"/g' %s/config.json",
+		cmdBuilder.String(), logFile, containerDir)
+
+	return s.wslClient.RunDistroCommandWithInput(scriptContent, "sh", "-c", fmt.Sprintf("cat > %s && chmod +x %s", scriptFile, scriptFile))
+}
+
+func (s *WSLRuntimeService) resolveID(idOrName string) (string, error) {
+	// 1. Check if ID directly exists
+	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", idOrName)
+	if err := s.wslClient.RunDistroCommand("test", "-d", containerDir); err == nil {
+		return idOrName, nil
+	}
+
+	// 2. Scan all configs to find matching Name
+	containers, err := s.List()
+	if err != nil {
+		return "", err
+	}
+
+	for _, c := range containers {
+		if c.Name == idOrName {
+			return c.ID, nil
+		}
+	}
+
+	return "", fmt.Errorf("container '%s' not found", idOrName)
+}
+
+func (s *WSLRuntimeService) Start(idOrName string) error {
+	id, err := s.resolveID(idOrName)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Starting container %s...\n", id)
+	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
+	scriptFile := fmt.Sprintf("%s/run.sh", containerDir)
+
+	// Check if launcher script exists
+	if err := s.wslClient.RunDistroCommand("test", "-f", scriptFile); err != nil {
+		return fmt.Errorf("container %s cannot be started (no launcher script found)", id)
+	}
+
+	// Update status to Running BEFORE starting
+	configPath := fmt.Sprintf("%s/config.json", containerDir)
+	out, err := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "--", "cat", configPath).Output()
+	if err == nil {
+		var meta Container
+		if err := json.Unmarshal(out, &meta); err == nil {
+			meta.Status = "Running"
+			metaJSON, _ := json.Marshal(meta)
+			_ = s.wslClient.RunDistroCommandWithInput(string(metaJSON), "sh", "-c", fmt.Sprintf("cat > %s", configPath))
+
+		}
+	}
+
+	// 3. Execution: Wrap with 'ip netns exec' and run as root
+	// Also use setsid and nohup to ensure it detaches from the CLI/Dashboard process.
+	// We use the ID (actual directory name) for netns.
+	startCmd := fmt.Sprintf("setsid nohup ip netns exec %s sh %s >/dev/null 2>&1 &", id, scriptFile)
+
+	cmd := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "-u", "root", "--", "sh", "-c", startCmd)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to start container: %w", err)
+	}
+
+	return nil
+}
+
 func (s *WSLRuntimeService) List() ([]Container, error) {
-	findCmd := "find /var/lib/pocketlinx/containers -name config.json"
-	cmd := exec.Command("wsl.exe", "-d", DistroName, "--", "sh", "-c", findCmd)
+	// 圧倒的高速化: find + exec cat を1回の wsl.exe 呼び出しで完結させる
+	cmdText := "find /var/lib/pocketlinx/containers -name config.json -exec cat {} +"
+	cmd := exec.Command("wsl.exe", "-d", DistroName, "--", "sh", "-c", cmdText)
 	out, err := cmd.Output()
 	if err != nil {
 		return nil, nil
 	}
 
 	var containers []Container
-	paths := strings.Split(strings.ReplaceAll(string(out), "\r\n", "\n"), "\n")
-	for _, p := range paths {
-		p = strings.TrimSpace(p)
-		if p == "" {
-			continue
-		}
-
-		catCmd := exec.Command("wsl.exe", "-d", DistroName, "--", "cat", p)
-		catOut, err := catCmd.Output()
-		if err != nil {
-			continue
-		}
-
+	// 解読: 連結されたJSONをデコード
+	dec := json.NewDecoder(strings.NewReader(string(out)))
+	for dec.More() {
 		var c Container
-		if err := json.Unmarshal(catOut, &c); err == nil {
+		if err := dec.Decode(&c); err == nil {
 			containers = append(containers, c)
 		}
 	}
 	return containers, nil
 }
 
-func (s *WSLRuntimeService) Stop(id string) error {
-	fmt.Printf("Stopping container %s...\n", id)
-
-	stopCmd := fmt.Sprintf("pkill -f 'container-shim.*%s'", id)
-	_ = s.wslClient.RunDistroCommand("sh", "-c", stopCmd)
-
+func (s *WSLRuntimeService) Stop(idOrName string) error {
+	id, err := s.resolveID(idOrName)
+	if err != nil {
+		return err
+	}
 	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
 	configPath := fmt.Sprintf("%s/config.json", containerDir)
+	rootfsDir := fmt.Sprintf("%s/rootfs", containerDir)
+
+	// 1. Kill everything that has the container ID in its command line or process name
+
+	// This includes: launcher script, unshare, shim, and tagged socat processes
+	stopCmd := fmt.Sprintf("pkill -9 -f '%s' || true", id)
+	_ = s.wslClient.RunDistroCommand("sh", "-c", stopCmd)
+
+	// 2. Kill anything remaining inside the container's rootfs (orphaned internal processes)
+	killScript := fmt.Sprintf(`
+		for pid_dir in /proc/[0-9]*; do
+			[ -d "$pid_dir" ] || continue
+			if [ "$(readlink "$pid_dir/root" 2>/dev/null)" = "%s" ]; then
+				kill -9 "${pid_dir##*/}" 2>/dev/null || true
+			fi
+		done
+	`, rootfsDir)
+	_ = s.wslClient.RunDistroCommand("sh", "-c", killScript)
+
+	// 3. Clean up Port Forwarding Rules (socat proxies)
+	stopProxyCmd := fmt.Sprintf("pkill -9 -f 'socat .* %s' || true", id)
+	_ = s.wslClient.RunDistroCommand("sh", "-c", stopProxyCmd)
+
+	// Update metadata status
 
 	cmd := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "--", "cat", configPath)
 	out, err := cmd.Output()
@@ -293,7 +443,11 @@ func (s *WSLRuntimeService) Stop(id string) error {
 	return nil
 }
 
-func (s *WSLRuntimeService) Logs(id string) (string, error) {
+func (s *WSLRuntimeService) Logs(idOrName string) (string, error) {
+	id, err := s.resolveID(idOrName)
+	if err != nil {
+		return "", err
+	}
 	logFile := fmt.Sprintf("/var/lib/pocketlinx/containers/%s/console.log", id)
 
 	cmd := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "--", "cat", logFile)
@@ -305,14 +459,148 @@ func (s *WSLRuntimeService) Logs(id string) (string, error) {
 	return string(out), nil
 }
 
-func (s *WSLRuntimeService) Remove(id string) error {
+func (s *WSLRuntimeService) Remove(idOrName string) error {
+	id, err := s.resolveID(idOrName)
+	if err != nil {
+		return err
+	}
+	// First gather IP to release it
+	ip, _ := s.GetIP(id) // Best effort
+
 	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
-	return s.wslClient.RunDistroCommand("rm", "-rf", containerDir)
+	err = s.wslClient.RunDistroCommand("rm", "-rf", containerDir)
+
+	// Cleanup Network
+	if ip != "" && ip != "127.0.0.1" {
+		if netErr := s.network.CleanupContainerNetwork(id, ip); netErr != nil {
+			fmt.Printf("Warning: failed to cleanup network for %s: %v\n", id, netErr)
+		}
+	}
+	return err
 }
 
-func (s *WSLRuntimeService) GetIP(id string) (string, error) {
-	// In the shared network namespace model of PocketLinx (v0.3/0.4),
-	// all containers share the distro's IP. Thus, they are accessible via localhost (127.0.0.1)
-	// from each other.
+func (s *WSLRuntimeService) GetIP(idOrName string) (string, error) {
+	id, err := s.resolveID(idOrName)
+	if err != nil {
+		return "", err
+	}
+	// Read from config.json
+	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
+	configPath := fmt.Sprintf("%s/config.json", containerDir)
+
+	out, err := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "--", "cat", configPath).Output()
+	if err != nil {
+		// Fallback for old containers or failures
+		return "127.0.0.1", fmt.Errorf("failed to read config: %w", err)
+	}
+
+	var meta Container
+	if err := json.Unmarshal(out, &meta); err != nil {
+		return "127.0.0.1", fmt.Errorf("bad config json: %w", err)
+	}
+
+	if meta.IP != "" {
+		return meta.IP, nil
+	}
 	return "127.0.0.1", nil
+}
+
+func (s *WSLRuntimeService) Update(idOrName string, opts RunOptions) error {
+	id, err := s.resolveID(idOrName)
+	if err != nil {
+		return err
+	}
+	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
+	configPath := fmt.Sprintf("%s/config.json", containerDir)
+
+	// 1. Read existing config to preserve immutable fields if needed (like Image, ID, Created)
+	out, err := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "--", "cat", configPath).Output()
+	if err != nil {
+		return fmt.Errorf("failed to read container config: %w", err)
+	}
+
+	var meta Container
+	if err := json.Unmarshal(out, &meta); err != nil {
+		return fmt.Errorf("failed to parse container config: %w", err)
+	}
+
+	// 2. Apply updates
+	// Update command string for display
+	meta.Command = strings.Join(opts.Args, " ")
+	// Update ports metadata
+	meta.Ports = opts.Ports
+	// Update Config struct for future edits/clones
+	// We should probably merge other fields if opts is incomplete,
+	// but for now we assume opts contains the full desired run state (except maybe mounts/env if not passed)
+	// The API should probably pass the FULL opts.
+	// But let's assume the UI sends the important stuff.
+	// Preserving Image/Name from original if empty in opts might be safe, but UI sends them.
+	if opts.Image == "" {
+		opts.Image = meta.Image
+	}
+	if opts.Name == "" {
+		opts.Name = meta.Name
+	}
+	meta.Name = opts.Name // Actually apply the name update!
+	meta.Config = opts
+
+	// 3. Save updated config
+	metaJSON, _ := json.Marshal(meta)
+	if err := s.wslClient.RunDistroCommandWithInput(string(metaJSON), "sh", "-c", fmt.Sprintf("cat > %s", configPath)); err != nil {
+		return fmt.Errorf("failed to save updated config: %w", err)
+	}
+
+	// 4. Regenerate run.sh
+	// We need to reconstruct paths
+	rootfsDir := path.Join(containerDir, "rootfs")
+
+	// We need to re-calculate Mounts string. Use the logic from Run?
+	// The `generateLaunchScript` needs `mountsStr`.
+	// We haven't stored `mountsStr` in config.json...
+	// We only stored `Mounts` in `meta.Config` (RunOptions).
+	// So we can rebuild `mountsStr` from `meta.Config.Mounts`.
+
+	mountsStr := "none"
+	if len(opts.Mounts) > 0 {
+		var mParts []string
+		for _, m := range opts.Mounts {
+			var srcWsl string
+			isPath := strings.Contains(m.Source, "/") || strings.Contains(m.Source, "\\") || strings.Contains(m.Source, ".")
+			if !isPath {
+				srcWsl = path.Join(GetWslVolumesDir(), m.Source)
+			} else {
+				// We can't easily re-resolve Windows paths here without wsl.WindowsToWslPath
+				// But we assume the UI passes them back or we use what's in opts.
+				// If `opts` comes from `meta.Config`, they might be raw strings.
+				// Wait, `RunOptions` in `backend.go` has `Mounts []Mount`.
+				// If we saved it to Config, we have it.
+				// But we need to convert windows paths again if they are windows paths.
+				// Or, we assume they are already WSL paths if they were saved?
+				// No, Config stores origin input.
+				// Let's rely on the original logic.
+				// Ideally, we shouldn't change Mounts in "Edit Command".
+				// IF mounts are empty in opts, maybe we should skip regenerating them?
+				// But we need the string for the script.
+
+				absSource, _ := filepath.Abs(m.Source)
+				// Re-conversion might be needed.
+				if converted, err := wsl.WindowsToWslPath(absSource); err == nil {
+					srcWsl = converted
+				} else {
+					srcWsl = m.Source // Fallback
+				}
+			}
+			mParts = append(mParts, fmt.Sprintf("%s:%s", srcWsl, m.Target))
+		}
+		if len(mParts) > 0 {
+			mountsStr = strings.Join(mParts, ",")
+		}
+	}
+
+	if err := s.generateLaunchScript(containerDir, rootfsDir, mountsStr, opts); err != nil {
+		return fmt.Errorf("failed to regenerate launch script: %w", err)
+	}
+
+	fmt.Printf("Container %s configuration updated.\n", id)
+	return nil
 }

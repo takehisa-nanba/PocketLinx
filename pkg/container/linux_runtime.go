@@ -157,6 +157,11 @@ func (s *LinuxRuntimeService) List() ([]Container, error) {
 	return containers, nil
 }
 
+func (s *LinuxRuntimeService) Start(id string) error {
+	fmt.Println("Start not fully implemented for Linux Native yet.")
+	return nil
+}
+
 func (s *LinuxRuntimeService) Stop(id string) error {
 	fmt.Println("Stop not fully implemented for Linux Native yet (requires PID tracking).")
 	return nil
@@ -173,4 +178,7 @@ func (s *LinuxRuntimeService) Remove(id string) error {
 
 func (s *LinuxRuntimeService) GetIP(id string) (string, error) {
 	return "127.0.0.1", nil
+}
+func (s *LinuxRuntimeService) Update(id string, opts RunOptions) error {
+	return fmt.Errorf("update not implemented")
 }

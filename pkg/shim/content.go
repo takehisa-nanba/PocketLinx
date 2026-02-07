@@ -19,6 +19,7 @@ mount -t sysfs sysfs "$ROOTFS/sys"
 mount --rbind /dev "$ROOTFS/dev"
 mount -t devpts devpts "$ROOTFS/dev/pts" -o newinstance,ptmxmode=0666
 mount -t tmpfs tmpfs "$ROOTFS/tmp"
+ip link set lo up 2>/dev/null || true # Setup loopback
 
 # 2. Setup Network (DNS & Hosts)
 rm -f "$ROOTFS/etc/resolv.conf" "$ROOTFS/etc/hosts"
@@ -53,14 +54,19 @@ if [ "$MOUNTS" != "none" ]; then
 fi
 
 # 4. Working Directory
+CD_CMD=""
 if [ "$WORKDIR" != "none" ] && [ -n "$WORKDIR" ]; then
   mkdir -p "$ROOTFS/$WORKDIR"
-  # Change directory using chroot logic (append cd to command or use --chdir if available)
-  # But chroot usually doesn't take --chdir in older versions or busybox.
-  # So we wrap the command.
-  exec chroot "$ROOTFS" sh -c "cd \"$WORKDIR\" && exec \"\$@\"" -- "$@"
+  CD_CMD="cd \"$WORKDIR\" && "
+fi
+
+# 5. Execution
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+if [ $# -eq 0 ]; then
+  exec chroot "$ROOTFS" /bin/sh
 else
-  # 5. Execution
-  exec chroot "$ROOTFS" "$@"
+  # Use sh -c for command lookup and PATH injection inside chroot
+  exec chroot "$ROOTFS" sh -c "export PATH=$PATH; $CD_CMD exec \"\$@\"" -- "$@"
 fi
 `

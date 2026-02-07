@@ -112,6 +112,7 @@ fi
 
 // Runtime
 func (b *LinuxBackend) Run(opts RunOptions) error      { return b.Runtime.Run(opts) }
+func (b *LinuxBackend) Start(id string) error          { return b.Runtime.Start(id) }
 func (b *LinuxBackend) List() ([]Container, error)     { return b.Runtime.List() }
 func (b *LinuxBackend) Stop(id string) error           { return b.Runtime.Stop(id) }
 func (b *LinuxBackend) Logs(id string) (string, error) { return b.Runtime.Logs(id) }
@@ -130,4 +131,5 @@ func (b *LinuxBackend) CreateVolume(name string) error { return b.Volume.Create(
 func (b *LinuxBackend) RemoveVolume(name string) error { return b.Volume.Remove(name) }
 func (b *LinuxBackend) ListVolumes() ([]string, error) { return b.Volume.List() }
 
-func (b *LinuxBackend) GetIP(id string) (string, error) { return b.Runtime.GetIP(id) }
+func (b *LinuxBackend) GetIP(id string) (string, error)         { return b.Runtime.GetIP(id) }
+func (b *LinuxBackend) Update(id string, opts RunOptions) error { return b.Runtime.Update(id, opts) }

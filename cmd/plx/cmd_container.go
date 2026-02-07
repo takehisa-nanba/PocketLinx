@@ -57,9 +57,25 @@ func handleLogs(engine *container.Engine, args []string) {
 
 func handleRm(engine *container.Engine, args []string) {
 	if len(args) < 1 {
-		fmt.Println("Usage: plx rm <container_id>")
+		fmt.Println("Usage: plx rm <container_id> [--all]")
 		os.Exit(1)
 	}
+
+	if args[0] == "--all" {
+		containers, err := engine.List()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to list containers: %v\n", err)
+			os.Exit(1)
+		}
+		for _, c := range containers {
+			if err := engine.Remove(c.ID); err != nil {
+				fmt.Printf("Warning: Failed to remove %s: %v\n", c.ID, err)
+			}
+		}
+		fmt.Println("Container --all removed.")
+		return
+	}
+
 	if err := engine.Remove(args[0]); err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to remove container: %v\n", err)
 		os.Exit(1)

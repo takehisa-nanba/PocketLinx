@@ -92,7 +92,7 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 			image = args[i+1]
 			imageSetByFlag = true
 			i++
-		} else if arg == "--name" && i+1 < len(args) { // Parse Name
+		} else if (arg == "--name" || arg == "-n") && i+1 < len(args) { // Parse Name
 			name = args[i+1]
 			i++
 		} else if arg == "-it" || arg == "-i" || arg == "-t" {

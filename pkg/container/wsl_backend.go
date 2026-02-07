@@ -56,7 +56,7 @@ EOF
 
 		# C. Update and Install core tools
 		apk update
-		apk add --no-cache tzdata util-linux socat
+		apk add --no-cache tzdata util-linux socat iproute2 iptables
 
 		# D. Set Timezone (Copy instead of link for early boot stability)
 		if [ -f /usr/share/zoneinfo/Asia/Tokyo ]; then
@@ -71,6 +71,11 @@ EOF
 		printf "#!/bin/sh\nexit 0\n" | tr -d '\r' > /sbin/ldconfig
 		chmod +x /sbin/ldconfig
 		cp /sbin/ldconfig /usr/sbin/ldconfig
+
+		# F. Flush legacy NAT rules (from previous implementations)
+		# Ensure iptables is installed first
+		command -v iptables >/dev/null || apk add --no-cache iptables
+		iptables -t nat -F
 
 		# 設定を確実に反映
 		sync
@@ -87,6 +92,7 @@ EOF
 
 // Runtime
 func (b *WSLBackend) Run(opts RunOptions) error      { return b.Runtime.Run(opts) }
+func (b *WSLBackend) Start(id string) error          { return b.Runtime.Start(id) }
 func (b *WSLBackend) List() ([]Container, error)     { return b.Runtime.List() }
 func (b *WSLBackend) Stop(id string) error           { return b.Runtime.Stop(id) }
 func (b *WSLBackend) Logs(id string) (string, error) { return b.Runtime.Logs(id) }
@@ -105,4 +111,5 @@ func (b *WSLBackend) CreateVolume(name string) error { return b.Volume.Create(na
 func (b *WSLBackend) RemoveVolume(name string) error { return b.Volume.Remove(name) }
 func (b *WSLBackend) ListVolumes() ([]string, error) { return b.Volume.List() }
 
-func (b *WSLBackend) GetIP(id string) (string, error) { return b.Runtime.GetIP(id) }
+func (b *WSLBackend) GetIP(id string) (string, error)         { return b.Runtime.GetIP(id) }
+func (b *WSLBackend) Update(id string, opts RunOptions) error { return b.Runtime.Update(id, opts) }
