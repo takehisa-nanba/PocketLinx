@@ -43,35 +43,35 @@ func (m *BridgeNetworkManager) SetupBridge() error {
 	// Check ERROR not string output, as "Device does not exist" contains name
 	_, err := m.runner(fmt.Sprintf("/sbin/ip link show %s", m.bridgeName))
 	if err == nil {
-		return nil // Already exists (exit code 0)
+		// Bridge exists, but we must ensure NAT rules (continue)
+		fmt.Println("Bridge plx0 exists. Verifying NAT rules...")
+	} else {
+		fmt.Println("Initializing Network Bridge plx0...")
+
+		// 1. Create Bridge
+		if _, err := m.runner(fmt.Sprintf("/sbin/ip link add name %s type bridge", m.bridgeName)); err != nil {
+			return fmt.Errorf("failed to create bridge: %w", err)
+		}
+
+		// 2. Assign Gateway IP
+		if _, err := m.runner(fmt.Sprintf("/sbin/ip addr add %s/24 dev %s", m.gatewayIP, m.bridgeName)); err != nil {
+			return fmt.Errorf("failed to assign ip to bridge: %w", err)
+		}
+
+		// 3. Up Bridge
+		if _, err := m.runner(fmt.Sprintf("/sbin/ip link set %s up", m.bridgeName)); err != nil {
+			return fmt.Errorf("failed to up bridge: %w", err)
+		}
 	}
 
-	fmt.Println("Initializing Network Bridge plx0...")
-
-	// 1. Create Bridge
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip link add name %s type bridge", m.bridgeName)); err != nil {
-		return fmt.Errorf("failed to create bridge: %w", err)
-	}
-
-	// 2. Assign Gateway IP
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip addr add %s/24 dev %s", m.gatewayIP, m.bridgeName)); err != nil {
-		return fmt.Errorf("failed to assign ip to bridge: %w", err)
-	}
-
-	// 3. Up Bridge
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip link set %s up", m.bridgeName)); err != nil {
-		return fmt.Errorf("failed to up bridge: %w", err)
-	}
-
-	// 4. Setup NAT (Masquerade) for outbound traffic
-	// Check if rule exists first to avoid duplicates? iptables -C is tricky.
-	// For now, simple attempt.
-	// Ensure ip_forward is on
+	// Ensure IP Forwarding is ON (Crucial for NAT)
 	m.runner("echo 1 > /proc/sys/net/ipv4/ip_forward")
-
-	// Add NAT rule: Allow traffic from plx0 to eth0 (WSL's main interface)
-	// We assume eth0 is the WAN interface in WSL.
-	m.runner(fmt.Sprintf("iptables -t nat -A POSTROUTING -s %s ! -d %s -j MASQUERADE", m.subnet, m.subnet))
+	m.runner("sysctl -w net.ipv4.ip_forward=1")
+	// Always ensure NAT rule exists even if bridge was already up.
+	// We delete first to avoid duplicates (iptables -D returns error if rule doesn't exist, ignore it)
+	natRule := fmt.Sprintf("POSTROUTING -s %s ! -d %s -j MASQUERADE", m.subnet, m.subnet)
+	m.runner(fmt.Sprintf("iptables -t nat -D %s", natRule))
+	m.runner(fmt.Sprintf("iptables -t nat -A %s", natRule))
 
 	return nil
 }

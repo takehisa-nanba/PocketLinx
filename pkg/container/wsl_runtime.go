@@ -2,7 +2,6 @@
 
 package container
 
-
 import (
 	"encoding/json"
 	"fmt"
@@ -26,6 +25,8 @@ type WSLRuntimeService struct {
 func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
 	// Adapter for CommandRunner
 	runner := func(cmd string) (string, error) {
+		// Sanitize command for WSL (CRLF -> LF)
+		cmd = strings.ReplaceAll(cmd, "\r\n", "\n")
 		out, err := exec.Command("wsl.exe", "-d", client.DistroName, "-u", "root", "--", "sh", "-c", cmd).CombinedOutput()
 		return string(out), err
 	}

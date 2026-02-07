@@ -50,15 +50,15 @@ func (b *WSLBackend) Setup() error {
 		# A. Fix WSL Configuration to prevent automatic overwrites
 		cat <<EOF > /etc/wsl.conf
 [network]
-generateResolvConf = false
+generateResolvConf = true
 [interop]
 enabled = true
 appendWindowsPath = true
 EOF
 
-		# B. Fix DNS first
-		echo "nameserver 8.8.8.8" > /etc/resolv.conf
-		echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+		# B. DNS is handled by WSL automatically (generateResolvConf = true)
+		# We do NOT overwrite /etc/resolv.conf manually anymore.
+
 
 		# C. Update and Install core tools
 		apk update

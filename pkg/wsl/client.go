@@ -39,6 +39,8 @@ func (c *Client) RunDistroCommand(args ...string) error {
 func (c *Client) RunDistroCommandWithInput(input string, args ...string) error {
 	wslArgs := append([]string{"-d", c.DistroName, "--"}, args...)
 	cmd := exec.Command("wsl.exe", wslArgs...)
+	// Sanitize input (CRLF -> LF) to prevent syntax errors in Linux
+	input = strings.ReplaceAll(input, "\r\n", "\n")
 	cmd.Stdin = strings.NewReader(input)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

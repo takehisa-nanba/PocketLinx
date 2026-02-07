@@ -9,6 +9,17 @@ async function refreshData() {
     } catch (e) { console.error(e); }
 }
 
+async function fetchVersion() {
+    try {
+        const res = await fetch('/api/version');
+        const data = await res.json();
+        const el = document.getElementById('app-version');
+        if (el && data.version) el.innerText = data.version;
+    } catch (e) {
+        console.error("Failed to fetch version", e);
+    }
+}
+
 function updateUI() {
     renderContainerControls();
     renderNetworkMap();
@@ -499,4 +510,5 @@ async function submitRun() {
 
 setInterval(refreshData, 3000);
 refreshData();
+fetchVersion();
 window.onresize = renderNetworkMap;

@@ -27,8 +27,9 @@ if [ -f /etc/resolv.conf ]; then
   cat /etc/resolv.conf > "$ROOTFS/etc/resolv.conf"
 fi
 # Fallback/Append public DNS to ensure resolution
-echo "nameserver 8.8.8.8" >> "$ROOTFS/etc/resolv.conf"
-echo "nameserver 1.1.1.1" >> "$ROOTFS/etc/resolv.conf"
+# Fallback removed: Rely on host's resolv.conf (copied above)
+# This ensures we use the network's correct DNS servers (e.g. VPN/Intranet)
+
 
 # Generate basic hosts file
 echo "127.0.0.1 localhost" > "$ROOTFS/etc/hosts"

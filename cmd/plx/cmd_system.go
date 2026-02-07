@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"PocketLinx/pkg/container"
+	"PocketLinx/pkg/version"
 )
 
 func handleSetup(engine *container.Engine) {
@@ -26,6 +27,5 @@ func handleInstall(engine *container.Engine) {
 }
 
 func handleVersion() {
-	// TODO: Inject version from LDFlags
-	fmt.Println("PocketLinx v0.5.4 (Network & Premium Experience)")
+	fmt.Printf("PocketLinx %s\n", version.Current)
 }

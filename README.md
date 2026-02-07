@@ -12,9 +12,9 @@
 
 ## 🌟 Overview / 概要
 
-**PocketLinx (v0.5.0)** is a next-generation container runtime designed to leverage the native performance of WSL2. It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck.
+**PocketLinx (v0.5.6)** is a next-generation container runtime designed to leverage the native performance of WSL2. It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck.
 
-**PocketLinx (v0.5.0)** は、WSL2 の性能をネイティブに引き出す次世代のコンテナランタイムです。「Windowsはただのリモコンとして使い、重たい処理はすべてWSL2の中にお任せ」という設計により、NTFSのボトルネックを解消し、Gitやnpm installが驚くほど速くなるクリーンな開発環境を提供します。
+**PocketLinx (v0.5.6)** は、WSL2 の性能をネイティブに引き出す次世代のコンテナランタイムです。「Windowsはただのリモコンとして使い、重たい処理はすべてWSL2の中にお任せ」という設計により、NTFSのボトルネックを解消し、Gitやnpm installが驚くほど速くなるクリーンな開発環境を提供します。
 
 ---
 

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"PocketLinx/pkg/container"
+	"PocketLinx/pkg/wsl"
 )
 
 func handleRun(engine *container.Engine, args []string) {
@@ -61,9 +62,17 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 			val := args[i+1]
 			lastColon := strings.LastIndex(val, ":")
 			if lastColon != -1 && lastColon > 1 {
+				source := val[:lastColon]
+				target := val[lastColon+1:]
+
+				// Auto-convert Windows paths to WSL paths
+				if converted, err := wsl.WindowsToWslPath(source); err == nil {
+					source = converted
+				}
+
 				mounts = append(mounts, container.Mount{
-					Source: val[:lastColon],
-					Target: val[lastColon+1:],
+					Source: source,
+					Target: target,
 				})
 			}
 			i++

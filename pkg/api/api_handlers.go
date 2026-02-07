@@ -3,6 +3,7 @@ package api
 import (
 	"PocketLinx/pkg/compose"
 	"PocketLinx/pkg/container"
+	"PocketLinx/pkg/version"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -145,7 +146,7 @@ func (s *Server) handleImages(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"version": "v0.5.0 (Network & Premium Experience)"}`)
+	fmt.Fprintf(w, `{"version": "%s"}`, version.Current)
 }
 
 func (s *Server) handleAsset(name, contentType string) http.HandlerFunc {
