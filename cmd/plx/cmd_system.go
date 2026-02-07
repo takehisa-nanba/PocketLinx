@@ -27,5 +27,5 @@ func handleInstall(engine *container.Engine) {
 
 func handleVersion() {
 	// TODO: Inject version from LDFlags
-	fmt.Println("PocketLinx v0.5.0 (Network & Premium Experience)")
+	fmt.Println("PocketLinx v0.5.4 (Network & Premium Experience)")
 }
