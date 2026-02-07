@@ -22,7 +22,8 @@ func NewServer(engine *container.Engine) *Server {
 	}
 }
 
-//go:embed index.html style.css app.js logo.png
+//go:embed index.html style.css app.js
+//go:embed logo.png
 var uiAssets embed.FS
 
 func (s *Server) Start(port int) error {
