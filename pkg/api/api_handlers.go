@@ -145,7 +145,7 @@ func (s *Server) handleImages(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, `{"version": "v0.4.0 (Network Bridge & Compose)"}`)
+	fmt.Fprintf(w, `{"version": "v0.5.0 (Network & Premium Experience)"}`)
 }
 
 func (s *Server) handleAsset(name, contentType string) http.HandlerFunc {
