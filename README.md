@@ -10,9 +10,9 @@
 
 ## 🌟 Overview / 概要
 
-**PocketLinx (v0.3.0)** is a next-generation container runtime designed to leverage the native performance of WSL2. It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck.
+**PocketLinx (v0.5.0)** is a next-generation container runtime designed to leverage the native performance of WSL2. It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck.
 
-**PocketLinx (v0.3.0)** は、WSL2 の性能をネイティブに引き出す次世代のコンテナランタイムです。「Windowsはただのリモコンとして使い、重たい処理はすべてWSL2の中にお任せ」という設計により、NTFSのボトルネックを解消し、Gitやnpm installが驚くほど速くなるクリーンな開発環境を提供します。
+**PocketLinx (v0.5.0)** は、WSL2 の性能をネイティブに引き出す次世代のコンテナランタイムです。「Windowsはただのリモコンとして使い、重たい処理はすべてWSL2の中にお任せ」という設計により、NTFSのボトルネックを解消し、Gitやnpm installが驚くほど速くなるクリーンな開発環境を提供します。
 
 ---
 
@@ -22,21 +22,21 @@
   - Operates entirely on the WSL ext4 filesystem. No more NTFS slowness.
   - すべてWSL上のext4で動作。NTFSの遅さとは無縁です。
 
-- **📦 Build Cache (v0.3.0)**
-  - Layer caching makes subsequent builds blazing fast.
-  - レイヤーキャッシュにより、2回目以降のビルドが高速化されます。
+- **🚀 Loopback IP per Container (v0.5.0 - NEW!)**
+  - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
+  - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
 
-- **💾 Managed Volumes (v0.3.0)**
-  - Persistent data storage within WSL, ideal for databases.
-  - コンテナデータをWSL内に永続保存。高速なDB領域などに最適です。
+- **🎛️ Compose Support (v0.4.0)**
+  - Orchestrate multiple containers using `plx-compose.yml`.
+  - YAMLファイル一つで、複数のコンテナをワンタップで一括管理・連携。
 
-- **🌐 Simple Networking (v0.3.0)**
-  - Connect containers by name (e.g., app to db).
-  - コンテナ同士を名前で呼び合えます。
+- **📊 Premium Dashboard (v0.5.0)**
+  - Glassmorphism design with real-time logs and **Smart Tab Management** (re-uses existing browser tabs).
+  - リアルタイムログ視聴、タブの重複を防ぐスマート管理機能を備えた美しいGUI。
 
-- **📊 Dashboard (v0.3.0)**
-  - Manage containers via a browser with a single click.
-  - ブラウザから直感的にコンテナを管理できるGUIを提供します。
+- **📦 Build Cache & Managed Volumes**
+  - Layer caching and persistent data storage within WSL.
+  - レイヤーキャッシュによる高速ビルドと、WSL内へのデータ永続化。
 
 ---
 
@@ -64,9 +64,9 @@ plx setup
 plx run alpine uname -a
 ```
 
-### 2. Build / イメージをビルド
+### 2. Compose / 複数コンテナの管理
 ```powershell
-plx build -t my-app .
+plx compose up
 ```
 
 ### 3. Dashboard / ダッシュボード
