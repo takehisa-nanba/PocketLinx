@@ -45,11 +45,25 @@ header {
     flex-shrink: 0;
 }
 
-.logo {
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-logo {
+    height: 32px;
+    width: auto;
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+}
+
+.logo-text {
     font-weight: 800;
     font-size: 1.25rem;
-    color: var(--accent-blue);
-    letter-spacing: -0.5px;
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* --- Layout: Main View --- */

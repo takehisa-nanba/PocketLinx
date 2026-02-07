@@ -22,7 +22,7 @@ func NewServer(engine *container.Engine) *Server {
 	}
 }
 
-//go:embed index.html style.css app.js
+//go:embed index.html style.css app.js logo.png
 var uiAssets embed.FS
 
 func (s *Server) Start(port int) error {
@@ -39,6 +39,7 @@ func (s *Server) Start(port int) error {
 
 	http.HandleFunc("/style.css", s.handleAsset("style.css", "text/css"))
 	http.HandleFunc("/app.js", s.handleAsset("app.js", "application/javascript"))
+	http.HandleFunc("/logo.png", s.handleAsset("logo.png", "image/png"))
 	http.HandleFunc("/", s.handleUI)
 
 	// Start a background loop to sync proxies

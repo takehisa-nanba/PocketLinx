@@ -1,6 +1,8 @@
 # PocketLinx (plx)
 
 <p align="center">
+  <img src="pkg/api/logo.png" alt="PocketLinx Logo" width="200">
+  <br>
   <strong>Portable, Instant, and Clean Container Runtime for WSL2.</strong>
   <br>
   <em>Windows is just a remote control. Linux does the heavy lifting.</em>
