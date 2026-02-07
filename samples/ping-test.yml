@@ -1,0 +1,8 @@
+version: "3"
+services:
+  db:
+    image: alpine
+    command: ["sleep", "60"]
+  app:
+    image: alpine
+    command: ["sh", "-c", "ping -c 3 db && echo SUCCESS"]
