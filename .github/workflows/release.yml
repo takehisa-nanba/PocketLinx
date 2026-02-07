@@ -25,11 +25,17 @@ jobs:
         run: |
           GOOS=windows GOARCH=amd64 go build -o plx.exe ./cmd/plx
 
+      - name: Build Linux Binary
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o plx_linux ./cmd/plx
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: plx.exe
+          files: |
+            plx.exe
+            plx_linux
           name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
