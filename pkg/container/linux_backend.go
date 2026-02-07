@@ -1,3 +1,5 @@
+//go:build linux
+
 package container
 
 import (
@@ -12,6 +14,13 @@ type LinuxBackend struct {
 	Runtime RuntimeService
 	Image   ImageService
 	Volume  VolumeService
+}
+
+func NewBackend() Backend {
+	if os.Geteuid() != 0 {
+		fmt.Println("Warning: PocketLinx on Linux requires root privileges (for unshare/mount). Please run with sudo.")
+	}
+	return NewLinuxBackend()
 }
 
 func NewLinuxBackend() *LinuxBackend {

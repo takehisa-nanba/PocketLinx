@@ -1,4 +1,7 @@
+//go:build windows
+
 package container
+
 
 import (
 	"encoding/json"

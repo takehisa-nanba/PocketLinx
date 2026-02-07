@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"runtime"
 
 	"PocketLinx/pkg/container"
 )
@@ -16,19 +15,8 @@ func main() {
 
 	var backend container.Backend
 
-	// OS判定とバックエンドの選択
-	switch runtime.GOOS {
-	case "windows":
-		backend = container.NewWSLBackend()
-	case "linux":
-		if os.Geteuid() != 0 {
-			fmt.Println("Warning: PocketLinx on Linux requires root privileges (for unshare/mount). Please run with sudo.")
-		}
-		backend = container.NewLinuxBackend()
-	default:
-		fmt.Printf("OS %s is not supported yet.\n", runtime.GOOS)
-		os.Exit(1)
-	}
+	// OS判定とバックエンドの選択（ビルドタグで切り替え）
+	backend = container.NewBackend()
 
 	engine := container.NewEngine(backend)
 	cmd := os.Args[1]

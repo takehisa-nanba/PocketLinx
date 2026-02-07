@@ -1,10 +1,10 @@
+//go:build windows
+
 package container
 
 import (
 	"crypto/sha256"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"os/exec"
 	"path"
@@ -371,25 +371,4 @@ func (s *WSLImageService) SaveCache(hash string, rootfs string) error {
 
 	// Create hash file from rootfs
 	return s.wslClient.RunDistroCommand("tar", "-czf", cacheFile, "-C", rootfs, ".")
-}
-
-func downloadFile(url string, filepath string) error {
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("bad status: %s", resp.Status)
-	}
-
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	return err
 }

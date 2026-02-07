@@ -1,3 +1,5 @@
+//go:build windows
+
 package container
 
 import (
@@ -11,6 +13,10 @@ type WSLBackend struct {
 	Runtime   RuntimeService
 	Image     ImageService
 	Volume    VolumeService
+}
+
+func NewBackend() Backend {
+	return NewWSLBackend()
 }
 
 // NewWSLBackend initializes the backend with decomposed services
