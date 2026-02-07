@@ -65,9 +65,11 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 				source := val[:lastColon]
 				target := val[lastColon+1:]
 
-				// Auto-convert Windows paths to WSL paths
-				if converted, err := wsl.WindowsToWslPath(source); err == nil {
-					source = converted
+				// Auto-convert Windows paths to WSL paths (only if not already a Linux path)
+				if !strings.HasPrefix(source, "/") {
+					if converted, err := wsl.WindowsToWslPath(source); err == nil {
+						source = converted
+					}
 				}
 
 				mounts = append(mounts, container.Mount{

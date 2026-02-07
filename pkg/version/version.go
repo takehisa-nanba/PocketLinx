@@ -1,3 +1,3 @@
 package version
 
-const Current = "v0.5.6 (Path Auto-Convert)"
+const Current = "v0.5.7 (Path Fix)"
