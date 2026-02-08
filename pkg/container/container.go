@@ -104,3 +104,7 @@ func (e *Engine) GetIP(id string) (string, error) {
 func (e *Engine) Update(id string, opts RunOptions) error {
 	return e.backend.Update(id, opts)
 }
+
+func (e *Engine) Exec(id string, cmd []string, interactive bool) error {
+	return e.backend.Exec(id, cmd, interactive)
+}

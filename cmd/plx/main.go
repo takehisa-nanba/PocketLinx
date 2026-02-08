@@ -38,10 +38,14 @@ func main() {
 		handleImages(engine)
 	case "run":
 		handleRun(engine, args)
+	case "exec":
+		handleExec(engine, args)
 	case "ps":
 		handlePs(engine)
 	case "stop":
 		handleStop(engine, args)
+	case "start":
+		handleStart(engine, args)
 	case "logs":
 		handleLogs(engine, args)
 	case "rm":
@@ -71,7 +75,8 @@ func printUsage() {
 	fmt.Println("  plx install                      Add plx to your system PATH")
 	fmt.Println("  plx pull <image>                 Download an image (alpine, ubuntu)")
 	fmt.Println("  plx images                       List downloaded images")
-	fmt.Println("  plx run [-it] [-e K=V] [-p H:C] [-v S:D] [image] <cmd>...  Run command")
+	fmt.Printf("  plx run [-it] [-e K=V] [-p H:C] [-v S:D] [image] <cmd>...  Run command\n")
+	fmt.Printf("  plx exec [-it] <container> <cmd>...              Execute command in running container\n")
 	fmt.Println("  plx ps                           List containers")
 	fmt.Println("  plx stop <id>                    Stop container")
 	fmt.Println("  plx logs <id>                    View container logs")

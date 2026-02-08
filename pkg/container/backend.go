@@ -63,6 +63,7 @@ type Backend interface {
 
 	GetIP(id string) (string, error)
 	Update(id string, opts RunOptions) error
+	Exec(id string, cmd []string, interactive bool) error
 }
 
 // Dockerfile represents the parsed content of a Dockerfile

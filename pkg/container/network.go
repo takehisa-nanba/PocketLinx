@@ -2,6 +2,7 @@ package container
 
 import (
 	"fmt"
+	"os"
 	"sync"
 )
 
@@ -40,37 +41,37 @@ func NewBridgeNetworkManager(runner CommandRunner) *BridgeNetworkManager {
 
 func (m *BridgeNetworkManager) SetupBridge() error {
 	// Check if bridge exists
-	// Check ERROR not string output, as "Device does not exist" contains name
 	_, err := m.runner(fmt.Sprintf("/sbin/ip link show %s", m.bridgeName))
 	if err == nil {
-		// Bridge exists, but we must ensure NAT rules (continue)
-		fmt.Println("Bridge plx0 exists. Verifying NAT rules...")
-	} else {
-		fmt.Println("Initializing Network Bridge plx0...")
-
-		// 1. Create Bridge
-		if _, err := m.runner(fmt.Sprintf("/sbin/ip link add name %s type bridge", m.bridgeName)); err != nil {
-			return fmt.Errorf("failed to create bridge: %w", err)
+		if os.Getenv("PLX_VERBOSE") != "" {
+			fmt.Println("[DEBUG] Bridge plx0 already exists. Skipping re-init.")
 		}
+		m.runner("echo 1 > /proc/sys/net/ipv4/ip_forward")
+		return nil
+	}
 
-		// 2. Assign Gateway IP
-		if _, err := m.runner(fmt.Sprintf("/sbin/ip addr add %s/24 dev %s", m.gatewayIP, m.bridgeName)); err != nil {
-			return fmt.Errorf("failed to assign ip to bridge: %w", err)
-		}
+	fmt.Println("Initializing Network Bridge plx0...")
 
-		// 3. Up Bridge
-		if _, err := m.runner(fmt.Sprintf("/sbin/ip link set %s up", m.bridgeName)); err != nil {
-			return fmt.Errorf("failed to up bridge: %w", err)
-		}
+	// 1. Create Bridge
+	if _, err := m.runner(fmt.Sprintf("/sbin/ip link add name %s type bridge", m.bridgeName)); err != nil {
+		return fmt.Errorf("failed to create bridge: %w", err)
+	}
+
+	// 2. Assign Gateway IP
+	if _, err := m.runner(fmt.Sprintf("/sbin/ip addr add %s/24 dev %s", m.gatewayIP, m.bridgeName)); err != nil {
+		return fmt.Errorf("failed to assign ip to bridge: %w", err)
+	}
+
+	// 3. Up Bridge
+	if _, err := m.runner(fmt.Sprintf("/sbin/ip link set %s up", m.bridgeName)); err != nil {
+		return fmt.Errorf("failed to up bridge: %w", err)
 	}
 
 	// Ensure IP Forwarding is ON (Crucial for NAT)
 	m.runner("echo 1 > /proc/sys/net/ipv4/ip_forward")
 	m.runner("sysctl -w net.ipv4.ip_forward=1")
-	// Always ensure NAT rule exists even if bridge was already up.
-	// We delete first to avoid duplicates (iptables -D returns error if rule doesn't exist, ignore it)
+
 	natRule := fmt.Sprintf("POSTROUTING -s %s ! -d %s -j MASQUERADE", m.subnet, m.subnet)
-	m.runner(fmt.Sprintf("iptables -t nat -D %s", natRule))
 	m.runner(fmt.Sprintf("iptables -t nat -A %s", natRule))
 
 	return nil
@@ -136,64 +137,50 @@ func (m *BridgeNetworkManager) CreateVethPair(containerID string) (string, strin
 	return hostVeth, contVeth, nil
 }
 
-// SetupContainerNetwork orchestrates the network setup for a container using 'ip netns'.
-// It acts as the "Docker libnetwork" phase.
-func (m *BridgeNetworkManager) SetupContainerNetwork(containerID, ip string) error {
-	// 1. Create Network Namespace
-	// Ensure /var/run/netns exists (might be missing on fresh Alpine)
-	m.runner("mkdir -p /var/run/netns")
-
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip netns add %s", containerID)); err != nil {
-		return fmt.Errorf("failed to add netns: %w", err)
+// GetSetupScript generates a shell script that performs all network setup in one go.
+func (m *BridgeNetworkManager) GetSetupScript(containerID, ip string) (string, string, error) {
+	// 1. Prepare Veth names
+	shortID := containerID
+	if len(shortID) > 8 {
+		shortID = shortID[len(shortID)-8:]
 	}
+	hostVeth := fmt.Sprintf("veth%s", shortID)
+	contVeth := fmt.Sprintf("ceth%s", shortID)
 
-	// 2. Create Veth Pair
-	_, contVeth, err := m.CreateVethPair(containerID)
-	if err != nil {
-		return err
-	}
+	// 2. Generate the Script
+	script := fmt.Sprintf(`
+set -e
+mkdir -p /var/run/netns
+if ! ip netns list | grep -q "^%s$"; then
+  ip netns add %s
+fi
 
-	// 3. Move interface to netns
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip link set %s netns %s", contVeth, containerID)); err != nil {
-		return fmt.Errorf("failed to move interface to netns: %w", err)
-	}
+# Create Veth pair if host side doesn't exist
+if ! ip link show %s >/dev/null 2>&1; then
+  ip link add %s type veth peer name %s
+  ip link set %s master %s
+  ip link set %s up
+fi
 
-	// 4. Configure interface INSIDE netns
-	// Note: ip netns exec invokes the command. The command inside (ip) also needs absolute path?
-	// Usually environment inside netns exec inherits?
-	// Let's use absolute path just in case.
-	ctxCmd := func(cmd string) string {
-		return fmt.Sprintf("/sbin/ip netns exec %s %s", containerID, cmd)
-	}
+# Move to netns (ignore error if already there)
+ip link set %s netns %s 2>/dev/null || true
 
-	// Rename to eth0
-	if _, err := m.runner(ctxCmd(fmt.Sprintf("/sbin/ip link set %s name eth0", contVeth))); err != nil {
-		return fmt.Errorf("failed to rename interface: %w", err)
-	}
+# Rename and Configure inside netns
+ip netns exec %s sh -c "
+  ip link set lo up 2>/dev/null || true
+  if ip link show %s >/dev/null 2>&1; then
+    ip link set %s name eth0
+  fi
+  if ! ip addr show eth0 | grep -q "%s"; then
+    ip addr add %s/24 dev eth0
+  fi
+  ip link set eth0 up
+  ip route add default via %s 2>/dev/null || true
+  ethtool -K eth0 tx off 2>/dev/null || true
+"
+`, containerID, containerID, hostVeth, hostVeth, contVeth, hostVeth, m.bridgeName, hostVeth, contVeth, containerID, containerID, contVeth, contVeth, ip, ip, m.gatewayIP)
 
-	// Set IP
-	if _, err := m.runner(ctxCmd(fmt.Sprintf("/sbin/ip addr add %s/24 dev eth0", ip))); err != nil {
-		return fmt.Errorf("failed to set ip: %w", err)
-	}
-
-	// Up lo
-	m.runner(ctxCmd("/sbin/ip link set lo up"))
-
-	// Up eth0
-	if _, err := m.runner(ctxCmd("/sbin/ip link set eth0 up")); err != nil {
-		return fmt.Errorf("failed to up eth0: %w", err)
-	}
-
-	// Set Gateway
-	if _, err := m.runner(ctxCmd(fmt.Sprintf("/sbin/ip route add default via %s", m.gatewayIP))); err != nil {
-		// Ignore gateway error if gateway is unreachable (maybe bridge down?), but warn
-		fmt.Printf("Warning: Failed to set default gateway: %v\n", err)
-	}
-
-	// Disable checksum offloading (common issue with veth) - try to run, ignore error
-	m.runner(ctxCmd("ethtool -K eth0 tx off"))
-
-	return nil
+	return script, hostVeth, nil
 }
 
 // CleanupContainerNetwork removes the netns and releases IP.

@@ -390,17 +390,20 @@ func (s *WSLRuntimeService) Exec(idOrName string, cmdArgs []string, interactive 
 	childPids := strings.Split(strings.TrimSpace(childPidStr), "\n")
 	pid := strings.TrimSpace(childPids[0])
 
-	// Inject common PATHs including Flutter/Android SDK
+	// Inject common PATHs and host address for ADB
 	pathEnv := "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/flutter/bin:/opt/android-sdk/platform-tools"
+	adbEnv := "ANDROID_ADB_SERVER_ADDRESS=host.plx.internal"
 
-	// Simplified execution by joining arguments
+	// Simplified execution:
+	// We don't use 'exec' here to support commands with semicolons correctly
 	userCmd := strings.Join(cmdArgs, " ")
-	shCmd := fmt.Sprintf("export %s; exec %s", pathEnv, userCmd)
+	shCmd := fmt.Sprintf("export %s %s; %s", pathEnv, adbEnv, userCmd)
 
-	// nsenter -t PID -m -n -u -i -p -r joins all namespaces including root
-	// -w joins the working directory of the target process (which is usually WORKDIR)
-	// We add -- after -w to ensure /bin/sh is treated as the command, not an argument to -w
-	args := []string{"-d", s.wslClient.DistroName, "-u", "root", "--", "nsenter", "-t", pid, "-m", "-n", "-u", "-i", "-p", "-r", "-w", "--", "/bin/sh", "-c", shCmd}
+	// nsenter -t PID -m -n -u -i -p joins namespaces (mount, net, uts, ipc, pid)
+	// We DON'T use -r (root) because the proc's root may show as "(deleted)" due to mount namespace changes
+	// Instead, we chroot explicitly to the container's rootfs directory
+	rootfsPath := fmt.Sprintf("/var/lib/pocketlinx/containers/%s/rootfs", id)
+	args := []string{"-d", s.wslClient.DistroName, "-u", "root", "--", "nsenter", "-t", pid, "-m", "-n", "-u", "-i", "-p", "--", "chroot", rootfsPath, "/bin/sh", "-c", shCmd}
 
 	if os.Getenv("PLX_VERBOSE") != "" {
 		fmt.Printf("[DEBUG] Executing in container %s: %v\n", id, cmdArgs)
@@ -495,10 +498,19 @@ func (s *WSLRuntimeService) Start(idOrName string) error {
 		}
 	}
 
+	// 2.6 Inject host.plx.internal for ADB and host connectivity
+	rootfsDir := fmt.Sprintf("%s/rootfs", containerDir)
+	gatewayIP, err := s.wslClient.RunDistroCommandOutput("sh", "-c", "ip route show | grep default | cut -d' ' -f3")
+	if err == nil && strings.TrimSpace(gatewayIP) != "" {
+		hostEntry := fmt.Sprintf("%s host.plx.internal\n", strings.TrimSpace(gatewayIP))
+		hostsExtraPath := fmt.Sprintf("%s/etc/hosts-extra", rootfsDir)
+		_ = s.wslClient.RunDistroCommandWithInput(hostEntry, "sh", "-c", fmt.Sprintf("cat > %s", hostsExtraPath))
+	}
+
 	// 3. Execution: Wrap with 'ip netns exec' and run as root
-	// Also use setsid and nohup to ensure it detaches from the CLI/Dashboard process.
-	// We use the ID (actual directory name) for netns.
-	startCmd := fmt.Sprintf("setsid nohup ip netns exec %s sh %s >/dev/null 2>&1 &", id, scriptFile)
+	// Use daemonize pattern: nohup runs in subshell which is immediately disowned
+	// The double-fork pattern ensures the process survives WSL session termination
+	startCmd := fmt.Sprintf("nohup ip netns exec %s sh %s >%s/console.log 2>&1 </dev/null &", id, scriptFile, containerDir)
 
 	cmd := exec.Command("wsl.exe", "-d", s.wslClient.DistroName, "-u", "root", "--", "sh", "-c", startCmd)
 	if err := cmd.Run(); err != nil {

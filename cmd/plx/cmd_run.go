@@ -108,7 +108,7 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 			i++
 		} else if arg == "-it" || arg == "-i" || arg == "-t" {
 			interactive = true
-		} else if arg == "-d" {
+		} else if arg == "-d" || arg == "--detach" {
 			detach = true
 		} else if strings.HasPrefix(arg, "-") {
 			// Unknown flag

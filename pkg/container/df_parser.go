@@ -63,9 +63,16 @@ func ParseDockerfile(path string) (*Dockerfile, error) {
 				}
 			case "COPY":
 				copyParts := strings.Fields(args)
-				if len(copyParts) >= 2 {
-					dest := copyParts[len(copyParts)-1]
-					src := strings.Join(copyParts[:len(copyParts)-1], " ")
+				// Filter out flags like --chown
+				nonFlagParts := []string{}
+				for _, p := range copyParts {
+					if !strings.HasPrefix(p, "--") {
+						nonFlagParts = append(nonFlagParts, p)
+					}
+				}
+				if len(nonFlagParts) >= 2 {
+					dest := nonFlagParts[len(nonFlagParts)-1]
+					src := strings.Join(nonFlagParts[:len(nonFlagParts)-1], " ")
 					parsedArgs = append(parsedArgs, src, dest)
 				}
 			case "CMD":

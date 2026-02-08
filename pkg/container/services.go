@@ -10,6 +10,7 @@ type RuntimeService interface {
 	Remove(id string) error
 	GetIP(id string) (string, error)
 	Update(id string, opts RunOptions) error
+	Exec(id string, cmd []string, interactive bool) error
 }
 
 // ImageService handles image management (pull, build, cache)

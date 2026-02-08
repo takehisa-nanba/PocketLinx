@@ -12,9 +12,9 @@
 
 ## 🌟 Overview / 概要
 
-**PocketLinx (v0.6.4)** is a next-generation container runtime designed for the native performance of WSL2. It embraces the design ideal of **"Minimal Interaction"**: The "heavy door" of provisioning and network setup is opened once, and you work efficiently inside. No more waiting for extraction every time you run a command.
+**PocketLinx (v0.7.0)** is a next-generation container runtime designed for the native performance of WSL2. It embraces the design ideal of **"Minimal Interaction"**: The "heavy door" of provisioning and network setup is opened once, and you work efficiently inside. No more waiting for extraction every time you run a command.
 
-**PocketLinx (v0.6.4)** は、WSL2の性能を最大限に引き出す設計思想をさらに前進させました。「重い扉（プロビジョニングやネットワーク設定）を一度開けたら、その中で効率的に作業する」という **"Minimal Interaction"** を実現。コマンドを叩くたびに展開を待つ必要はもうありません。
+**PocketLinx (v0.7.0)** は、WSL2の性能を最大限に引き出す設計思想をさらに前進させました。「重い扉（プロビジョニングやネットワーク設定）を一度開けたら、その中で効率的に作業する」という **"Minimal Interaction"** を実現。コマンドを叩くたびに展開を待つ必要はもうありません。
 
 ---
 
@@ -28,13 +28,17 @@
   - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
   - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
 
-- **🏠 Branded Host Auto-Discovery (v0.6.0)**
+- **🏠 Branded Host Auto-Discovery (v0.7.0 - Enhanced)**
   - Containers can automatically reach the Windows host via `host.plx.internal`. No manual IP lookup needed.
   - コンテナから Windows ホストへ `host.plx.internal` で自動接続。IP アドレスを手動で調べる手間をなくしました。
 
-- **🚪 Persistent Named Containers & `exec` (v0.6.4 - Updated)**
-  - Use `--name` to keep your environment alive. Join instantly with `plx exec` for zero-overhead development. Fixed namespace isolation issues for reliable file access and networking.
-  - `--name` で環境を固定。`plx exec` で「開いた扉」の中へ瞬時に入り込みます。名前空間の分離レベルを最適化し、ファイルアクセスとネットワークの信頼性を向上させました。
+- **📲 Automatic ADB Bridge (v0.7.0 - NEW)**
+  - Debug Android devices from inside containers instantly. `ANDROID_ADB_SERVER_ADDRESS` is automatically injected for seamless `adb` and `flutter` connectivity.
+  - コンテナ内からホスト側の Android 実機を即座にデバッグ可能。環境変数を自動注入し、`adb` や `flutter` の透過的な接続を実現しました。
+
+- **🚪 Rock-solid `exec` & `start` (v0.7.0 - Updated)**
+  - Fixed namespace isolation and rootfs (deleted) issues for reliable access across all distros. Use `plx start` to revive stopped containers instantly.
+  - `nsenter` と rootfs 名前空間の問題を修正し、あらゆるディストロで安定した接続が可能に。`plx start` で停止中の環境も瞬時に復帰できます。
 
 - **🎛️ Compose Support (v0.4.0)**
   - Orchestrate multiple containers using `plx-compose.yml`.

@@ -42,6 +42,17 @@ func handleStop(engine *container.Engine, args []string) {
 	}
 }
 
+func handleStart(engine *container.Engine, args []string) {
+	if len(args) < 1 {
+		fmt.Println("Usage: plx start <container_id>")
+		os.Exit(1)
+	}
+	if err := engine.Start(args[0]); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to start container: %v\n", err)
+		os.Exit(1)
+	}
+}
+
 func handleLogs(engine *container.Engine, args []string) {
 	if len(args) < 1 {
 		fmt.Println("Usage: plx logs <container_id>")
@@ -81,4 +92,37 @@ func handleRm(engine *container.Engine, args []string) {
 		os.Exit(1)
 	}
 	fmt.Printf("Container %s removed.\n", args[0])
+}
+
+func handleExec(engine *container.Engine, args []string) {
+	if len(args) < 2 {
+		fmt.Println("Usage: plx exec [-it] <container> <cmd>...")
+		os.Exit(1)
+	}
+
+	interactive := false
+	containerName := ""
+	var cmdArgs []string
+
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		if arg == "-it" || arg == "-i" || arg == "-t" {
+			interactive = true
+		} else if containerName == "" {
+			containerName = arg
+		} else {
+			cmdArgs = args[i:]
+			break
+		}
+	}
+
+	if containerName == "" || len(cmdArgs) == 0 {
+		fmt.Println("Usage: plx exec [-it] <container> <cmd>...")
+		os.Exit(1)
+	}
+
+	if err := engine.Exec(containerName, cmdArgs, interactive); err != nil {
+		fmt.Fprintf(os.Stderr, "Exec failed: %v\n", err)
+		os.Exit(1)
+	}
 }

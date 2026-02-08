@@ -5,7 +5,12 @@ const Content = `#!/bin/sh
 ROOTFS=$1
 MOUNTS=$2
 WORKDIR=$3
-shift 3
+PID_FILE=$4
+shift 4
+
+if [ -n "$PID_FILE" ]; then
+  echo $$ > "$PID_FILE"
+fi
 
 if [ ! -d "$ROOTFS" ]; then
   echo "Error: Rootfs $ROOTFS not found"

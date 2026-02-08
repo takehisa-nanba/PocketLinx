@@ -119,3 +119,6 @@ func (b *WSLBackend) ListVolumes() ([]string, error) { return b.Volume.List() }
 
 func (b *WSLBackend) GetIP(id string) (string, error)         { return b.Runtime.GetIP(id) }
 func (b *WSLBackend) Update(id string, opts RunOptions) error { return b.Runtime.Update(id, opts) }
+func (b *WSLBackend) Exec(id string, cmd []string, interactive bool) error {
+	return b.Runtime.Exec(id, cmd, interactive)
+}
