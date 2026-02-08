@@ -10,7 +10,14 @@ import (
 func main() {
 	if len(os.Args) < 2 {
 		printUsage()
-		os.Exit(1)
+		return
+	}
+	cmd := os.Args[1]
+	args := os.Args[2:]
+
+	if cmd == "version" {
+		handleVersion()
+		return
 	}
 
 	var backend container.Backend
@@ -19,8 +26,6 @@ func main() {
 	backend = container.NewBackend()
 
 	engine := container.NewEngine(backend)
-	cmd := os.Args[1]
-	args := os.Args[2:]
 
 	switch cmd {
 	case "setup":

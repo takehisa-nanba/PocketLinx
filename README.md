@@ -12,9 +12,9 @@
 
 ## 🌟 Overview / 概要
 
-**PocketLinx (v0.5.6)** is a next-generation container runtime designed to leverage the native performance of WSL2. It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck.
+**PocketLinx (v0.6.0)** is a next-generation container runtime designed to leverage the native performance of WSL2. It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck.
 
-**PocketLinx (v0.5.6)** は、WSL2 の性能をネイティブに引き出す次世代のコンテナランタイムです。「Windowsはただのリモコンとして使い、重たい処理はすべてWSL2の中にお任せ」という設計により、NTFSのボトルネックを解消し、Gitやnpm installが驚くほど速くなるクリーンな開発環境を提供します。
+**PocketLinx (v0.6.0)** は、WSL2 の性能をネイティブに引き出す次世代のコンテナランタイムです。「Windowsはただのリモコンとして使い、重たい処理はすべてWSL2の中にお任せ」という設計により、NTFSのボトルネックを解消し、Gitやnpm installが驚くほど速くなるクリーンな開発環境を提供します。
 
 ---
 
@@ -24,9 +24,13 @@
   - Operates entirely on the WSL ext4 filesystem. No more NTFS slowness.
   - すべてWSL上のext4で動作。NTFSの遅さとは無縁です。
 
-- **🚀 Loopback IP per Container (v0.5.0 - NEW!)**
+- **🚀 Loopback IP per Container (v0.5.0)**
   - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
   - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
+
+- **🏠 Branded Host Auto-Discovery (v0.6.0 - NEW!)**
+  - Containers can automatically reach the Windows host via `host.plx.internal`. No manual IP lookup needed.
+  - コンテナから Windows ホストへ `host.plx.internal` で自動接続。IP アドレスを手動で調べる手間をなくしました。
 
 - **🎛️ Compose Support (v0.4.0)**
   - Orchestrate multiple containers using `plx-compose.yml`.

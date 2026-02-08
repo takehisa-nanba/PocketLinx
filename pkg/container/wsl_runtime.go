@@ -20,6 +20,7 @@ import (
 type WSLRuntimeService struct {
 	wslClient *wsl.Client
 	network   *BridgeNetworkManager
+	hostIP    string // Added to store detected host IP
 }
 
 func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
@@ -33,22 +34,20 @@ func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
 
 	netMgr := NewBridgeNetworkManager(runner)
 
-	// Network initialization is now LAZY (performed in Run/Start) to avoid
-	// hanging commands like 'build' or 'images' when the bridge is unstable.
+	// Detect host IP (WSL Gateway)
+	hostIP := "127.0.0.1"
+	if out, err := runner("ip route show | grep default | awk '{print $3}'"); err == nil {
+		hostIP = strings.TrimSpace(out)
+		// awk ensures we get just the IP, but let's trim just in case
+		if lines := strings.Split(hostIP, "\n"); len(lines) > 0 {
+			hostIP = strings.TrimSpace(lines[0])
+		}
+	}
 
 	s := &WSLRuntimeService{
 		wslClient: client,
 		network:   netMgr,
-	}
-
-	// Sync network state (IPs) with existing containers
-	if containers, err := s.List(); err == nil {
-		for _, c := range containers {
-			if c.IP != "" && c.IP != "127.0.0.1" {
-				netMgr.MarkIPUsed(c.IP)
-				// fmt.Printf("[DEBUG] Reserved IP %s for %s\n", c.IP, c.ID)
-			}
-		}
+		hostIP:    hostIP,
 	}
 
 	return s
@@ -126,11 +125,12 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 		}
 	}
 
-	// 3. Metadata
-	// Service Discovery
 	hostsContent := ""
 	if opts.Name != "" {
 		hostsContent += fmt.Sprintf("127.0.0.1 %s\n", opts.Name)
+	}
+	if s.hostIP != "" {
+		hostsContent += fmt.Sprintf("%s host.plx.internal\n", s.hostIP)
 	}
 
 	// List running containers
