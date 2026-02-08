@@ -12,9 +12,9 @@
 
 ## 🌟 Overview / 概要
 
-**PocketLinx (v0.7.0)** is a next-generation container runtime designed for the native performance of WSL2. It embraces the design ideal of **"Minimal Interaction"**: The "heavy door" of provisioning and network setup is opened once, and you work efficiently inside. No more waiting for extraction every time you run a command.
+**PocketLinx (v0.7.1)** is a next-generation container runtime designed for the native performance of WSL2. It embraces the design ideal of **"Minimal Interaction"**: The "heavy door" of provisioning and network setup is opened once, and you work efficiently inside. No more waiting for extraction every time you run a command.
 
-**PocketLinx (v0.7.0)** は、WSL2の性能を最大限に引き出す設計思想をさらに前進させました。「重い扉（プロビジョニングやネットワーク設定）を一度開けたら、その中で効率的に作業する」という **"Minimal Interaction"** を実現。コマンドを叩くたびに展開を待つ必要はもうありません。
+**PocketLinx (v0.7.1)** は、WSL2の性能を最大限に引き出す設計思想をさらに前進させました。「重い扉（プロビジョニングやネットワーク設定）を一度開けたら、その中で効率的に作業する」という **"Minimal Interaction"** を実現。コマンドを叩くたびに展開を待つ必要はもうありません。
 
 ---
 
@@ -27,6 +27,10 @@
 - **🚀 Loopback IP per Container (v0.5.0)**
   - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
   - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
+
+- **💨 Blazing Fast Build with `.plxignore` (v0.7.1 - NEW)**
+  - Skip heavy folders like `.git` or `.plx_env` during build. No more waiting for hash calculations.
+  - `.plxignore` で巨大なフォルダをスキップ。ビルド前のハッシュ計算待ちを解消し、瞬時に実行を開始します。
 
 - **🏠 Branded Host Auto-Discovery (v0.7.0 - Enhanced)**
   - Containers can automatically reach the Windows host via `host.plx.internal`. No manual IP lookup needed.

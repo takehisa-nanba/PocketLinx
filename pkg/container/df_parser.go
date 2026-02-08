@@ -74,6 +74,9 @@ func ParseDockerfile(path string) (*Dockerfile, error) {
 					dest := nonFlagParts[len(nonFlagParts)-1]
 					src := strings.Join(nonFlagParts[:len(nonFlagParts)-1], " ")
 					parsedArgs = append(parsedArgs, src, dest)
+					if os.Getenv("PLX_VERBOSE") != "" {
+						fmt.Printf("[DEBUG] Parsed COPY: src=%q, dest=%q\n", src, dest)
+					}
 				}
 			case "CMD":
 				// Simple shell/exec form detection

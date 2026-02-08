@@ -8,6 +8,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // GetWslCacheDir returns the directory where intermediate layers are stored inside WSL
@@ -40,15 +41,51 @@ func CalculateInstructionHash(parentHash string, instr Instruction, ctxDir strin
 	return hex.EncodeToString(hasher.Sum(nil)), nil
 }
 
-// hashPath computes SHA256 of a file or directory recursively
+// hashPath computes SHA256 of a file or directory recursively, respecting .plxignore
 func hashPath(pathStr string) (string, error) {
 	hasher := sha256.New()
+
+	// Load ignore patterns if .plxignore exists in the context root
+	ignorePatterns := make(map[string]bool)
+	ignoreFile := filepath.Join(pathStr, ".plxignore")
+	if data, err := os.ReadFile(ignoreFile); err == nil {
+		lines := strings.Split(string(data), "\n")
+		for _, line := range lines {
+			line = strings.TrimSpace(line)
+			if line != "" && !strings.HasPrefix(line, "#") {
+				ignorePatterns[line] = true
+			}
+		}
+	}
+
+	// Always ignore these
+	ignorePatterns[".git"] = true
+
+	count := 0
 	err := filepath.WalkDir(pathStr, func(p string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
-		// Hash the relative path and mode
+
 		relPath, _ := filepath.Rel(pathStr, p)
+		if relPath == "." {
+			return nil
+		}
+
+		// Check if this path should be ignored
+		if ignorePatterns[relPath] || ignorePatterns[filepath.Base(p)] {
+			if d.IsDir() {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+
+		count++
+		if os.Getenv("PLX_VERBOSE") != "" && count%100 == 0 {
+			fmt.Printf("\r[DEBUG] Hashing context: %d files scanned...", count)
+		}
+
+		// Hash the relative path and mode
 		fmt.Fprintf(hasher, "%s|%v|", relPath, d.IsDir())
 
 		if !d.IsDir() {
@@ -63,6 +100,9 @@ func hashPath(pathStr string) (string, error) {
 		}
 		return nil
 	})
+	if os.Getenv("PLX_VERBOSE") != "" && count > 0 {
+		fmt.Println()
+	}
 	if err != nil {
 		return "", err
 	}
