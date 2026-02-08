@@ -33,11 +33,8 @@ func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
 
 	netMgr := NewBridgeNetworkManager(runner)
 
-	// Initialize bridge immediately?
-	// It's fast and idempotent.
-	if err := netMgr.SetupBridge(); err != nil {
-		fmt.Printf("Warning: Failed to setup network bridge: %v. Networking may not work.\n", err)
-	}
+	// Network initialization is now LAZY (performed in Run/Start) to avoid
+	// hanging commands like 'build' or 'images' when the bridge is unstable.
 
 	s := &WSLRuntimeService{
 		wslClient: client,
@@ -156,7 +153,11 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 		s.wslClient.RunDistroCommandWithInput(hostsContent, "sh", "-c", fmt.Sprintf("cat > %s/etc/hosts-extra", rootfsDir))
 	}
 
-	// 1. Network Setup
+	// 1. Network Setup - Lazy Init
+	if err := s.network.SetupBridge(); err != nil {
+		fmt.Printf("Warning: Failed to setup network bridge: %v. Networking may not work.\n", err)
+	}
+
 	// Allocate IP
 	ip, err := s.network.AllocateIP()
 	if err != nil {
@@ -345,6 +346,12 @@ func (s *WSLRuntimeService) Start(idOrName string) error {
 		return err
 	}
 	fmt.Printf("Starting container %s...\n", id)
+
+	// Lazy Network Init
+	if err := s.network.SetupBridge(); err != nil {
+		fmt.Printf("Warning: Failed to setup network bridge: %v. Networking may not work.\n", err)
+	}
+
 	containerDir := fmt.Sprintf("/var/lib/pocketlinx/containers/%s", id)
 	scriptFile := fmt.Sprintf("%s/run.sh", containerDir)
 

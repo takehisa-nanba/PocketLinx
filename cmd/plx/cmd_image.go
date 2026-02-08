@@ -35,15 +35,30 @@ func handleImages(engine *container.Engine) {
 
 func handleBuild(engine *container.Engine, args []string) {
 	ctxDir := "."
-	if len(args) >= 1 {
-		ctxDir = args[0]
+	targetImage := ""
+
+	// Parse arguments manually to support -t/--tag
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		if arg == "-t" || arg == "--tag" {
+			if i+1 < len(args) {
+				targetImage = args[i+1]
+				i++ // skip value
+			} else {
+				fmt.Println("Error: flag needs an argument: -t")
+				os.Exit(1)
+			}
+		} else {
+			ctxDir = arg
+		}
 	}
 
-	// Try to load config to get image name
-	config, _ := container.LoadProjectConfigFromDir(ctxDir)
-	targetImage := ""
-	if config != nil && config.Image != "" {
-		targetImage = config.Image
+	// Try to load config to get image name if not provided via flag
+	if targetImage == "" {
+		config, _ := container.LoadProjectConfigFromDir(ctxDir)
+		if config != nil && config.Image != "" {
+			targetImage = config.Image
+		}
 	}
 
 	img, err := engine.Build(ctxDir, targetImage)
