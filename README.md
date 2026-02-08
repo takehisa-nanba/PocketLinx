@@ -12,9 +12,9 @@
 
 ## 🌟 Overview / 概要
 
-**PocketLinx (v0.6.0)** is a next-generation container runtime designed to leverage the native performance of WSL2. It flips the script on Windows development: **"Windows is just the remote control."** All building, downloading, and execution happens entirely within the high-speed Linux filesystem (ext4) inside WSL2, bypassing the slow NTFS IO bottleneck.
+**PocketLinx (v0.6.4)** is a next-generation container runtime designed for the native performance of WSL2. It embraces the design ideal of **"Minimal Interaction"**: The "heavy door" of provisioning and network setup is opened once, and you work efficiently inside. No more waiting for extraction every time you run a command.
 
-**PocketLinx (v0.6.0)** は、WSL2 の性能をネイティブに引き出す次世代のコンテナランタイムです。「Windowsはただのリモコンとして使い、重たい処理はすべてWSL2の中にお任せ」という設計により、NTFSのボトルネックを解消し、Gitやnpm installが驚くほど速くなるクリーンな開発環境を提供します。
+**PocketLinx (v0.6.4)** は、WSL2の性能を最大限に引き出す設計思想をさらに前進させました。「重い扉（プロビジョニングやネットワーク設定）を一度開けたら、その中で効率的に作業する」という **"Minimal Interaction"** を実現。コマンドを叩くたびに展開を待つ必要はもうありません。
 
 ---
 
@@ -28,9 +28,13 @@
   - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
   - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
 
-- **🏠 Branded Host Auto-Discovery (v0.6.0 - NEW!)**
+- **🏠 Branded Host Auto-Discovery (v0.6.0)**
   - Containers can automatically reach the Windows host via `host.plx.internal`. No manual IP lookup needed.
   - コンテナから Windows ホストへ `host.plx.internal` で自動接続。IP アドレスを手動で調べる手間をなくしました。
+
+- **🚪 Persistent Named Containers & `exec` (v0.6.4 - Updated)**
+  - Use `--name` to keep your environment alive. Join instantly with `plx exec` for zero-overhead development. Fixed namespace isolation issues for reliable file access and networking.
+  - `--name` で環境を固定。`plx exec` で「開いた扉」の中へ瞬時に入り込みます。名前空間の分離レベルを最適化し、ファイルアクセスとネットワークの信頼性を向上させました。
 
 - **🎛️ Compose Support (v0.4.0)**
   - Orchestrate multiple containers using `plx-compose.yml`.
@@ -65,7 +69,17 @@ plx setup
 
 ## 📖 Usage / 使い方
 
-### 1. Run / コンテナを実行
+### 1. Persistent Workflow / 継続的な作業
+Start a container once:
+```powershell
+plx run -d --name my-dev-env alpine sleep infinity
+```
+Work inside instantly (snappy!):
+```powershell
+plx exec my-dev-env ls /
+```
+
+### 2. Ephemeral Run / 単発実行
 ```powershell
 plx run alpine uname -a
 ```

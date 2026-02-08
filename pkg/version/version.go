@@ -1,3 +1,3 @@
 package version
 
-const Current = "v0.6.0 (Branded Host Auto-Discovery)"
+const Current = "v0.6.4 (Network Fixes & Exec)"
