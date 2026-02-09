@@ -2,7 +2,6 @@
 
 package container
 
-
 import (
 	"encoding/json"
 	"fmt"
@@ -184,4 +183,8 @@ func (s *LinuxRuntimeService) GetIP(id string) (string, error) {
 }
 func (s *LinuxRuntimeService) Update(id string, opts RunOptions) error {
 	return fmt.Errorf("update not implemented")
+}
+
+func (s *LinuxRuntimeService) Exec(id string, cmd []string, interactive bool) error {
+	return fmt.Errorf("exec not implemented for native linux yet")
 }

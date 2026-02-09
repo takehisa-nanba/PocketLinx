@@ -130,10 +130,18 @@ func (b *LinuxBackend) Remove(id string) error         { return b.Runtime.Remove
 // Image
 func (b *LinuxBackend) Pull(image string) error   { return b.Image.Pull(image) }
 func (b *LinuxBackend) Images() ([]string, error) { return b.Image.Images() }
-func (b *LinuxBackend) Build(ctxDir string, tag string) (string, error) {
-	return b.Image.Build(ctxDir, tag)
+func (b *LinuxBackend) Build(ctxDir string, dockerfile string, tag string) (string, error) {
+	return b.Image.Build(ctxDir, dockerfile, tag)
 }
 func (b *LinuxBackend) Prune() error { return b.Image.Prune() }
+
+func (b *LinuxBackend) Diff(image1, image2 string) (string, error) {
+	return b.Image.Diff(image1, image2)
+}
+
+func (b *LinuxBackend) ExportDiff(baseImage, targetImage, outputPath string) error {
+	return b.Image.ExportDiff(baseImage, targetImage, outputPath)
+}
 
 // Volume
 func (b *LinuxBackend) CreateVolume(name string) error { return b.Volume.Create(name) }
@@ -142,3 +150,6 @@ func (b *LinuxBackend) ListVolumes() ([]string, error) { return b.Volume.List() 
 
 func (b *LinuxBackend) GetIP(id string) (string, error)         { return b.Runtime.GetIP(id) }
 func (b *LinuxBackend) Update(id string, opts RunOptions) error { return b.Runtime.Update(id, opts) }
+func (b *LinuxBackend) Exec(id string, cmd []string, interactive bool) error {
+	return b.Runtime.Exec(id, cmd, interactive)
+}

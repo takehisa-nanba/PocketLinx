@@ -2,7 +2,6 @@
 
 package container
 
-
 import (
 	"fmt"
 	"os"
@@ -64,8 +63,11 @@ func (s *LinuxImageService) Prune() error {
 	return os.RemoveAll(filepath.Join(s.rootDir, "cache"))
 }
 
-func (s *LinuxImageService) Build(ctxDir string, tag string) (string, error) {
-	dockerfilePath := filepath.Join(ctxDir, "Dockerfile")
+func (s *LinuxImageService) Build(ctxDir string, dockerfile string, tag string) (string, error) {
+	if dockerfile == "" {
+		dockerfile = "Dockerfile"
+	}
+	dockerfilePath := filepath.Join(ctxDir, dockerfile)
 	df, err := ParseDockerfile(dockerfilePath)
 	if err != nil {
 		return "", fmt.Errorf("failed to parse Dockerfile: %w", err)
@@ -159,4 +161,12 @@ func (s *LinuxImageService) Build(ctxDir string, tag string) (string, error) {
 	}
 
 	return imageName, nil
+}
+
+func (s *LinuxImageService) Diff(image1, image2 string) (string, error) {
+	return "", fmt.Errorf("diff not implemented for native linux yet")
+}
+
+func (s *LinuxImageService) ExportDiff(baseImage, targetImage, outputPath string) error {
+	return fmt.Errorf("export-diff not implemented for native linux yet")
 }
