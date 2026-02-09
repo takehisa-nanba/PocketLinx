@@ -15,7 +15,8 @@ func main() {
 	cmd := os.Args[1]
 	args := os.Args[2:]
 
-	if cmd == "version" {
+	// バージョン表示のショートカット (v1.0.2)
+	if cmd == "version" || cmd == "--version" || cmd == "-v" {
 		handleVersion()
 		return
 	}
@@ -52,8 +53,6 @@ func main() {
 		handleRm(engine, args)
 	case "build":
 		handleBuild(engine, args)
-	case "version":
-		handleVersion()
 	case "dashboard":
 		handleDashboard(engine)
 	case "prune":
