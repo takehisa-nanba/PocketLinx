@@ -23,6 +23,25 @@ func handleRun(engine *container.Engine, args []string) {
 	}
 }
 
+func handleUpdate(engine *container.Engine, args []string) {
+	if len(args) < 1 {
+		fmt.Println("Usage: plx update <container_id> [options]")
+		return
+	}
+	id := args[0]
+	opts, err := parseRunOptions(args[1:])
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error parsing options: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := engine.Update(id, *opts); err != nil {
+		fmt.Fprintf(os.Stderr, "Update failed: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Container %s updated.\n", id)
+}
+
 func parseRunOptions(args []string) (*container.RunOptions, error) {
 	// 1. Load plx.json if exists (as defaults)
 	config, _ := container.LoadProjectConfig()

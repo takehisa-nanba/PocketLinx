@@ -65,6 +65,8 @@ func main() {
 		handleVolume(engine, args)
 	case "compose":
 		handleCompose(engine, args)
+	case "update":
+		handleUpdate(engine, args)
 	default:
 		printUsage()
 		os.Exit(1)
@@ -90,4 +92,5 @@ func printUsage() {
 	fmt.Println("  plx prune                        Clear build cache")
 	fmt.Println("  plx volume <create|ls|rm>        Manage persistent volumes")
 	fmt.Println("  plx compose <up|down>            Orchestrate multiple containers (YAML-based)")
+	fmt.Println("  plx update <id> [options]        Update running container configuration")
 }
