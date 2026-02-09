@@ -69,7 +69,7 @@
 ### Install / インストール
 Download `plx.exe` and add it to your PATH:
 ```powershell
-.\plx.exe install
+plx.exe install
 ```
 *(Restart your terminal to apply PATH changes / インストール後、ターミナルを再起動してください)*
 
