@@ -1,3 +1,3 @@
 package version
 
-const Current = "v1.0.3 (Feature Update: plx update)"
+const Current = "v1.0.5 (Interactive Cleanup & PATH Priority)"
