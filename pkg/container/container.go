@@ -5,10 +5,12 @@ const (
 )
 
 var SupportedImages = map[string]string{
-	"alpine":       "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-minirootfs-3.21.0-x86_64.tar.gz",
-	"alpine:3.21":  "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-minirootfs-3.21.0-x86_64.tar.gz",
-	"ubuntu":       "https://partner-images.canonical.com/core/jammy/current/ubuntu-jammy-core-cloudimg-amd64-root.tar.gz",
-	"ubuntu:22.04": "https://partner-images.canonical.com/core/jammy/current/ubuntu-jammy-core-cloudimg-amd64-root.tar.gz",
+	"alpine":        "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-minirootfs-3.21.0-x86_64.tar.gz",
+	"alpine:latest": "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-minirootfs-3.21.0-x86_64.tar.gz",
+	"alpine:3.21":   "https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-minirootfs-3.21.0-x86_64.tar.gz",
+	"ubuntu":        "https://partner-images.canonical.com/core/jammy/current/ubuntu-jammy-core-cloudimg-amd64-root.tar.gz",
+	"ubuntu:latest": "https://partner-images.canonical.com/core/jammy/current/ubuntu-jammy-core-cloudimg-amd64-root.tar.gz",
+	"ubuntu:22.04":  "https://partner-images.canonical.com/core/jammy/current/ubuntu-jammy-core-cloudimg-amd64-root.tar.gz",
 }
 
 // RunOptions defined in backend.go
@@ -77,12 +79,20 @@ func (e *Engine) Logs(id string) (string, error) {
 	return e.backend.Logs(id)
 }
 
-func (e *Engine) Build(ctxDir string, tag string) (string, error) {
-	return e.backend.Build(ctxDir, tag)
+func (e *Engine) Build(ctxDir string, dockerfile string, tag string) (string, error) {
+	return e.backend.Build(ctxDir, dockerfile, tag)
 }
 
 func (e *Engine) Prune() error {
 	return e.backend.Prune()
+}
+
+func (e *Engine) Diff(image1, image2 string) (string, error) {
+	return e.backend.Diff(image1, image2)
+}
+
+func (e *Engine) ExportDiff(baseImage, targetImage, outputPath string) error {
+	return e.backend.ExportDiff(baseImage, targetImage, outputPath)
 }
 
 func (e *Engine) CreateVolume(name string) error {

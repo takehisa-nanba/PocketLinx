@@ -12,9 +12,9 @@
 
 ## 🌟 Overview / 概要
 
-**PocketLinx (v0.7.1)** is a next-generation container runtime designed for the native performance of WSL2. It embraces the design ideal of **"Minimal Interaction"**: The "heavy door" of provisioning and network setup is opened once, and you work efficiently inside. No more waiting for extraction every time you run a command.
+**PocketLinx (v1.0.0)** is a next-generation container runtime designed for the native performance of WSL2. It embraces the design ideal of **"Minimal Interaction"**: The "heavy door" of provisioning and network setup is opened once, and you work efficiently inside. No more waiting for extraction every time you run a command.
 
-**PocketLinx (v0.7.1)** は、WSL2の性能を最大限に引き出す設計思想をさらに前進させました。「重い扉（プロビジョニングやネットワーク設定）を一度開けたら、その中で効率的に作業する」という **"Minimal Interaction"** を実現。コマンドを叩くたびに展開を待つ必要はもうありません。
+**PocketLinx (v1.0.0)** は、WSL2の性能を最大限に引き出す設計思想をさらに前進させました。「重い扉（プロビジョニングやネットワーク設定）を一度開けたら、その中で効率的に作業する」という **"Minimal Interaction"** を実現。コマンドを叩くたびに展開を待つ必要はもうありません。
 
 ---
 
@@ -28,21 +28,27 @@
   - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
   - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
 
-- **💨 Blazing Fast Build with `.plxignore` (v0.7.1 - NEW)**
-  - Skip heavy folders like `.git` or `.plx_env` during build. No more waiting for hash calculations.
-  - `.plxignore` で巨大なフォルダをスキップ。ビルド前のハッシュ計算待ちを解消し、瞬時に実行を開始します。
+- **🛡️ Rock-solid Reliability (v1.0.0 - MAJOR)**
+  - **Absolute Path Persistence**: Eliminates the "CWD trap" by strictly handling mount paths as absolute.
+  - **Precise Process Control**: Context-aware termination using PID & /proc validation. Zero accidental kills.
+  - **Auto-Recover Network State**: Automatically restores IP leases on startup.
+  - **究極の堅牢性**: マウントパスの完全絶対パス化、PID/コンテキスト照合による精密なプロセス停止、ネットワーク状態の自動復旧を実装。
 
-- **🏠 Branded Host Auto-Discovery (v0.7.0 - Enhanced)**
-  - Containers can automatically reach the Windows host via `host.plx.internal`. No manual IP lookup needed.
-  - コンテナから Windows ホストへ `host.plx.internal` で自動接続。IP アドレスを手動で調べる手間をなくしました。
+- **💨 Instant Build via Smart Shortcut (v0.7.4)**
+  - Skip redundant image creation if cached. Reduces 20+ minute builds to **seconds**.
+  - 全ステップキャッシュ時はパッキングをスキップ。巨大な環境構築も2回目以降は瞬時に完了します。
 
-- **📲 Automatic ADB Bridge (v0.7.0 - NEW)**
-  - Debug Android devices from inside containers instantly. `ANDROID_ADB_SERVER_ADDRESS` is automatically injected for seamless `adb` and `flutter` connectivity.
-  - コンテナ内からホスト側の Android 実機を即座にデバッグ可能。環境変数を自動注入し、`adb` や `flutter` の透過的な接続を実現しました。
+- **👤 Image Metadata Persistence (v0.7.3)**
+  - Preserves `USER`, `WORKDIR`, and `ENV`. Auto-login as specified user.
+  - ユーザー権限や作業ディレクトリをイメージに永続化。設定したユーザーで自動ログイン。
 
-- **🚪 Rock-solid `exec` & `start` (v0.7.0 - Updated)**
-  - Fixed namespace isolation and rootfs (deleted) issues for reliable access across all distros. Use `plx start` to revive stopped containers instantly.
-  - `nsenter` と rootfs 名前空間の問題を修正し、あらゆるディストロで安定した接続が可能に。`plx start` で停止中の環境も瞬時に復帰できます。
+- **📲 Automatic ADB Bridge (v0.7.0)**
+  - Seamlessly debug Android devices from inside containers.
+  - ホスト側の Android 実機をコンテナ内から即座にデバッグ可能。
+
+- **🚀 Loopback IP per Container (v0.5.0)**
+  - Unique loopback IP (127.0.0.x) for each container. No port conflicts!
+  - コンテナごとに固有のループバックIP。ポート衝突を根本から解消。
 
 - **🎛️ Compose Support (v0.4.0)**
   - Orchestrate multiple containers using `plx-compose.yml`.

@@ -21,6 +21,7 @@ func NewBackend() Backend {
 
 // NewWSLBackend initializes the backend with decomposed services
 func NewWSLBackend() *WSLBackend {
+	// デフォルトのディストロ名を使用してクライアントを作成
 	client := wsl.NewClient(DistroName)
 
 	// Dependency Injection style
@@ -107,10 +108,16 @@ func (b *WSLBackend) Remove(id string) error         { return b.Runtime.Remove(i
 // Image
 func (b *WSLBackend) Pull(image string) error   { return b.Image.Pull(image) }
 func (b *WSLBackend) Images() ([]string, error) { return b.Image.Images() }
-func (b *WSLBackend) Build(ctxDir string, tag string) (string, error) {
-	return b.Image.Build(ctxDir, tag)
+func (b *WSLBackend) Build(ctxDir string, dockerfile string, tag string) (string, error) {
+	return b.Image.Build(ctxDir, dockerfile, tag)
 }
 func (b *WSLBackend) Prune() error { return b.Image.Prune() }
+func (b *WSLBackend) Diff(image1, image2 string) (string, error) {
+	return b.Image.Diff(image1, image2)
+}
+func (b *WSLBackend) ExportDiff(baseImage, targetImage, outputPath string) error {
+	return b.Image.ExportDiff(baseImage, targetImage, outputPath)
+}
 
 // Volume
 func (b *WSLBackend) CreateVolume(name string) error { return b.Volume.Create(name) }

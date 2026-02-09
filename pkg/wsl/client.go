@@ -58,18 +58,55 @@ func (c *Client) RunDistroCommandOutput(args ...string) (string, error) {
 	return string(out), nil
 }
 
-// WindowsToWslPath converts a Windows path (e.g. C:\Users) to a WSL path (/mnt/c/Users)
+// WindowsToWslPath converts a Windows path to a WSL path
 func WindowsToWslPath(path string) (string, error) {
+	if path == "" {
+		return "", nil
+	}
+
+	// 1. Clean and get absolute path
 	abs, err := filepath.Abs(path)
 	if err != nil {
 		return "", err
 	}
 
-	// C:\Users -> /mnt/c/Users
-	drive := abs[0]
-	driveLower := string(drive + 32) // Naive lowercase
-	rest := abs[3:]
-	rest = filepath.ToSlash(rest)
+	// 2. Handle UNC Paths (\\host\share\...)
+	if strings.HasPrefix(abs, "\\\\") {
+		// UNC paths in WSL2 are often accessed via /mnt/wsl/ (custom) or handled as SMB mounts.
+		// Standard wslpath converts \\host\share to /mnt/wsl/host/share (approx).
+		// For PocketLinx, we'll convert to a generic /mnt/wsl/ style to stay consistent.
+		parts := strings.Split(strings.TrimPrefix(abs, "\\\\"), "\\")
+		return "/mnt/wsl/" + strings.Join(parts, "/"), nil
+	}
 
-	return fmt.Sprintf("/mnt/%s/%s", driveLower, rest), nil
+	// 3. Handle Drive Letters (C:\...)
+	if len(abs) >= 3 && abs[1] == ':' && abs[2] == '\\' {
+		drive := strings.ToLower(string(abs[0]))
+		rest := filepath.ToSlash(abs[3:])
+		return fmt.Sprintf("/mnt/%s/%s", drive, rest), nil
+	}
+
+	// 4. Fallback (already looks like a Linux path or relative without drive)
+	return filepath.ToSlash(abs), nil
+}
+
+// StartDistroCommand starts a command inside the specific distro but does not wait for completion
+func (c *Client) StartDistroCommand(args ...string) (*exec.Cmd, error) {
+	wslArgs := append([]string{"-d", c.DistroName, "--"}, args...)
+	cmd := exec.Command("wsl.exe", wslArgs...)
+	// Stderr should usually be piped or shared
+	cmd.Stderr = os.Stderr
+	// No stdout by default to allow custom piping/monitoring
+	if err := cmd.Start(); err != nil {
+		return nil, err
+	}
+	return cmd, nil
+}
+
+// PrepareDistroCommand creates a command inside the specific distro but does not start it
+func (c *Client) PrepareDistroCommand(args ...string) *exec.Cmd {
+	wslArgs := append([]string{"-d", c.DistroName, "--"}, args...)
+	cmd := exec.Command("wsl.exe", wslArgs...)
+	cmd.Stderr = os.Stderr
+	return cmd
 }

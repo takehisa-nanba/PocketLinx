@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"time"
 )
 
 func downloadFile(url string, filepath string) error {
@@ -105,4 +106,68 @@ func CheckRequirements() error {
 	}
 
 	return nil
+}
+
+// ProgressProxy tracks bytes written and displays a progress bar
+type ProgressProxy struct {
+	Total      int64
+	Processed  int64
+	Label      string
+	StartTime  time.Time
+	LastUpdate time.Time
+}
+
+func NewProgressProxy(total int64, label string) *ProgressProxy {
+	return &ProgressProxy{
+		Total:      total,
+		Label:      label,
+		StartTime:  time.Now(),
+		LastUpdate: time.Now(),
+	}
+}
+
+func (p *ProgressProxy) Write(b []byte) (int, error) {
+	n := len(b)
+	p.Processed += int64(n)
+	if time.Since(p.LastUpdate) > 100*time.Millisecond {
+		p.Display()
+		p.LastUpdate = time.Now()
+	}
+	return n, nil
+}
+
+func (p *ProgressProxy) Display() {
+	percent := 0.0
+	if p.Total > 0 {
+		percent = float64(p.Processed) / float64(p.Total) * 100
+	}
+	if percent > 100 {
+		percent = 100
+	}
+
+	const width = 20
+	done := int(percent / (100 / width))
+	bar := strings.Repeat("=", done)
+	if done < width {
+		bar += ">" + strings.Repeat(" ", width-done-1)
+	} else {
+		bar += "="
+	}
+
+	fmt.Printf("\x1b[2K\r%s [%s] %.1f%% (%s/%s) %ds",
+		p.Label, bar, percent, formatSize(p.Processed), formatSize(p.Total),
+		int(time.Since(p.StartTime).Seconds()))
+}
+
+func formatSize(b int64) string {
+	const unit = 1024
+	if b < unit {
+		return fmt.Sprintf("%dB", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f%cB", float64(b)/float64(div), "KMGTPE"[exp])
 }

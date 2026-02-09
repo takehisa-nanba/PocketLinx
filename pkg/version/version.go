@@ -1,3 +1,3 @@
 package version
 
-const Current = "v0.6.4 (Network Fixes & Exec)"
+const Current = "v1.0.0 (The Ultimate Reliable Engine)"

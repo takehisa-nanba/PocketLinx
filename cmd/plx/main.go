@@ -58,6 +58,10 @@ func main() {
 		handleDashboard(engine)
 	case "prune":
 		handlePrune(engine)
+	case "diff":
+		handleDiff(engine, args)
+	case "package":
+		handlePackage(engine, args)
 	case "volume":
 		handleVolume(engine, args)
 	case "compose":

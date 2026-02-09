@@ -72,7 +72,10 @@ func (m *BridgeNetworkManager) SetupBridge() error {
 	m.runner("sysctl -w net.ipv4.ip_forward=1")
 
 	natRule := fmt.Sprintf("POSTROUTING -s %s ! -d %s -j MASQUERADE", m.subnet, m.subnet)
-	m.runner(fmt.Sprintf("iptables -t nat -A %s", natRule))
+	// Check if rule exists before adding (v0.8.0)
+	if _, err := m.runner(fmt.Sprintf("/sbin/iptables -t nat -C %s", natRule)); err != nil {
+		m.runner(fmt.Sprintf("/sbin/iptables -t nat -A %s", natRule))
+	}
 
 	return nil
 }
@@ -151,34 +154,48 @@ func (m *BridgeNetworkManager) GetSetupScript(containerID, ip string) (string, s
 	script := fmt.Sprintf(`
 set -e
 mkdir -p /var/run/netns
-if ! ip netns list | grep -q "^%s$"; then
-  ip netns add %s
-fi
+# Force cleanup stale namespace to prevent "File exists" error (v0.7.4)
+ip netns del %s 2>/dev/null || true
+ip netns add %s
 
 # Create Veth pair if host side doesn't exist
+# Force cleanup host veth if it exists to prevent "File exists" error (v0.7.18)
+ip link del %s 2>/dev/null || true
 if ! ip link show %s >/dev/null 2>&1; then
   ip link add %s type veth peer name %s
   ip link set %s master %s
   ip link set %s up
 fi
 
-# Move to netns (ignore error if already there)
-ip link set %s netns %s 2>/dev/null || true
+# Move to netns (v0.7.17: Fail fast to avoid ghost devices)
+ip link set %s netns %s
 
 # Rename and Configure inside netns
-ip netns exec %s sh -c "
+ip netns exec %s sh -c '
+  set -e
   ip link set lo up 2>/dev/null || true
-  if ip link show %s >/dev/null 2>&1; then
-    ip link set %s name eth0
+  # Wait for interface to appear in namespace (max 2s, v0.7.16)
+  _i=0
+  _found=0
+  while [ "$_i" -lt 20 ]; do
+    if ip link show %s >/dev/null 2>&1; then _found=1; break; fi
+    sleep 0.1
+    _i=$((_i+1))
+  done
+  if [ "$_found" -eq 0 ]; then
+    echo "Error: Device %s failed to appear in netns" >&2
+    exit 1
   fi
+  ip link set %s name eth0
+  
   if ! ip addr show eth0 | grep -q "%s"; then
     ip addr add %s/24 dev eth0
   fi
   ip link set eth0 up
   ip route add default via %s 2>/dev/null || true
   ethtool -K eth0 tx off 2>/dev/null || true
-"
-`, containerID, containerID, hostVeth, hostVeth, contVeth, hostVeth, m.bridgeName, hostVeth, contVeth, containerID, containerID, contVeth, contVeth, ip, ip, m.gatewayIP)
+'
+`, containerID, containerID, hostVeth, hostVeth, hostVeth, contVeth, hostVeth, m.bridgeName, hostVeth, contVeth, containerID, containerID, contVeth, contVeth, contVeth, ip, ip, m.gatewayIP)
 
 	return script, hostVeth, nil
 }

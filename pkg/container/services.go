@@ -16,9 +16,11 @@ type RuntimeService interface {
 // ImageService handles image management (pull, build, cache)
 type ImageService interface {
 	Pull(image string) error
-	Build(ctxDir string, tag string) (string, error)
+	Build(ctxDir string, dockerfile string, tag string) (string, error)
 	Images() ([]string, error)
 	Prune() error
+	Diff(image1, image2 string) (string, error)
+	ExportDiff(baseImage, targetImage, outputPath string) error
 }
 
 // VolumeService handles persistent storage management
@@ -32,6 +34,7 @@ type VolumeService interface {
 type NetworkService interface {
 	SetupBridge() error
 	AllocateIP() (string, error)
-	ReleaseIP(ip string) error
-	ConnectContainer(id string, ip string) error
+	ReleaseIP(ip string)
+	GetSetupScript(containerID, ip string) (string, string, error)
+	CleanupContainerNetwork(containerID, ip string) error
 }

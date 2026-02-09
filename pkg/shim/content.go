@@ -5,8 +5,14 @@ const Content = `#!/bin/sh
 ROOTFS=$1
 MOUNTS=$2
 WORKDIR=$3
-PID_FILE=$4
-shift 4
+USER=$4
+PID_FILE=$5
+shift 5
+
+if [ -z "$ROOTFS" ]; then
+  echo "Error: ROOTFS is empty. Refusing to continue to protect host system."
+  exit 1
+fi
 
 if [ -n "$PID_FILE" ]; then
   echo $$ > "$PID_FILE"
@@ -27,13 +33,16 @@ mount -t tmpfs tmpfs "$ROOTFS/tmp"
 ip link set lo up 2>/dev/null || true # Setup loopback
 
 # 2. Setup Network (DNS & Hosts)
-rm -f "$ROOTFS/etc/resolv.conf" "$ROOTFS/etc/hosts"
-if [ -f /etc/resolv.conf ]; then
-  cat /etc/resolv.conf > "$ROOTFS/etc/resolv.conf"
+if [ -f "/etc/resolv.conf" ]; then
+  # Backup existing resolv.conf and try to use it (v0.8.1)
+  cp /etc/resolv.conf "$ROOTFS/etc/resolv.conf.bak" 2>/dev/null
+  cat /etc/resolv.conf > "$ROOTFS/etc/resolv.conf" 2>/dev/null
 fi
-# Fallback/Append public DNS to ensure resolution
-# Fallback removed: Rely on host's resolv.conf (copied above)
-# This ensures we use the network's correct DNS servers (e.g. VPN/Intranet)
+# Fallback to Google DNS if empty (v0.8.1)
+if [ ! -s "$ROOTFS/etc/resolv.conf" ]; then
+  echo "nameserver 8.8.8.8" > "$ROOTFS/etc/resolv.conf"
+fi
+rm -f "$ROOTFS/etc/hosts"
 
 
 # Generate basic hosts file
@@ -67,12 +76,45 @@ if [ "$WORKDIR" != "none" ] && [ -n "$WORKDIR" ]; then
 fi
 
 # 5. Execution
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+if [ -n "$PLX_CONTAINER_PATH" ]; then
+  export PATH="$PLX_CONTAINER_PATH"
+else
+  export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+fi
+
+if [ -n "$USER" ] && [ "$USER" != "root" ] && [ "$USER" != "none" ]; then
+  # Verify user exists inside chroot
+  if ! /usr/sbin/chroot "$ROOTFS" id "$USER" >/dev/null 2>&1; then
+    # Fallback to manual grep check for robustness (v0.7.16)
+    # Use grep with absolute search or ensure it's in path
+    if ! /bin/grep -q "^$USER:" "$ROOTFS/etc/passwd" 2>/dev/null && ! /usr/bin/grep -q "^$USER:" "$ROOTFS/etc/passwd" 2>/dev/null; then
+      echo "Warning: user '$USER' not found in /etc/passwd, falling back to root"
+      USER="root"
+    fi
+  fi
+fi
 
 if [ $# -eq 0 ]; then
-  exec chroot "$ROOTFS" /bin/sh
+  if [ -n "$USER" ] && [ "$USER" != "root" ] && [ "$USER" != "none" ]; then
+    # Search for su (v0.7.17)
+    SU_EXE="su"
+    if [ -f "$ROOTFS/bin/su" ]; then SU_EXE="/bin/su"; elif [ -f "$ROOTFS/usr/bin/su" ]; then SU_EXE="/usr/bin/su"; fi
+    exec /usr/sbin/chroot "$ROOTFS" "$SU_EXE" - "$USER"
+  else
+    exec /usr/sbin/chroot "$ROOTFS" /bin/sh
+  fi
 else
   # Use sh -c for command lookup and PATH injection inside chroot
-  exec chroot "$ROOTFS" sh -c "export PATH=$PATH; $CD_CMD exec \"\$@\"" -- "$@"
+  if [ -n "$USER" ] && [ "$USER" != "root" ] && [ "$USER" != "none" ]; then
+    # su -m preserves environment (including our injected PATH)
+    # Search for su (v0.7.17)
+    SU_EXE="su"
+    if [ -f "$ROOTFS/bin/su" ]; then SU_EXE="/bin/su"; elif [ -f "$ROOTFS/usr/bin/su" ]; then SU_EXE="/usr/bin/su"; fi
+    # Use HOME and TERM from environment if available (v0.8.1)
+    exec /usr/sbin/chroot "$ROOTFS" "$SU_EXE" -m "$USER" -c "export HOME=${HOME:-/home/$USER}; export TERM=${TERM:-xterm}; $CD_CMD exec \"\$@\"" -- "$@"
+  else
+    # Explicitly use /bin/sh for chroot exec (v0.7.17)
+    exec /usr/sbin/chroot "$ROOTFS" /bin/sh -c "$CD_CMD exec \"\$@\"" -- "$@"
+  fi
 fi
 `

@@ -27,6 +27,14 @@ type PortMapping struct {
 	Container int
 }
 
+// ImageMetadata stores the default runtime configuration for an image
+type ImageMetadata struct {
+	User    string            `json:"user"`
+	Workdir string            `json:"workdir"`
+	Env     map[string]string `json:"env"`
+	Command []string          `json:"command"`
+}
+
 // RunOptions はコンテナ実行時の詳細設定を保持する構造体です。
 type RunOptions struct {
 	Image       string
@@ -37,6 +45,7 @@ type RunOptions struct {
 	Ports       []PortMapping
 	Interactive bool
 	Detach      bool
+	User        string
 	Workdir     string
 	ExtraHosts  []string // List of "hostname:ip" mappings
 }
@@ -53,8 +62,10 @@ type Backend interface {
 	Stop(id string) error
 	Logs(id string) (string, error)
 	Remove(id string) error
-	Build(ctxDir string, tag string) (string, error) // Dockerfileからビルドしてイメージ名を返す
+	Build(ctxDir string, dockerfile string, tag string) (string, error) // Dockerfileからビルドしてイメージ名を返す
 	Prune() error
+	Diff(image1, image2 string) (string, error)
+	ExportDiff(baseImage, targetImage, outputPath string) error
 
 	// Volume Management
 	CreateVolume(name string) error

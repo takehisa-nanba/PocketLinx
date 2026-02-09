@@ -36,11 +36,12 @@ func handleImages(engine *container.Engine) {
 func handleBuild(engine *container.Engine, args []string) {
 	ctxDir := "."
 	targetImage := ""
+	configFile := ""
 
-	// Parse arguments manually to support -t/--tag
+	// Parse arguments manually to support -t/--tag and -f/--file
 	for i := 0; i < len(args); i++ {
-		arg := args[i]
-		if arg == "-t" || arg == "--tag" {
+		switch args[i] {
+		case "-t", "--tag":
 			if i+1 < len(args) {
 				targetImage = args[i+1]
 				i++ // skip value
@@ -48,8 +49,16 @@ func handleBuild(engine *container.Engine, args []string) {
 				fmt.Println("Error: flag needs an argument: -t")
 				os.Exit(1)
 			}
-		} else {
-			ctxDir = arg
+		case "-f", "--file":
+			if i+1 < len(args) {
+				configFile = args[i+1]
+				i++
+			} else {
+				fmt.Println("Error: flag needs an argument: -f")
+				os.Exit(1)
+			}
+		default:
+			ctxDir = args[i]
 		}
 	}
 
@@ -61,7 +70,7 @@ func handleBuild(engine *container.Engine, args []string) {
 		}
 	}
 
-	img, err := engine.Build(ctxDir, targetImage)
+	img, err := engine.Build(ctxDir, configFile, targetImage)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Build failed: %v\n", err)
 		os.Exit(1)
@@ -76,4 +85,32 @@ func handlePrune(engine *container.Engine) {
 		os.Exit(1)
 	}
 	fmt.Println("Build cache cleared.")
+}
+
+func handleDiff(engine *container.Engine, args []string) {
+	if len(args) < 2 {
+		fmt.Println("Usage: plx diff <image1> <image2>")
+		os.Exit(1)
+	}
+	diff, err := engine.Diff(args[0], args[1])
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Diff failed: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Print(diff)
+}
+
+func handlePackage(engine *container.Engine, args []string) {
+	if len(args) < 3 {
+		fmt.Println("Usage: plx package <base_image> <target_image> <output_path.tar.gz>")
+		os.Exit(1)
+	}
+	base := args[0]
+	target := args[1]
+	output := args[2]
+
+	if err := engine.ExportDiff(base, target, output); err != nil {
+		fmt.Fprintf(os.Stderr, "Package export failed: %v\n", err)
+		os.Exit(1)
+	}
 }

@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"PocketLinx/pkg/container"
-	"PocketLinx/pkg/wsl"
 )
 
 func handleRun(engine *container.Engine, args []string) {
@@ -60,18 +59,33 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 		arg := args[i]
 		if arg == "-v" && i+1 < len(args) {
 			val := args[i+1]
-			lastColon := strings.LastIndex(val, ":")
-			if lastColon != -1 && lastColon > 1 {
-				source := val[:lastColon]
-				target := val[lastColon+1:]
+			source := ""
+			target := ""
 
-				// Auto-convert Windows paths to WSL paths (only if not already a Linux path)
-				if !strings.HasPrefix(source, "/") {
-					if converted, err := wsl.WindowsToWslPath(source); err == nil {
-						source = converted
-					}
+			// Windows absolute path: C:\path:/app
+			// Look for ':' that isn't a drive letter colon (index 1)
+			if len(val) >= 2 && val[1] == ':' {
+				// Found drive letter, search for the NEXT colon
+				colonIdx := strings.Index(val[2:], ":")
+				if colonIdx != -1 {
+					source = val[:colonIdx+2]
+					target = val[colonIdx+3:]
 				}
+			} else {
+				// Linux path or relative: /path:/app or ./path:/app
+				colonIdx := strings.Index(val, ":")
+				if colonIdx != -1 {
+					source = val[:colonIdx]
+					target = val[colonIdx+1:]
+				}
+			}
 
+			if source != "" && target != "" {
+				// Guard against malformed colons or empty paths (v0.8.1)
+				if strings.Contains(target, ":") || source == "" || target == "" {
+					fmt.Printf("Warning: Invalid mount format '%s'. Skipping.\n", val)
+					continue
+				}
 				mounts = append(mounts, container.Mount{
 					Source: source,
 					Target: target,
@@ -133,6 +147,13 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 			// Apply Dockerfile defaults
 			absPath, _ := filepath.Abs(".")
 			image = strings.ToLower(filepath.Base(absPath))
+			// Sanitize image name (v0.8.1: replace spaces and special chars with hyphens)
+			image = strings.Map(func(r rune) rune {
+				if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+					return r
+				}
+				return '-'
+			}, image)
 
 			// Reconstruct properties from Instructions
 			for _, instr := range df.Instructions {
@@ -177,8 +198,8 @@ func parseRunOptions(args []string) (*container.RunOptions, error) {
 		}
 	}
 
-	if len(cmdArgs) == 0 {
-		return nil, fmt.Errorf("Usage: plx run [-it] [-e KEY=VAL] [-p HOST:CONT] [IMAGE] <command> [args...]")
+	if len(cmdArgs) == 0 && image == "alpine" {
+		return nil, fmt.Errorf("Usage: plx run [options] <image> [command] [args...]\nOptions: -it, -d, -v, -p, -e, --name")
 	}
 
 	// Heuristic: If workdir is empty and we have a mount to /app, default to /app
