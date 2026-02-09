@@ -67,11 +67,20 @@
 ## 🛠️ Installation / インストール
 
 ### Install / インストール
-Download `plx.exe` and add it to your PATH:
+Download `plx.exe` and run the following command in your terminal:
+ダウンロードした `plx.exe` をインストールします。以下のコマンドをコピーして実行してください：
+
+**Option 1: Manual (if you are in the download folder)**
 ```powershell
-plx.exe install
+.\plx.exe install
 ```
-*(Restart your terminal to apply PATH changes / インストール後、ターミナルを再起動してください)*
+
+**Option 2: Auto-find (Run from anywhere / どこからでも実行可能)**
+```powershell
+# Find plx.exe in Downloads and install automatically
+Get-ChildItem -Path "$HOME\Downloads", "." -Filter "plx.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 | ForEach-Object { & $_.FullName install }
+```
+*(Restart your terminal after installation / インストール後、ターミナルを再起動してください)*
 
 ### Setup / 初期セットアップ
 Initialize the Linux environment:
