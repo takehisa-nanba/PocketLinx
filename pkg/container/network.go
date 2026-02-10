@@ -3,6 +3,7 @@ package container
 import (
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -20,22 +21,30 @@ type BridgeNetworkManager struct {
 	mu         sync.Mutex
 }
 
-func NewBridgeNetworkManager(runner CommandRunner) *BridgeNetworkManager {
-	// Subnet: 10.10.0.0/24
-	// Gateway/Bridge: 10.10.0.1
-	// Containers: 10.10.0.2 - 10.10.0.254
+func NewBridgeNetworkManager(runner CommandRunner, bridgeName, subnet string) *BridgeNetworkManager {
+	if bridgeName == "" {
+		bridgeName = "plx0"
+	}
+	if subnet == "" {
+		subnet = "10.10.0.0/24"
+	}
+
+	// Derive gateway and range from subnet (simple logic for now)
+	prefix := subnet[:strings.LastIndex(subnet, ".")+1]
+	gatewayIP := prefix + "1"
+
 	var ips []string
 	for i := 2; i < 255; i++ {
-		ips = append(ips, fmt.Sprintf("10.10.0.%d", i))
+		ips = append(ips, fmt.Sprintf("%s%d", prefix, i))
 	}
 
 	return &BridgeNetworkManager{
-		bridgeName: "plx0",
-		subnet:     "10.10.0.0/24",
-		gatewayIP:  "10.10.0.1",
+		bridgeName: bridgeName,
+		subnet:     subnet,
+		gatewayIP:  gatewayIP,
 		ipRange:    ips,
 		usedIPs:    make(map[string]bool),
-		runner:     runner, // injected runner (e.g., wslClient.Run)
+		runner:     runner,
 	}
 }
 
@@ -44,13 +53,13 @@ func (m *BridgeNetworkManager) SetupBridge() error {
 	_, err := m.runner(fmt.Sprintf("/sbin/ip link show %s", m.bridgeName))
 	if err == nil {
 		if os.Getenv("PLX_VERBOSE") != "" {
-			fmt.Println("[DEBUG] Bridge plx0 already exists. Skipping re-init.")
+			fmt.Printf("[DEBUG] Bridge %s already exists. Skipping re-init.\n", m.bridgeName)
 		}
 		m.runner("echo 1 > /proc/sys/net/ipv4/ip_forward")
 		return nil
 	}
 
-	fmt.Println("Initializing Network Bridge plx0...")
+	fmt.Printf("Initializing Network Bridge %s...\n", m.bridgeName)
 
 	// 1. Create Bridge
 	if _, err := m.runner(fmt.Sprintf("/sbin/ip link add name %s type bridge", m.bridgeName)); err != nil {

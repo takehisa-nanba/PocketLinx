@@ -111,10 +111,10 @@ else
     SU_EXE="su"
     if [ -f "$ROOTFS/bin/su" ]; then SU_EXE="/bin/su"; elif [ -f "$ROOTFS/usr/bin/su" ]; then SU_EXE="/usr/bin/su"; fi
     # Use HOME and TERM from environment if available (v0.8.1)
-    exec /usr/sbin/chroot "$ROOTFS" "$SU_EXE" -m "$USER" -c "export HOME=${HOME:-/home/$USER}; export TERM=${TERM:-xterm}; $CD_CMD exec \"\$@\"" -- "$@"
+    exec /usr/sbin/chroot "$ROOTFS" "$SU_EXE" -m "$USER" -c "export HOME=${HOME:-/home/$USER}; export TERM=${TERM:-xterm}; $CD_CMD exec \"\$@\"" sh "$@"
   else
     # Explicitly use /bin/sh for chroot exec (v0.7.17)
-    exec /usr/sbin/chroot "$ROOTFS" /bin/sh -c "$CD_CMD exec \"\$@\"" -- "$@"
+    exec /usr/sbin/chroot "$ROOTFS" /bin/sh -c "$CD_CMD exec \"\$@\"" sh "$@"
   fi
 fi
 `

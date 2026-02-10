@@ -35,7 +35,8 @@ func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
 		return string(out), err
 	}
 
-	netMgr := NewBridgeNetworkManager(runner)
+	// Default to plx0/10.10.0.0/24 (Compatible with existing installations)
+	netMgr := NewBridgeNetworkManager(runner, "plx0", "10.10.0.0/24")
 
 	s := &WSLRuntimeService{
 		wslClient: client,

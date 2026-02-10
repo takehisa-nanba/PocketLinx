@@ -76,13 +76,24 @@ func (s *WSLImageService) Pull(image string) error {
 		absInstallDir, _ := filepath.Abs(installDir)
 		absRootfsFile, _ := filepath.Abs(targetFile)
 
-		fmt.Printf("Importing system distro '%s'...\n", s.wslClient.DistroName)
-		s.wslClient.Run("--unregister", s.wslClient.DistroName)
-		os.RemoveAll(absInstallDir)
-		os.MkdirAll(absInstallDir, 0755)
+		// Check if distro already exists (v1.0.7)
+		// wsl.exe -l -q returns error if not found
+		exists := false
+		checkCmd := exec.Command("wsl.exe", "-l", "-q", "-d", s.wslClient.DistroName)
+		if err := checkCmd.Run(); err == nil {
+			exists = true
+			fmt.Printf("System distro '%s' already exists. Keeping existing data.\n", s.wslClient.DistroName)
+		}
 
-		if err := s.wslClient.Run("--import", s.wslClient.DistroName, absInstallDir, absRootfsFile, "--version", "2"); err != nil {
-			return fmt.Errorf("error importing system distro: %w", err)
+		if !exists {
+			fmt.Printf("Importing system distro '%s'...\n", s.wslClient.DistroName)
+			s.wslClient.Run("--unregister", s.wslClient.DistroName)
+			os.RemoveAll(absInstallDir)
+			os.MkdirAll(absInstallDir, 0755)
+
+			if err := s.wslClient.Run("--import", s.wslClient.DistroName, absInstallDir, absRootfsFile, "--version", "2"); err != nil {
+				return fmt.Errorf("error importing system distro: %w", err)
+			}
 		}
 
 		fmt.Println("Installing container-shim...")

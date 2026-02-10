@@ -28,11 +28,12 @@
   - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
   - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
 
-- **🛡️ Rock-solid Reliability (v1.0.0 - MAJOR)**
-  - **Absolute Path Persistence**: Eliminates the "CWD trap" by strictly handling mount paths as absolute.
-  - **Precise Process Control**: Context-aware termination using PID & /proc validation. Zero accidental kills.
-  - **Auto-Recover Network State**: Automatically restores IP leases on startup.
-  - **究極の堅牢性**: マウントパスの完全絶対パス化、PID/コンテキスト照合による精密なプロセス停止、ネットワーク状態の自動復旧を実装。
+- **🛡️ Rock-solid Reliability (v1.0.7 - MAJOR FIXES)**
+  - **Persistent Image Storage**: Fixes the critical bug where images disappeared after `plx setup`. User data is now safely reused.
+  - **Project-Specific Bridges**: Supports isolated network bridges (e.g., `plx0`, `plx1`) per project via `plx.json`. No more bridge conflicts!
+  - **Absolute Path Persistence**: strictly handles mount paths as absolute (v1.0.0).
+  - **Precise Process Control**: Context-aware termination using PID & /proc validation (v1.0.0).
+  - **究極の堅牢性と分離**: `plx setup` 時のイメージ消失を修正し、各プロジェクトに独立したネットワーク（ブリッジ）を提供可能にしました。
 
 - **💨 Instant Build via Smart Shortcut (v0.7.4)**
   - Skip redundant image creation if cached. Reduces 20+ minute builds to **seconds**.

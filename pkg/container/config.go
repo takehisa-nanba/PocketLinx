@@ -8,10 +8,17 @@ import (
 
 // ProjectConfig は plx.json の構造を定義します。
 type ProjectConfig struct {
-	Image   string   `json:"image"`
-	Mounts  []Mount  `json:"mounts"`
-	Command []string `json:"command"`
-	Workdir string   `json:"workdir"`
+	Name    string         `json:"name"`
+	Image   string         `json:"image"`
+	Mounts  []Mount        `json:"mounts"`
+	Command []string       `json:"command"`
+	Workdir string         `json:"workdir"`
+	Network *NetworkConfig `json:"network,omitempty"`
+}
+
+type NetworkConfig struct {
+	BridgeName string `json:"bridge"`
+	Subnet     string `json:"subnet"` // e.g., 10.10.1.0/24
 }
 
 // LoadProjectConfig はカレントディレクトリから plx.json を読み込みます。
