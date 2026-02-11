@@ -228,7 +228,18 @@ func (s *WSLImageService) Build(ctxDir string, dockerfile string, tag string) (s
 					v = instr.Args[j+1]
 				}
 				envMap[k] = v
-				envPrefix += fmt.Sprintf("export %s=%q; ", k, v)
+				// Expand variables in the value using current envMap (v1.0.8)
+				expandedV := os.Expand(v, func(name string) string {
+					if val, ok := envMap[name]; ok {
+						return val
+					}
+					// If not in our map, it might be a system/base image env
+					// For now, return the literal to avoid accidental clearing
+					// but Docker-style $PATH will be handled if it's in envMap
+					return "$" + name
+				})
+				envMap[k] = expandedV
+				envPrefix += fmt.Sprintf("export %s=%q; ", k, expandedV)
 			}
 		}
 

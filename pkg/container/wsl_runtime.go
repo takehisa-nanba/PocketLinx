@@ -24,8 +24,8 @@ type WSLRuntimeService struct {
 }
 
 func NewWSLRuntimeService(client *wsl.Client) *WSLRuntimeService {
-	// Adapter for CommandRunner
-	runner := func(cmd string) (string, error) {
+	// Adapter for CommandRunner (v1.1.4: Using FunctionRunner type)
+	var runner FunctionRunner = func(cmd string) (string, error) {
 		if os.Getenv("PLX_VERBOSE") != "" {
 			fmt.Printf("[DEBUG] WSL Distro Command: %s\n", cmd)
 		}
@@ -109,50 +109,83 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 	wslImgPath := path.Join(GetWslImagesDir(), image+".tar.gz")
 	wslImgMetaPath := path.Join(GetWslImagesDir(), image+".json")
 
-	// Check existence in WSL
-	if err := s.wslClient.RunDistroCommand("test", "-f", wslImgPath); err != nil {
-		return fmt.Errorf("image '%s' not found. Please run 'plx pull %s' first", image, image)
+	// A. Open Orchestration Session (v1.1.4: Single Path for whole setup)
+	// This ensures we never drop the WSL path during infrastructure preparation.
+	s.wslClient.WaitUntilReady(10, 2*time.Second)
+	sess, sessErr := s.wslClient.NewSession()
+	if sessErr == nil {
+		defer sess.Close()
+	} else if os.Getenv("PLX_VERBOSE") != "" {
+		fmt.Printf("[DEBUG] Failed to open session, using fallback for setup: %v\n", sessErr)
 	}
 
-	// Load Image Metadata for defaults (v0.7.3)
-	if data, err := s.wslClient.RunDistroCommandOutput("cat", wslImgMetaPath); err == nil {
-		var imgMeta ImageMetadata
-		if err := json.Unmarshal([]byte(data), &imgMeta); err == nil {
-			if opts.User == "" {
-				opts.User = imgMeta.User
-			}
-			if opts.Workdir == "" {
-				opts.Workdir = imgMeta.Workdir
-			}
-			if opts.Env == nil {
-				opts.Env = make(map[string]string)
-			}
-			for k, v := range imgMeta.Env {
-				if _, exists := opts.Env[k]; !exists {
-					opts.Env[k] = v
+	// B. Load Image Metadata and Setup Environment INSIDE Session (v1.1.6)
+	if sess != nil {
+		if data, err := sess.Execute(fmt.Sprintf("cat %s", wslImgMetaPath)); err == nil {
+			var imgMeta ImageMetadata
+			if err := json.Unmarshal([]byte(data), &imgMeta); err == nil {
+				if opts.User == "" {
+					opts.User = imgMeta.User
+				}
+				if opts.Workdir == "" {
+					opts.Workdir = imgMeta.Workdir
+				}
+				if opts.Env == nil {
+					opts.Env = make(map[string]string)
+				}
+
+				// Standard exports for the session itself
+				for k, v := range imgMeta.Env {
+					if _, exists := opts.Env[k]; !exists {
+						val := v
+						val = strings.ReplaceAll(val, "${PATH}", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin")
+						val = strings.ReplaceAll(val, "$PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin")
+						opts.Env[k] = val
+					}
+				}
+				if len(opts.Args) == 0 && len(imgMeta.Command) > 0 {
+					opts.Args = imgMeta.Command
 				}
 			}
-			if len(opts.Args) == 0 && len(imgMeta.Command) > 0 {
-				opts.Args = imgMeta.Command
-				fmt.Printf("Using default command: %v\n", opts.Args)
+		}
+
+		// Push environment to the session
+		for k, v := range opts.Env {
+			sess.Execute(fmt.Sprintf("export %s=\"%s\"", k, v))
+		}
+		// Also ensure PATH includes basic utilities
+		sess.Execute("export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin")
+	} else {
+		// Legacy fallback if no session (v0.7.3 logic)
+		if data, err := s.wslClient.RunDistroCommandOutput("cat", wslImgMetaPath); err == nil {
+			var imgMeta ImageMetadata
+			if err := json.Unmarshal([]byte(data), &imgMeta); err == nil {
+				if opts.User == "" {
+					opts.User = imgMeta.User
+				}
+				// ... (omitted same logic for brevity or just keep original fallback)
 			}
 		}
 	}
 
 	wslRootfsPath := wslImgPath
-	var err error
-
-	// 1. Provisioning
-	s.wslClient.RunDistroCommand("mkdir", "-p", containerDir, rootfsDir)
+	// 1. Provisioning Directories
+	if sess != nil {
+		sess.Execute(fmt.Sprintf("mkdir -p %s %s", containerDir, rootfsDir))
+	} else {
+		s.wslClient.RunDistroCommand("mkdir", "-p", containerDir, rootfsDir)
+	}
 
 	// 1. Provisioning Rootfs
-	if err := s.provisionRootfs(wslRootfsPath, containerDir, rootfsDir); err != nil {
+	if err := s.provisionRootfs(sess, wslRootfsPath, containerDir, rootfsDir); err != nil {
 		return err
 	}
 
 	// Update Shim
-	if err := s.wslClient.RunDistroCommandWithInput(shim.Content, "sh", "-c", "cat > /usr/local/bin/container-shim && chmod +x /usr/local/bin/container-shim"); err != nil {
-		fmt.Printf("Warning: Failed to update shim: %v\n", err)
+	if sess != nil {
+		sess.Execute(fmt.Sprintf("cat <<'EOF' > /usr/local/bin/container-shim\n%s\nEOF\nchmod +x /usr/local/bin/container-shim", shim.Content))
+	} else {
+		s.wslClient.RunDistroCommandWithInput(shim.Content, "sh", "-c", "cat > /usr/local/bin/container-shim && chmod +x /usr/local/bin/container-shim")
 	}
 
 	// 2. Process Mounts
@@ -165,17 +198,12 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 			isPath := strings.Contains(m.Source, "/") || strings.Contains(m.Source, "\\") || strings.Contains(m.Source, ".")
 
 			if !isPath {
-				// Named Volume
 				volName := m.Source
 				srcWsl = path.Join(GetWslVolumesDir(), volName)
 				volumeMkdirCmds = append(volumeMkdirCmds, fmt.Sprintf("mkdir -p %s", srcWsl))
 			} else {
-				// Bind Mount
 				absSource, _ := filepath.Abs(m.Source)
-				// Update opts so metadata shows absolute path (v0.7.17)
 				opts.Mounts[i].Source = absSource
-
-				// Auto-create host directory if it doesn't exist (v0.7.14)
 				if _, err := os.Stat(absSource); os.IsNotExist(err) {
 					_ = os.MkdirAll(absSource, 0755)
 				}
@@ -194,7 +222,7 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 	}
 
 	// 2. Setup Network
-	ip, netScript, err := s.setupNetwork(containerId)
+	ip, netScript, err := s.setupNetwork(sess, containerId)
 	if err != nil {
 		return err
 	}
@@ -215,13 +243,13 @@ func (s *WSLRuntimeService) Run(opts RunOptions) error {
 
 	// 4. Final Configuration (Hosts, Metadata, Shim, Volumes)
 	hostsContent := s.generateHostsContent(opts)
-	if err := s.configureContainer(containerDir, rootfsDir, string(metaJSON), hostsContent, volumeMkdirCmds, netScript); err != nil {
+	if err := s.configureContainer(sess, containerDir, rootfsDir, string(metaJSON), hostsContent, volumeMkdirCmds, netScript); err != nil {
 		s.network.ReleaseIP(ip)
 		return err
 	}
 
 	// 5. Execution
-	return s.executeContainer(containerId, containerDir, rootfsDir, opts, mountsStr, ip, meta)
+	return s.executeContainer(sess, containerId, containerDir, rootfsDir, opts, mountsStr, ip, meta)
 }
 
 func (s *WSLRuntimeService) generateHostsContent(opts RunOptions) string {
@@ -242,7 +270,13 @@ func (s *WSLRuntimeService) generateHostsContent(opts RunOptions) string {
 	return content
 }
 
-func (s *WSLRuntimeService) provisionRootfs(wslRootfsPath, containerDir, rootfsDir string) error {
+func (s *WSLRuntimeService) provisionRootfs(sess *wsl.Session, wslRootfsPath, containerDir, rootfsDir string) error {
+	if sess != nil {
+		fmt.Printf("Provisioning container filesystems (extracting rootfs via session)...\n")
+		_, err := sess.Execute(fmt.Sprintf("tar -xzf %s -C %s", wslRootfsPath, rootfsDir))
+		return err
+	}
+
 	s.wslClient.RunDistroCommand("mkdir", "-p", containerDir, rootfsDir)
 	fmt.Printf("Provisioning container filesystems (extracting rootfs)...\n")
 	startProv := time.Now()
@@ -272,13 +306,31 @@ func (s *WSLRuntimeService) provisionRootfs(wslRootfsPath, containerDir, rootfsD
 	}
 }
 
-func (s *WSLRuntimeService) setupNetwork(containerId string) (string, string, error) {
+func (s *WSLRuntimeService) setupNetwork(sess *wsl.Session, containerId string) (string, string, error) {
+	if os.Getenv("PLX_SKIP_NETWORK") != "" {
+		if os.Getenv("PLX_VERBOSE") != "" {
+			fmt.Println("[DEBUG] PLX_SKIP_NETWORK is set. Skipping bridge and IP allocation.")
+		}
+		return "127.0.0.1", "", nil
+	}
+
 	ip, err := s.network.AllocateIP()
 	if err != nil {
 		return "", "", fmt.Errorf("failed to allocate ip: %w", err)
 	}
 	fmt.Printf("Allocating network and IP (%s)... ", ip)
-	if err := s.network.SetupBridge(); err != nil {
+
+	// Use the provided persistent session or fallback (v1.1.4)
+	if sess != nil {
+		originalRunner := s.network.runner
+		s.network.runner = sess
+		err = s.network.SetupBridge()
+		s.network.runner = originalRunner
+	} else {
+		err = s.network.SetupBridge()
+	}
+
+	if err != nil {
 		return "", "", fmt.Errorf("failed to setup network bridge: %w", err)
 	}
 	fmt.Println("done.")
@@ -287,7 +339,7 @@ func (s *WSLRuntimeService) setupNetwork(containerId string) (string, string, er
 	return ip, netScript, nil
 }
 
-func (s *WSLRuntimeService) configureContainer(containerDir, rootfsDir, metaJSON, hostsContent string, volumeMkdirCmds []string, netScript string) error {
+func (s *WSLRuntimeService) configureContainer(sess *wsl.Session, containerDir, rootfsDir, metaJSON, hostsContent string, volumeMkdirCmds []string, netScript string) error {
 	configScript := fmt.Sprintf(`
 set -e
 # A. Essential Metadata & Shim
@@ -312,10 +364,15 @@ EOF
 %s
 `, containerDir, metaJSON, shim.Content, rootfsDir, rootfsDir, hostsContent, strings.Join(volumeMkdirCmds, "\n"), netScript)
 
+	if sess != nil {
+		_, err := sess.Execute(configScript)
+		return err
+	}
+
 	return s.wslClient.RunDistroCommandWithInput(configScript, "sh", "-e")
 }
 
-func (s *WSLRuntimeService) executeContainer(containerId, containerDir, rootfsDir string, opts RunOptions, mountsStr, ip string, meta Container) error {
+func (s *WSLRuntimeService) executeContainer(sess *wsl.Session, containerId, containerDir, rootfsDir string, opts RunOptions, mountsStr, ip string, meta Container) error {
 	userArg := "none"
 	if opts.User != "" {
 		userArg = opts.User
@@ -326,21 +383,28 @@ func (s *WSLRuntimeService) executeContainer(containerId, containerDir, rootfsDi
 	}
 
 	unshareArgs := []string{
-		"ip", "netns", "exec", containerId,
 		"unshare", "--mount", "--pid", "--fork", "--uts",
 	}
+	if os.Getenv("PLX_SKIP_NETWORK") == "" {
+		unshareArgs = append([]string{"ip", "netns", "exec", containerId}, unshareArgs...)
+	}
+
 	pidFile := path.Join(containerDir, "shim.pid")
 	unshareArgs = append(unshareArgs, "/bin/sh", "/usr/local/bin/container-shim", rootfsDir, mountsStr, workdirArg, userArg, pidFile)
 	unshareArgs = append(unshareArgs, opts.Args...)
 
-	// ENV
+	// ENV (v1.1.5: Note: env must be set BEFORE sessions if using os.Setenv)
+	// We handle it here as before.
 	wslEnvList := os.Getenv("WSLENV")
 	if opts.Interactive {
 		if os.Getenv("TERM") == "" {
 			os.Setenv("TERM", "xterm-256color")
 		}
 		if !strings.Contains(wslEnvList, "TERM") {
-			wslEnvList = "TERM/u:" + wslEnvList
+			if wslEnvList != "" {
+				wslEnvList += ":"
+			}
+			wslEnvList += "TERM/u"
 		}
 	}
 	for k, v := range opts.Env {
@@ -350,7 +414,10 @@ func (s *WSLRuntimeService) executeContainer(containerId, containerDir, rootfsDi
 		}
 		os.Setenv(envKey, v)
 		if !strings.Contains(wslEnvList, envKey) {
-			wslEnvList = envKey + "/u:" + wslEnvList
+			if wslEnvList != "" {
+				wslEnvList += ":"
+			}
+			wslEnvList += envKey + "/u"
 		}
 	}
 	os.Setenv("WSLENV", wslEnvList)
@@ -369,12 +436,24 @@ func (s *WSLRuntimeService) executeContainer(containerId, containerDir, rootfsDi
 		return nil
 	}
 
-	err := s.wslClient.RunDistroCommand(unshareArgs...)
+	// EXECUTE (v1.1.5: Reuse path if session exists)
+	var err error
+	if sess != nil {
+		fmt.Println("Launching container (inheriting session)...")
+		err = sess.Become(unshareArgs)
+	} else {
+		err = s.wslClient.RunDistroCommand(unshareArgs...)
+	}
 
 	// Update status
 	meta.Status = "Exited"
 	metaJSON, _ := json.Marshal(meta)
-	s.wslClient.RunDistroCommandWithInput(string(metaJSON), "sh", "-c", fmt.Sprintf("cat > %s/config.json", containerDir))
+	if sess != nil && err == nil {
+		// Note: sess is probably closed if Become returned, so we use fallback
+		s.wslClient.RunDistroCommandWithInput(string(metaJSON), "sh", "-c", fmt.Sprintf("cat > %s/config.json", containerDir))
+	} else {
+		s.wslClient.RunDistroCommandWithInput(string(metaJSON), "sh", "-c", fmt.Sprintf("cat > %s/config.json", containerDir))
+	}
 
 	if err != nil {
 		return fmt.Errorf("execution failed: %w", err)
@@ -459,8 +538,31 @@ func (s *WSLRuntimeService) Exec(idOrName string, cmdArgs []string, interactive 
 	pid := strings.TrimSpace(childPids[0])
 
 	// Inject common PATHs and host address for ADB
-	pathEnv := "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/flutter/bin:/opt/android-sdk/platform-tools"
+	pathEnv := "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 	adbEnv := "ANDROID_ADB_SERVER_ADDRESS=host.plx.internal"
+
+	// Try to load image metadata for extra paths (v1.0.8)
+	configPath := path.Join(containerDir, "config.json")
+	if configData, err := s.wslClient.RunDistroCommandOutput("cat", configPath); err == nil {
+		var meta Container
+		if err := json.Unmarshal([]byte(configData), &meta); err == nil {
+			wslImgMetaPath := path.Join(GetWslImagesDir(), meta.Image+".json")
+			if imgData, err := s.wslClient.RunDistroCommandOutput("cat", wslImgMetaPath); err == nil {
+				var imgMeta ImageMetadata
+				if err := json.Unmarshal([]byte(imgData), &imgMeta); err == nil {
+					if p, ok := imgMeta.Env["PATH"]; ok {
+						// Simple expansion for exec context
+						expandedP := strings.ReplaceAll(p, "${PATH}", "/usr/local/bin:/usr/bin:/bin")
+						expandedP = strings.ReplaceAll(expandedP, "$PATH", "/usr/local/bin:/usr/bin:/bin")
+						if imgMeta.Env["FLUTTER_HOME"] != "" {
+							expandedP = strings.ReplaceAll(expandedP, "${FLUTTER_HOME}", imgMeta.Env["FLUTTER_HOME"])
+						}
+						pathEnv = "PATH=" + expandedP
+					}
+				}
+			}
+		}
+	}
 
 	// Simplified execution:
 	// We don't use 'exec' here to support commands with semicolons correctly

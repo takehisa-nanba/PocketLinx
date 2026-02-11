@@ -8,7 +8,16 @@ import (
 )
 
 // CommandRunner defines how to run shell commands (local or wsl)
-type CommandRunner func(cmd string) (string, error)
+type CommandRunner interface {
+	Run(cmd string) (string, error)
+}
+
+// FunctionRunner makes a function satisfy CommandRunner
+type FunctionRunner func(cmd string) (string, error)
+
+func (f FunctionRunner) Run(cmd string) (string, error) {
+	return f(cmd)
+}
 
 // BridgeNetworkManager implements NetworkService using Linux bridge/veth
 type BridgeNetworkManager struct {
@@ -50,40 +59,42 @@ func NewBridgeNetworkManager(runner CommandRunner, bridgeName, subnet string) *B
 
 func (m *BridgeNetworkManager) SetupBridge() error {
 	// Check if bridge exists
-	_, err := m.runner(fmt.Sprintf("/sbin/ip link show %s", m.bridgeName))
-	if err == nil {
+	if _, err := m.runner.Run(fmt.Sprintf("/sbin/ip link show %s", m.bridgeName)); err == nil {
 		if os.Getenv("PLX_VERBOSE") != "" {
-			fmt.Printf("[DEBUG] Bridge %s already exists. Skipping re-init.\n", m.bridgeName)
+			fmt.Printf("[DEBUG] Bridge %s already exists. Ensuring forwarding is ON.\n", m.bridgeName)
 		}
-		m.runner("echo 1 > /proc/sys/net/ipv4/ip_forward")
+		m.runner.Run("/sbin/sysctl -w net.ipv4.ip_forward=1")
 		return nil
 	}
 
 	fmt.Printf("Initializing Network Bridge %s...\n", m.bridgeName)
 
 	// 1. Create Bridge
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip link add name %s type bridge", m.bridgeName)); err != nil {
+	if _, err := m.runner.Run(fmt.Sprintf("/sbin/ip link add name %s type bridge", m.bridgeName)); err != nil {
 		return fmt.Errorf("failed to create bridge: %w", err)
 	}
 
 	// 2. Assign Gateway IP
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip addr add %s/24 dev %s", m.gatewayIP, m.bridgeName)); err != nil {
+	if _, err := m.runner.Run(fmt.Sprintf("/sbin/ip addr add %s/24 dev %s", m.gatewayIP, m.bridgeName)); err != nil {
 		return fmt.Errorf("failed to assign ip to bridge: %w", err)
 	}
 
 	// 3. Up Bridge
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip link set %s up", m.bridgeName)); err != nil {
+	if _, err := m.runner.Run(fmt.Sprintf("/sbin/ip link set %s up", m.bridgeName)); err != nil {
 		return fmt.Errorf("failed to up bridge: %w", err)
 	}
 
-	// Ensure IP Forwarding is ON (Crucial for NAT)
-	m.runner("echo 1 > /proc/sys/net/ipv4/ip_forward")
-	m.runner("sysctl -w net.ipv4.ip_forward=1")
+	// 4. IP Forwarding
+	if _, err := m.runner.Run("/sbin/sysctl -w net.ipv4.ip_forward=1"); err != nil {
+		return fmt.Errorf("failed to enable ip forwarding: %w", err)
+	}
 
+	// 5. NAT (MASQUERADE)
 	natRule := fmt.Sprintf("POSTROUTING -s %s ! -d %s -j MASQUERADE", m.subnet, m.subnet)
-	// Check if rule exists before adding (v0.8.0)
-	if _, err := m.runner(fmt.Sprintf("/sbin/iptables -t nat -C %s", natRule)); err != nil {
-		m.runner(fmt.Sprintf("/sbin/iptables -t nat -A %s", natRule))
+	if _, err := m.runner.Run(fmt.Sprintf("/usr/sbin/iptables -t nat -C %s", natRule)); err != nil {
+		if _, err := m.runner.Run(fmt.Sprintf("/usr/sbin/iptables -t nat -A %s", natRule)); err != nil {
+			return fmt.Errorf("failed to add NAT rule: %w", err)
+		}
 	}
 
 	return nil
@@ -132,19 +143,19 @@ func (m *BridgeNetworkManager) CreateVethPair(containerID string) (string, strin
 
 	// 1. Create Pair
 	cmd := fmt.Sprintf("/sbin/ip link add %s type veth peer name %s", hostVeth, contVeth)
-	if _, err := m.runner(cmd); err != nil {
+	if _, err := m.runner.Run(cmd); err != nil {
 		return "", "", fmt.Errorf("failed to create veth pair: %w", err)
 	}
 
 	// 2. Attach host side to Bridge
-	if _, err := m.runner(fmt.Sprintf("/sbin/ip link set %s master %s", hostVeth, m.bridgeName)); err != nil {
+	if _, err := m.runner.Run(fmt.Sprintf("/sbin/ip link set %s master %s", hostVeth, m.bridgeName)); err != nil {
 		// Clean up if attach fails
-		m.runner(fmt.Sprintf("/sbin/ip link delete %s", hostVeth))
+		m.runner.Run(fmt.Sprintf("/sbin/ip link delete %s", hostVeth))
 		return "", "", fmt.Errorf("failed to attach veth to bridge: %w", err)
 	}
 
 	// 3. Up host side
-	m.runner(fmt.Sprintf("/sbin/ip link set %s up", hostVeth))
+	m.runner.Run(fmt.Sprintf("/sbin/ip link set %s up", hostVeth))
 
 	return hostVeth, contVeth, nil
 }
@@ -163,18 +174,15 @@ func (m *BridgeNetworkManager) GetSetupScript(containerID, ip string) (string, s
 	script := fmt.Sprintf(`
 set -e
 mkdir -p /var/run/netns
-# Force cleanup stale namespace to prevent "File exists" error (v0.7.4)
+# Force cleanup stale namespace to prevent "File exists" error (v1.0.8: more aggressive)
 ip netns del %s 2>/dev/null || true
+ip link del %s 2>/dev/null || true
 ip netns add %s
 
-# Create Veth pair if host side doesn't exist
-# Force cleanup host veth if it exists to prevent "File exists" error (v0.7.18)
-ip link del %s 2>/dev/null || true
-if ! ip link show %s >/dev/null 2>&1; then
-  ip link add %s type veth peer name %s
-  ip link set %s master %s
-  ip link set %s up
-fi
+# Create Veth pair
+ip link add %s type veth peer name %s
+ip link set %s master %s
+ip link set %s up
 
 # Move to netns (v0.7.17: Fail fast to avoid ghost devices)
 ip link set %s netns %s
@@ -204,7 +212,7 @@ ip netns exec %s sh -c '
   ip route add default via %s 2>/dev/null || true
   ethtool -K eth0 tx off 2>/dev/null || true
 '
-`, containerID, containerID, hostVeth, hostVeth, hostVeth, contVeth, hostVeth, m.bridgeName, hostVeth, contVeth, containerID, containerID, contVeth, contVeth, contVeth, ip, ip, m.gatewayIP)
+`, containerID, hostVeth, containerID, hostVeth, contVeth, hostVeth, m.bridgeName, hostVeth, contVeth, containerID, containerID, contVeth, contVeth, contVeth, ip, ip, m.gatewayIP)
 
 	return script, hostVeth, nil
 }
@@ -214,7 +222,7 @@ ip netns exec %s sh -c '
 func (m *BridgeNetworkManager) CleanupContainerNetwork(containerID, ip string) error {
 	m.ReleaseIP(ip)
 	// Deleting netns also cleans up veth pair usually.
-	_, err := m.runner(fmt.Sprintf("/sbin/ip netns del %s", containerID))
+	_, err := m.runner.Run(fmt.Sprintf("/sbin/ip netns del %s", containerID))
 	return err
 }
 

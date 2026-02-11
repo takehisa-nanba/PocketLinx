@@ -28,12 +28,12 @@
   - Each container gets its own unique loopback IP (127.0.0.x) on Windows. No more port conflicts!
   - コンテナごとに固有のループバックIP（127.0.0.x）を自動割当。ポートの衝突を根本から解消しました。
 
-- **🛡️ Rock-solid Reliability (v1.0.7 - MAJOR FIXES)**
-  - **Persistent Image Storage**: Fixes the critical bug where images disappeared after `plx setup`. User data is now safely reused.
-  - **Project-Specific Bridges**: Supports isolated network bridges (e.g., `plx0`, `plx1`) per project via `plx.json`. No more bridge conflicts!
-  - **Absolute Path Persistence**: strictly handles mount paths as absolute (v1.0.0).
-  - **Precise Process Control**: Context-aware termination using PID & /proc validation (v1.0.0).
-  - **究極の堅牢性と分離**: `plx setup` 時のイメージ消失を修正し、各プロジェクトに独立したネットワーク（ブリッジ）を提供可能にしました。
+- **🛡️ Rock-solid Reliability (v1.1.6 - INFRASTRUCTURE STABILITY)**
+  - **Orchestration Session (v1.1.4+)**: Executes infrastructure setup (bridge, folders, metadata) within a single, verified persistent session. No more WSL service "clogging" or `0x8007274c` timeouts.
+  - **Tear-free Execution (v1.1.5+)**: Re-uses the setup session to launch the container via `exec` (Become mode). Guarantees the same reliable path from start to finish.
+  - **Environment Synchronization (v1.1.6)**: Automatically exports environment variables inside sessions. No more `127: Command not found` during startup.
+  - **Persistent Image Storage**: Images are safely reused and don't disappear after `plx setup`.
+  - **究極のインフラ安定性 (v1.1.6)**: 「単一セッションによる連鎖的セットアップ」と「プロセスの変身（Become）」により、WSL特有のタイムアウトや目詰まりを構造的に解消しました。
 
 - **💨 Instant Build via Smart Shortcut (v0.7.4)**
   - Skip redundant image creation if cached. Reduces 20+ minute builds to **seconds**.

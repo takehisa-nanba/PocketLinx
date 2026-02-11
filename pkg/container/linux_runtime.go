@@ -109,8 +109,17 @@ func (s *LinuxRuntimeService) Run(opts RunOptions) error {
 	cmdArgs := []string{"--mount", "--pid", "--fork", "--uts", "--propagation", "unchanged"}
 
 	// Add shim and args
-	// We call container-shim which sets up pivot_root and others
-	cmdArgs = append(cmdArgs, "/usr/local/bin/container-shim", rootfsDir, mountsStr)
+	// We call plx-shim which sets up pivot_root, PATH, and user logic
+	workdir := opts.Workdir
+	if workdir == "" {
+		workdir = "none"
+	}
+	user := opts.User
+	if user == "" {
+		user = "none"
+	}
+
+	cmdArgs = append(cmdArgs, "/usr/local/bin/plx-shim", rootfsDir, mountsStr, workdir, user, "none")
 	cmdArgs = append(cmdArgs, opts.Args...)
 
 	runCmd := exec.Command("unshare", cmdArgs...)

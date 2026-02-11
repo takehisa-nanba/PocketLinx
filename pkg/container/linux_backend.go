@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"PocketLinx/pkg/shim"
 )
 
 // LinuxBackend implements the container backend for native Linux systems.
@@ -53,64 +55,10 @@ func (b *LinuxBackend) Setup() error {
 		return err
 	}
 
-	shimContent := `#!/bin/sh
-# container-shim
-# Arguments: rootfs_dir mounts_str [command...]
-
-ROOTFS=$1
-shift
-MOUNTS=$1
-shift
-
-# 1. Mount setup
-# Remount rootfs as private to avoid propagation (ignore failure)
-mount --make-rprivate / || true
-
-# Bind mount rootfs to itself to start clean
-mount --bind $ROOTFS $ROOTFS
-cd $ROOTFS
-
-# Mount proc, sys, dev (Do this BEFORE pivot/chroot so they are available)
-# But for pivot_root, we usually do it after. For chroot, we need them inside.
-# Let's mount them now.
-mount -t proc proc proc/
-mount -t sysfs sys sys/
-mount -t devtmpfs dev dev/
-
-# Custom Mounts
-if [ "$MOUNTS" != "none" ] && [ -n "$MOUNTS" ]; then
-    IFS=','
-    for M in $MOUNTS; do
-        SRC=${M%%:*}
-        DST=${M#*:}
-		# Remove any leading / from DST to make it relative to current root
-		REL_DST=$(echo $DST | sed 's|^/||')
-        mkdir -p $REL_DST
-        mount --bind /old_root/$SRC $REL_DST || mount --bind $SRC $REL_DST
-    done
-    unset IFS
-fi
-
-# Try pivot_root
-mkdir -p .old_root
-if pivot_root . .old_root; then
-    # Success: Unmount old root
-    umount -l /old_root
-    rmdir /old_root
-    
-    # Exec
-    exec "$@"
-else
-    # Fallback: chroot
-    echo "Note: pivot_root failed, using chroot instead."
-    exec chroot . "$@"
-fi
-
-`
-	// Write shim to /usr/local/bin/container-shim
-	shimPath := "/usr/local/bin/container-shim"
-	if err := os.WriteFile(shimPath, []byte(shimContent), 0755); err != nil {
-		fmt.Printf("Warning: Failed to install container-shim to %s: %v. \n", shimPath, err)
+	// Write shim to /usr/local/bin/plx-shim (consistent with WSL)
+	shimPath := "/usr/local/bin/plx-shim"
+	if err := os.WriteFile(shimPath, []byte(shim.Content), 0755); err != nil {
+		fmt.Printf("Warning: Failed to install plx-shim to %s: %v. \n", shimPath, err)
 	}
 
 	// Pull default image

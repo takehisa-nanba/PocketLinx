@@ -122,14 +122,15 @@ func (s *LinuxImageService) Build(ctxDir string, dockerfile string, tag string) 
 			_ = os.MkdirAll(filepath.Dir(resolvConfPath), 0755)
 			exec.Command("cp", "/etc/resolv.conf", resolvConfPath).Run()
 
-			shimPath := "/usr/local/bin/container-shim"
+			shimPath := "/usr/local/bin/plx-shim"
 			if _, err := os.Stat(shimPath); os.IsNotExist(err) {
-				return "", fmt.Errorf("container-shim not found at %s. Please run 'plx setup' first", shimPath)
+				return "", fmt.Errorf("plx-shim not found at %s. Please run 'plx setup' first", shimPath)
 			}
 
 			fullUserCmd := fmt.Sprintf("%s%s", envPrefix, runCmd)
 			cmdArgs := []string{"--mount", "--pid", "--fork", "--uts", "--propagation", "unchanged"}
-			cmdArgs = append(cmdArgs, shimPath, rootfsDir, "none", "/bin/sh", "-c", fullUserCmd)
+			// args: ROOTFS MOUNTS WORKDIR USER PID_FILE [cmd...]
+			cmdArgs = append(cmdArgs, shimPath, rootfsDir, "none", "none", "root", "none", "/bin/sh", "-c", fullUserCmd)
 
 			runExec := exec.Command("unshare", cmdArgs...)
 			runExec.Stdin = os.Stdin
