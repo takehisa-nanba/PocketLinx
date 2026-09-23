@@ -16,6 +16,12 @@ import (
 )
 
 func run(args []string, out io.Writer) error {
+	if len(args) > 0 && args[0] == "wsl" {
+		return runWSL(args[1:], out)
+	}
+	if len(args) > 0 && args[0] == "bridge" {
+		return runBridge(args[1:], out)
+	}
 	if len(args) == 0 {
 		return fmt.Errorf("usage: plx-env save --stopped SOURCE BUNDLE | plx-env restore BUNDLE DESTINATION | plx-env run DIRECTORY")
 	}

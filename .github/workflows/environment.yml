@@ -5,6 +5,9 @@ on:
     paths:
       - 'pkg/environment/**'
       - 'pkg/envrun/**'
+      - 'pkg/wslbridge/**'
+      - 'scripts/wsl-fixture/**'
+      - 'scripts/verify-wsl.ps1'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -15,6 +18,9 @@ on:
     paths:
       - 'pkg/environment/**'
       - 'pkg/envrun/**'
+      - 'pkg/wslbridge/**'
+      - 'scripts/wsl-fixture/**'
+      - 'scripts/verify-wsl.ps1'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -26,6 +32,18 @@ permissions:
   contents: read
 
 jobs:
+  windows-adapter:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+      - name: Adapter unit tests (does not verify live WSL)
+        run: |
+          go test ./pkg/wslbridge ./cmd/plx-env
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          go build -o "$env:RUNNER_TEMP/plx-env.exe" ./cmd/plx-env
   linux:
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +53,7 @@ jobs:
           go-version: '1.23.x'
       - name: Test and inspect
         run: |
-          go test -race ./pkg/environment ./pkg/envrun ./cmd/plx-env
+          go test -race ./pkg/environment ./pkg/envrun ./pkg/wslbridge ./cmd/plx-env
           go test ./...
           go vet ./...
           go test ./pkg/environment -run '^$' -fuzz FuzzRestore -fuzztime 10s -parallel 2
