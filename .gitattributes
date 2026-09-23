@@ -1,0 +1,2 @@
+/scripts/verify-environment.sh text eol=lf
+/examples/environment/hello.sh text eol=lf

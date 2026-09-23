@@ -1,0 +1,47 @@
+name: Environment bundles
+
+on:
+  push:
+    paths:
+      - 'pkg/environment/**'
+      - 'cmd/plx-env/**'
+      - 'examples/environment/**'
+      - 'scripts/verify-environment.sh'
+      - '.github/workflows/environment.yml'
+      - 'go.mod'
+      - 'go.sum'
+  pull_request:
+    paths:
+      - 'pkg/environment/**'
+      - 'cmd/plx-env/**'
+      - 'examples/environment/**'
+      - 'scripts/verify-environment.sh'
+      - '.github/workflows/environment.yml'
+      - 'go.mod'
+      - 'go.sum'
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+      - name: Test and inspect
+        run: |
+          go test -race ./pkg/environment ./cmd/plx-env
+          go test ./...
+          go vet ./...
+          go test ./pkg/environment -run '^$' -fuzz FuzzRestore -fuzztime 10s -parallel 2
+          go build ./cmd/plx
+          GOOS=windows GOARCH=amd64 go build -o /tmp/plx-windows.exe ./cmd/plx
+          GOOS=windows GOARCH=amd64 go build -o /tmp/plx-env-windows.exe ./cmd/plx-env
+      - name: Alpine shell round trip in disposable Linux container
+        run: |
+          docker run --rm --mount "type=bind,source=$PWD,target=/work,readonly" -w /work \
+            golang:1.23-alpine@sha256:383395b794dffa5b53012a212365d40c8e37109a626ca30d6151c8348d380b5f \
+            sh scripts/verify-environment.sh
