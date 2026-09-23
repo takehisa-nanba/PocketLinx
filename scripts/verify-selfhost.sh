@@ -6,7 +6,18 @@ scratch=${1:?new dedicated absolute directory required}
 mkdir -m 755 "$scratch"
 mkdir "$scratch/evidence"
 exec > >(tee "$scratch/evidence/host.log") 2>&1
-trap 'status=$?; echo "EXIT=$status"; chmod -R a+rX "$scratch/evidence"; exit "$status"' EXIT
+finish() {
+ status=$?
+ if [ "$status" -ne 0 ]; then
+  for stage in development restored; do
+   if [ -d "$scratch/$stage/source/out" ]; then cp -a "$scratch/$stage/source/out" "$scratch/evidence/failed-$stage"; fi
+  done
+ fi
+ echo "EXIT=$status"
+ chmod -R a+rX "$scratch/evidence"
+ exit "$status"
+}
+trap finish EXIT
 repo=$PWD
 commit=$(git rev-parse HEAD)
 printf '%s\n' "$commit" > "$scratch/evidence/source-commit.txt"
@@ -36,9 +47,12 @@ git archive "$commit" | tar -x -C "$root/source"
 printf '%s\n' "$commit" > "$root/source/SOURCE_COMMIT"
 (cd "$root/source"; find . -type f ! -name SOURCE_FILES.sha256 -print0 | sort -z | xargs -0 sha256sum > SOURCE_FILES.sha256)
 mkdir -p "$root/volumes/cache/"{build,modules,gopath,home}
-# Online preparation only. Official Go verifies downloaded modules against go.sum/sumdb.
-(cd "$root/source"; GOMODCACHE="$root/volumes/cache/modules" "$root/rootfs/usr/local/go/bin/go" mod download -json all) > "$scratch/evidence/modules.json"
-(cd "$root/source"; GOMODCACHE="$root/volumes/cache/modules" "$root/rootfs/usr/local/go/bin/go" mod verify) > "$scratch/evidence/modules-verify.txt"
+# Online preparation only. Keep downloaded transitive checksums outside the source checkout.
+mkdir "$scratch/module-preparation"
+cp "$root/source/go.mod" "$root/source/go.sum" "$scratch/module-preparation/"
+(cd "$scratch/module-preparation"; GOMODCACHE="$root/volumes/cache/modules" "$root/rootfs/usr/local/go/bin/go" mod download -json all) > "$scratch/evidence/modules.json"
+(cd "$scratch/module-preparation"; GOMODCACHE="$root/volumes/cache/modules" "$root/rootfs/usr/local/go/bin/go" mod verify) > "$scratch/evidence/modules-verify.txt"
+cp "$scratch/module-preparation/go.sum" "$scratch/evidence/prepared-go.sum"
 chown -R 1000:1001 "$root/source" "$root/volumes"
 measure() {
  local label=$1; shift
