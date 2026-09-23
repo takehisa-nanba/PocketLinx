@@ -1,0 +1,764 @@
+[
+  {
+    "Operation": "docker_commit",
+    "Milliseconds": {
+      "Values": [
+        276.9524,
+        284.1995,
+        254.4978,
+        272.0846,
+        282.8007
+      ],
+      "ValidCount": 5,
+      "Median": 276.9524,
+      "Minimum": 254.4978,
+      "Maximum": 284.1995
+    },
+    "ProcessMaxRSSKiB": null,
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        1031.65625,
+        1040.32421875,
+        1039.0,
+        1039.1875,
+        1055.8359375
+      ],
+      "ValidCount": 5,
+      "Median": 1039.1875,
+      "Minimum": 1031.65625,
+      "Maximum": 1055.8359375
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        1031.8125,
+        1033.13671875,
+        1039.05859375,
+        1039.37890625,
+        1055.859375
+      ],
+      "ValidCount": 5,
+      "Median": 1039.05859375,
+      "Minimum": 1031.8125,
+      "Maximum": 1055.859375
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        572.01171875,
+        576.75,
+        576.91796875,
+        577.0703125,
+        575.515625
+      ],
+      "ValidCount": 5,
+      "Median": 576.75,
+      "Minimum": 572.01171875,
+      "Maximum": 577.0703125
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2587.953125,
+        2577.01953125,
+        2587.3828125,
+        2575.89453125,
+        2611.62109375
+      ],
+      "ValidCount": 5,
+      "Median": 2587.3828125,
+      "Minimum": 2575.89453125,
+      "Maximum": 2611.62109375
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2578.2734375,
+        2588.55859375,
+        2581.32421875,
+        2592.06640625,
+        2625.09375
+      ],
+      "ValidCount": 5,
+      "Median": 2588.55859375,
+      "Minimum": 2578.2734375,
+      "Maximum": 2625.09375
+    }
+  },
+  {
+    "Operation": "docker_image_load_cached",
+    "Milliseconds": {
+      "Values": [
+        284.7546,
+        290.0257,
+        278.9421,
+        299.1168,
+        296.3695
+      ],
+      "ValidCount": 5,
+      "Median": 290.0257,
+      "Minimum": 278.9421,
+      "Maximum": 299.1168
+    },
+    "ProcessMaxRSSKiB": null,
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        1032.72265625,
+        1033.20703125,
+        1033.12109375,
+        1039.4765625,
+        1049.01953125
+      ],
+      "ValidCount": 5,
+      "Median": 1033.20703125,
+      "Minimum": 1032.72265625,
+      "Maximum": 1049.01953125
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        1036.71875,
+        1033.9921875,
+        1034.0859375,
+        1043.13671875,
+        1049.6953125
+      ],
+      "ValidCount": 5,
+      "Median": 1036.71875,
+      "Minimum": 1033.9921875,
+      "Maximum": 1049.6953125
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        576.45703125,
+        576.58984375,
+        577.078125,
+        575.2265625,
+        575.58203125
+      ],
+      "ValidCount": 5,
+      "Median": 576.45703125,
+      "Minimum": 575.2265625,
+      "Maximum": 577.078125
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2590.74609375,
+        2590.859375,
+        2582.59375,
+        2582.421875,
+        2615.265625
+      ],
+      "ValidCount": 5,
+      "Median": 2590.74609375,
+      "Minimum": 2582.421875,
+      "Maximum": 2615.265625
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2588.33984375,
+        2582.47265625,
+        2593.23828125,
+        2590.00390625,
+        2611.2578125
+      ],
+      "ValidCount": 5,
+      "Median": 2590.00390625,
+      "Minimum": 2582.47265625,
+      "Maximum": 2611.2578125
+    }
+  },
+  {
+    "Operation": "docker_image_save",
+    "Milliseconds": {
+      "Values": [
+        252.1453,
+        224.6703,
+        242.2959,
+        252.9089,
+        228.0682
+      ],
+      "ValidCount": 5,
+      "Median": 242.2959,
+      "Minimum": 224.6703,
+      "Maximum": 252.9089
+    },
+    "ProcessMaxRSSKiB": null,
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        1031.8125,
+        1033.13671875,
+        1039.05859375,
+        1039.37890625,
+        1055.8671875
+      ],
+      "ValidCount": 5,
+      "Median": 1039.05859375,
+      "Minimum": 1031.8125,
+      "Maximum": 1055.8671875
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        1032.72265625,
+        1033.20703125,
+        1033.12109375,
+        1039.4765625,
+        1049.01953125
+      ],
+      "ValidCount": 5,
+      "Median": 1033.20703125,
+      "Minimum": 1032.72265625,
+      "Maximum": 1049.01953125
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        571.59375,
+        576.76953125,
+        577.04296875,
+        577.45703125,
+        575.56640625
+      ],
+      "ValidCount": 5,
+      "Median": 576.76953125,
+      "Minimum": 571.59375,
+      "Maximum": 577.45703125
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2579.390625,
+        2580.7265625,
+        2584.7421875,
+        2591.890625,
+        2610.796875
+      ],
+      "ValidCount": 5,
+      "Median": 2584.7421875,
+      "Minimum": 2579.390625,
+      "Maximum": 2610.796875
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2586.0546875,
+        2589.0859375,
+        2590.07421875,
+        2580.0625,
+        2620.328125
+      ],
+      "ValidCount": 5,
+      "Median": 2589.0859375,
+      "Minimum": 2580.0625,
+      "Maximum": 2620.328125
+    }
+  },
+  {
+    "Operation": "docker_payload_rss",
+    "Milliseconds": {
+      "Values": [
+        442.9952,
+        435.8789,
+        444.8476,
+        430.1536,
+        445.9932
+      ],
+      "ValidCount": 5,
+      "Median": 442.9952,
+      "Minimum": 430.1536,
+      "Maximum": 445.9932
+    },
+    "ProcessMaxRSSKiB": {
+      "Values": [
+        896.0,
+        896.0,
+        896.0,
+        896.0,
+        896.0
+      ],
+      "ValidCount": 5,
+      "Median": 896.0,
+      "Minimum": 896.0,
+      "Maximum": 896.0
+    },
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        1010.08203125,
+        1009.9453125,
+        1001.1953125,
+        1008.953125,
+        1016.171875
+      ],
+      "ValidCount": 5,
+      "Median": 1009.9453125,
+      "Minimum": 1001.1953125,
+      "Maximum": 1016.171875
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        1011.984375,
+        1012.296875,
+        1002.34765625,
+        1017.9921875,
+        1021.6640625
+      ],
+      "ValidCount": 5,
+      "Median": 1012.296875,
+      "Minimum": 1002.34765625,
+      "Maximum": 1021.6640625
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        572.37109375,
+        572.15234375,
+        569.75,
+        573.86328125,
+        570.80859375
+      ],
+      "ValidCount": 5,
+      "Median": 572.15234375,
+      "Minimum": 569.75,
+      "Maximum": 573.86328125
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2622.203125,
+        2612.30859375,
+        2615.4375,
+        2613.98828125,
+        2605.88671875
+      ],
+      "ValidCount": 5,
+      "Median": 2613.98828125,
+      "Minimum": 2605.88671875,
+      "Maximum": 2622.203125
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2618.01171875,
+        2606.84375,
+        2615.37109375,
+        2614.1171875,
+        2614.5703125
+      ],
+      "ValidCount": 5,
+      "Median": 2614.5703125,
+      "Minimum": 2606.84375,
+      "Maximum": 2618.01171875
+    }
+  },
+  {
+    "Operation": "docker_run_warm",
+    "Milliseconds": {
+      "Values": [
+        447.6315,
+        454.3606,
+        429.841,
+        432.6777,
+        437.0768
+      ],
+      "ValidCount": 5,
+      "Median": 437.0768,
+      "Minimum": 429.841,
+      "Maximum": 454.3606
+    },
+    "ProcessMaxRSSKiB": null,
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        957.45703125,
+        1011.984375,
+        1012.296875,
+        1002.34765625,
+        1015.58203125
+      ],
+      "ValidCount": 5,
+      "Median": 1011.984375,
+      "Minimum": 957.45703125,
+      "Maximum": 1015.58203125
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        999.96484375,
+        1013.703125,
+        1002.35546875,
+        1007.76953125,
+        1016.71875
+      ],
+      "ValidCount": 5,
+      "Median": 1007.76953125,
+      "Minimum": 999.96484375,
+      "Maximum": 1016.71875
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        569.2265625,
+        572.390625,
+        572.82421875,
+        572.0546875,
+        570.05078125
+      ],
+      "ValidCount": 5,
+      "Median": 572.0546875,
+      "Minimum": 569.2265625,
+      "Maximum": 572.82421875
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2674.9609375,
+        2615.66796875,
+        2611.109375,
+        2618.9453125,
+        2614.8046875
+      ],
+      "ValidCount": 5,
+      "Median": 2615.66796875,
+      "Minimum": 2611.109375,
+      "Maximum": 2674.9609375
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2632.2265625,
+        2632.16015625,
+        2630.01953125,
+        2613.03515625,
+        2619.41015625
+      ],
+      "ValidCount": 5,
+      "Median": 2630.01953125,
+      "Minimum": 2613.03515625,
+      "Maximum": 2632.2265625
+    }
+  },
+  {
+    "Operation": "pocket_linux_cli_rss",
+    "Milliseconds": {
+      "Values": [
+        120.5216,
+        102.9847,
+        103.0995,
+        102.5371,
+        107.3553
+      ],
+      "ValidCount": 5,
+      "Median": 103.0995,
+      "Minimum": 102.5371,
+      "Maximum": 120.5216
+    },
+    "ProcessMaxRSSKiB": {
+      "Values": [
+        3584.0,
+        3712.0,
+        3712.0,
+        3456.0,
+        3712.0
+      ],
+      "ValidCount": 5,
+      "Median": 3712.0,
+      "Minimum": 3456.0,
+      "Maximum": 3712.0
+    },
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        1002.2578125,
+        1018.29296875,
+        1004.37109375,
+        1008.765625,
+        1016.71875
+      ],
+      "ValidCount": 5,
+      "Median": 1008.765625,
+      "Minimum": 1002.2578125,
+      "Maximum": 1018.29296875
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        1010.08203125,
+        1009.9453125,
+        1005.3828125,
+        1008.765625,
+        1016.171875
+      ],
+      "ValidCount": 5,
+      "Median": 1009.9453125,
+      "Minimum": 1005.3828125,
+      "Maximum": 1016.171875
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        569.33984375,
+        572.40234375,
+        572.82421875,
+        572.1328125,
+        570.125
+      ],
+      "ValidCount": 5,
+      "Median": 572.1328125,
+      "Minimum": 569.33984375,
+      "Maximum": 572.82421875
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2624.1484375,
+        2604.3984375,
+        2628.5,
+        2617,
+        2612.75
+      ],
+      "ValidCount": 5,
+      "Median": 2617.0,
+      "Minimum": 2604.3984375,
+      "Maximum": 2628.5
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2620.609375,
+        2610.8359375,
+        2613.7109375,
+        2608.265625,
+        2615.9296875
+      ],
+      "ValidCount": 5,
+      "Median": 2613.7109375,
+      "Minimum": 2608.265625,
+      "Maximum": 2620.609375
+    }
+  },
+  {
+    "Operation": "pocket_resave_transfer",
+    "Milliseconds": {
+      "Values": [
+        273.4628,
+        273.2807,
+        271.1346,
+        274.0198,
+        271.9579
+      ],
+      "ValidCount": 5,
+      "Median": 273.2807,
+      "Minimum": 271.1346,
+      "Maximum": 274.0198
+    },
+    "ProcessMaxRSSKiB": null,
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        1036.875,
+        1037.3203125,
+        1035.5,
+        1041.34375,
+        1051.80859375
+      ],
+      "ValidCount": 5,
+      "Median": 1037.3203125,
+      "Minimum": 1035.5,
+      "Maximum": 1051.80859375
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        1031.65625,
+        1040.32421875,
+        1039.0,
+        1045.375,
+        1055.8359375
+      ],
+      "ValidCount": 5,
+      "Median": 1040.32421875,
+      "Minimum": 1031.65625,
+      "Maximum": 1055.8359375
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        571.984375,
+        576.73046875,
+        576.51953125,
+        577.0078125,
+        575.1953125
+      ],
+      "ValidCount": 5,
+      "Median": 576.51953125,
+      "Minimum": 571.984375,
+      "Maximum": 577.0078125
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2583.37109375,
+        2587.65234375,
+        2587.3046875,
+        2580.203125,
+        2607.32421875
+      ],
+      "ValidCount": 5,
+      "Median": 2587.3046875,
+      "Minimum": 2580.203125,
+      "Maximum": 2607.32421875
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2589.05859375,
+        2576.765625,
+        2586.69921875,
+        2585.73828125,
+        2595.5390625
+      ],
+      "ValidCount": 5,
+      "Median": 2586.69921875,
+      "Minimum": 2576.765625,
+      "Maximum": 2595.5390625
+    }
+  },
+  {
+    "Operation": "pocket_restore_transfer",
+    "Milliseconds": {
+      "Values": [
+        270.3219,
+        275.1402,
+        283.679,
+        281.9826,
+        264.3442
+      ],
+      "ValidCount": 5,
+      "Median": 275.1402,
+      "Minimum": 264.3442,
+      "Maximum": 283.679
+    },
+    "ProcessMaxRSSKiB": null,
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        999.96484375,
+        1017.79296875,
+        1002.35546875,
+        1005.73828125,
+        1016.71875
+      ],
+      "ValidCount": 5,
+      "Median": 1005.73828125,
+      "Minimum": 999.96484375,
+      "Maximum": 1017.79296875
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        1002.2578125,
+        1018.29296875,
+        1004.37109375,
+        1008.765625,
+        1016.71875
+      ],
+      "ValidCount": 5,
+      "Median": 1008.765625,
+      "Minimum": 1002.2578125,
+      "Maximum": 1018.29296875
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        569.234375,
+        572.40234375,
+        572.82421875,
+        572.1328125,
+        570.05078125
+      ],
+      "ValidCount": 5,
+      "Median": 572.1328125,
+      "Minimum": 569.234375,
+      "Maximum": 572.82421875
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2632.88671875,
+        2608.171875,
+        2618.6953125,
+        2609.51953125,
+        2619.87890625
+      ],
+      "ValidCount": 5,
+      "Median": 2618.6953125,
+      "Minimum": 2608.171875,
+      "Maximum": 2632.88671875
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2619.08984375,
+        2608.7421875,
+        2626.03515625,
+        2616.92578125,
+        2606.890625
+      ],
+      "ValidCount": 5,
+      "Median": 2616.92578125,
+      "Minimum": 2606.890625,
+      "Maximum": 2626.03515625
+    }
+  },
+  {
+    "Operation": "pocket_run_warm",
+    "Milliseconds": {
+      "Values": [
+        263.9605,
+        266.7888,
+        261.8053,
+        263.2897,
+        261.2956
+      ],
+      "ValidCount": 5,
+      "Median": 263.2897,
+      "Minimum": 261.2956,
+      "Maximum": 266.7888
+    },
+    "ProcessMaxRSSKiB": null,
+    "SharedVMWorkingSetBeforeMiB": {
+      "Values": [
+        953.234375,
+        1013.703125,
+        1012.296875,
+        1007.76953125,
+        1011.4921875
+      ],
+      "ValidCount": 5,
+      "Median": 1011.4921875,
+      "Minimum": 953.234375,
+      "Maximum": 1013.703125
+    },
+    "SharedVMWorkingSetAfterMiB": {
+      "Values": [
+        957.45703125,
+        1017.79296875,
+        1012.296875,
+        1011.796875,
+        1015.58203125
+      ],
+      "ValidCount": 5,
+      "Median": 1012.296875,
+      "Minimum": 957.45703125,
+      "Maximum": 1017.79296875
+    },
+    "DockerWindowsProcessesWorkingSetAfterMiB": {
+      "Values": [
+        566.2421875,
+        572.390625,
+        572.15234375,
+        572.1328125,
+        572.55859375
+      ],
+      "ValidCount": 5,
+      "Median": 572.15234375,
+      "Minimum": 566.2421875,
+      "Maximum": 572.55859375
+    },
+    "HostFreePhysicalBeforeMiB": {
+      "Values": [
+        2677.94921875,
+        2632.0625,
+        2618.51953125,
+        2614.76171875,
+        2611.51171875
+      ],
+      "ValidCount": 5,
+      "Median": 2618.51953125,
+      "Minimum": 2611.51171875,
+      "Maximum": 2677.94921875
+    },
+    "HostFreePhysicalAfterMiB": {
+      "Values": [
+        2665.375,
+        2611.6953125,
+        2605.81640625,
+        2619.046875,
+        2614.58984375
+      ],
+      "ValidCount": 5,
+      "Median": 2614.58984375,
+      "Minimum": 2605.81640625,
+      "Maximum": 2665.375
+    }
+  }
+]

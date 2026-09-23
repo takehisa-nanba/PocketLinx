@@ -1,0 +1,101 @@
+[
+  {
+    "Operation": "docker_commit",
+    "MedianMilliseconds": 276.9524,
+    "ValuesMilliseconds": [
+      276.9524,
+      284.1995,
+      254.4978,
+      272.0846,
+      282.8007
+    ]
+  },
+  {
+    "Operation": "docker_image_load_cached",
+    "MedianMilliseconds": 290.0257,
+    "ValuesMilliseconds": [
+      284.7546,
+      290.0257,
+      278.9421,
+      299.1168,
+      296.3695
+    ]
+  },
+  {
+    "Operation": "docker_image_save",
+    "MedianMilliseconds": 242.2959,
+    "ValuesMilliseconds": [
+      252.1453,
+      224.6703,
+      242.2959,
+      252.9089,
+      228.0682
+    ]
+  },
+  {
+    "Operation": "docker_payload_rss",
+    "MedianMilliseconds": 442.9952,
+    "ValuesMilliseconds": [
+      442.9952,
+      435.8789,
+      444.8476,
+      430.1536,
+      445.9932
+    ]
+  },
+  {
+    "Operation": "docker_run_warm",
+    "MedianMilliseconds": 437.0768,
+    "ValuesMilliseconds": [
+      447.6315,
+      454.3606,
+      429.841,
+      432.6777,
+      437.0768
+    ]
+  },
+  {
+    "Operation": "pocket_linux_cli_rss",
+    "MedianMilliseconds": 103.0995,
+    "ValuesMilliseconds": [
+      120.5216,
+      102.9847,
+      103.0995,
+      102.5371,
+      107.3553
+    ]
+  },
+  {
+    "Operation": "pocket_resave_transfer",
+    "MedianMilliseconds": 273.2807,
+    "ValuesMilliseconds": [
+      273.4628,
+      273.2807,
+      271.1346,
+      274.0198,
+      271.9579
+    ]
+  },
+  {
+    "Operation": "pocket_restore_transfer",
+    "MedianMilliseconds": 275.1402,
+    "ValuesMilliseconds": [
+      270.3219,
+      275.1402,
+      283.679,
+      281.9826,
+      264.3442
+    ]
+  },
+  {
+    "Operation": "pocket_run_warm",
+    "MedianMilliseconds": 263.2897,
+    "ValuesMilliseconds": [
+      263.9605,
+      266.7888,
+      261.8053,
+      263.2897,
+      261.2956
+    ]
+  }
+]

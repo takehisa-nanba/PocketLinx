@@ -11,6 +11,8 @@ on:
       - 'scripts/roundtrip-*'
       - 'scripts/roundtrip-check/**'
       - 'scripts/verify-roundtrip-smoke.sh'
+      - 'scripts/*baseline.ps1'
+      - 'docs/benchmarks/**'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -27,6 +29,8 @@ on:
       - 'scripts/roundtrip-*'
       - 'scripts/roundtrip-check/**'
       - 'scripts/verify-roundtrip-smoke.sh'
+      - 'scripts/*baseline.ps1'
+      - 'docs/benchmarks/**'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -50,6 +54,8 @@ jobs:
           go test ./pkg/wslbridge ./cmd/plx-env
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           go build -o "$env:RUNNER_TEMP/plx-env.exe" ./cmd/plx-env
+      - name: Baseline analysis tests (offline, no performance assertions)
+        run: ./scripts/test-baseline.ps1
   linux:
     runs-on: ubuntu-latest
     steps:

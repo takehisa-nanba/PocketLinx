@@ -1,0 +1,38 @@
+{
+  "CollectedUTC": "2026-09-23T22:31:13.8606943Z",
+  "Note": "Supplemental disk/archive inspection after the timed run; no timing data replaced",
+  "DockerCLIBytes": 44785072,
+  "EnvironmentDuKiB": 1488,
+  "ChangedEnvironmentDuKiB": 1492,
+  "LinuxCLIDuKiB": 4168,
+  "ResidualLinuxTemporaryFiles": [],
+  "ResidualWindowsTemporaryFiles": [],
+  "DockerSavedArchiveManifest": {
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "schemaVersion": 2,
+    "config": {
+      "mediaType": "application/vnd.oci.image.config.v1+json",
+      "digest": "sha256:e39c3d5c996654ef8b9b5954403430eadde58186b202d38c9c04d92b756fce29",
+      "size": 839
+    },
+    "layers": [
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:8c446596b10e91616ce89cd6259a63ae6d9ae2ce6f879ec5cf3e36eaf6b8d3e8",
+        "size": 935169
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:82462d05f8abcd358a01fdcf0b2fa2fdfd26f1c9dd115a5e8dfa1824f304ad40",
+        "size": 389
+      },
+      {
+        "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
+        "digest": "sha256:4477be5010266a5f53f1c823d68c9f6cb6a51d066bbfa1a77e7a0917bef77240",
+        "size": 383
+      }
+    ]
+  },
+  "DockerInstallFileBytes": 3527130319.0,
+  "WSLDistroDuKiB": 78504
+}

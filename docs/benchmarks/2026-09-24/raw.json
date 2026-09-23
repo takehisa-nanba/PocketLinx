@@ -1,0 +1,5717 @@
+[
+  {
+    "Operation": "pocket_run_warm",
+    "Iteration": 1,
+    "Milliseconds": 263.9605,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:36.8770710Z",
+      "HostFreePhysicalKiB": 2742220,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 151134208,
+          "PrivateBytes": 154443776
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63475712,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122724352,
+          "PrivateBytes": 119386112
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 999538688,
+          "PrivateBytes": 2083934208
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:37.3485101Z",
+      "HostFreePhysicalKiB": 2729344,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 154288128,
+          "PrivateBytes": 157593600
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63475712,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122724352,
+          "PrivateBytes": 119386112
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1003966464,
+          "PrivateBytes": 2086760448
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_run_warm",
+    "Iteration": 1,
+    "Milliseconds": 447.6315,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:10:37.6027346Z",
+      "HostFreePhysicalKiB": 2739160,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 154288128,
+          "PrivateBytes": 157593600
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63475712,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122724352,
+          "PrivateBytes": 119386112
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1003966464,
+          "PrivateBytes": 2086760448
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:38.2909530Z",
+      "HostFreePhysicalKiB": 2695400,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157483008,
+          "PrivateBytes": 160743424
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63483904,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122650624,
+          "PrivateBytes": 119287808
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1048539136,
+          "PrivateBytes": 2125328384
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_restore_transfer",
+    "Iteration": 1,
+    "Milliseconds": 270.3219,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified Windows -> WSL: 506c87a77c6a1b8b4aeb50247b8884dc669e76d5edbaf14daf4889d5e313d032\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:38.5300589Z",
+      "HostFreePhysicalKiB": 2696076,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157483008,
+          "PrivateBytes": 160743424
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63483904,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122650624,
+          "PrivateBytes": 119287808
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1048539136,
+          "PrivateBytes": 2125328384
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:39.0006216Z",
+      "HostFreePhysicalKiB": 2681948,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157483008,
+          "PrivateBytes": 160743424
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63483904,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122658816,
+          "PrivateBytes": 119287808
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1050943488,
+          "PrivateBytes": 2130579456
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_linux_cli_rss",
+    "Iteration": 1,
+    "Milliseconds": 120.5216,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n\tCommand being timed: \"/usr/local/bin/plx-env run /opt/pocketlinx/plx-measure-71c0b8a485bd/environment\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.01\n\tPercent of CPU this job got: 106%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.01s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 3584\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 829\n\tVoluntary context switches: 168\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:39.2299176Z",
+      "HostFreePhysicalKiB": 2687128,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157483008,
+          "PrivateBytes": 160743424
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63483904,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122658816,
+          "PrivateBytes": 119287808
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1050943488,
+          "PrivateBytes": 2130579456
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:39.5858256Z",
+      "HostFreePhysicalKiB": 2683504,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157483008,
+          "PrivateBytes": 160743424
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63483904,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122769408,
+          "PrivateBytes": 119365632
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1059147776,
+          "PrivateBytes": 2135826432
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_payload_rss",
+    "Iteration": 1,
+    "Milliseconds": 442.9952,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "\tCommand being timed: \"/bin/sh /workspace/hello.sh\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 50%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.00s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 896\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 166\n\tVoluntary context switches: 4\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:39.8019089Z",
+      "HostFreePhysicalKiB": 2685136,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157483008,
+          "PrivateBytes": 160743424
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63483904,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122769408,
+          "PrivateBytes": 119365632
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1059147776,
+          "PrivateBytes": 2135826432
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:40.4759958Z",
+      "HostFreePhysicalKiB": 2680844,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160686080,
+          "PrivateBytes": 163938304
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63496192,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122732544,
+          "PrivateBytes": 119164928
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1061142528,
+          "PrivateBytes": 2137731072
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_run_warm",
+    "Iteration": 2,
+    "Milliseconds": 454.3606,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:10:40.7009290Z",
+      "HostFreePhysicalKiB": 2678444,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160686080,
+          "PrivateBytes": 163938304
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63496192,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122732544,
+          "PrivateBytes": 119164928
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1061142528,
+          "PrivateBytes": 2137731072
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:41.3627500Z",
+      "HostFreePhysicalKiB": 2695332,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125706240,
+          "PrivateBytes": 122540032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1062944768,
+          "PrivateBytes": 2140155904
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_run_warm",
+    "Iteration": 2,
+    "Milliseconds": 266.7888,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:41.5879715Z",
+      "HostFreePhysicalKiB": 2695232,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125706240,
+          "PrivateBytes": 122540032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1062944768,
+          "PrivateBytes": 2140155904
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:42.0838607Z",
+      "HostFreePhysicalKiB": 2674376,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125706240,
+          "PrivateBytes": 122540032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1067233280,
+          "PrivateBytes": 2088292352
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_restore_transfer",
+    "Iteration": 2,
+    "Milliseconds": 275.1402,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified Windows -> WSL: 506c87a77c6a1b8b4aeb50247b8884dc669e76d5edbaf14daf4889d5e313d032\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:42.3141534Z",
+      "HostFreePhysicalKiB": 2670768,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125706240,
+          "PrivateBytes": 122540032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1067233280,
+          "PrivateBytes": 2088292352
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:42.7855647Z",
+      "HostFreePhysicalKiB": 2671352,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125718528,
+          "PrivateBytes": 122552320
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1067757568,
+          "PrivateBytes": 2088816640
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_linux_cli_rss",
+    "Iteration": 2,
+    "Milliseconds": 102.9847,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n\tCommand being timed: \"/usr/local/bin/plx-env run /opt/pocketlinx/plx-measure-71c0b8a485bd/environment\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.01\n\tPercent of CPU this job got: 118%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.01s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 3712\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 848\n\tVoluntary context switches: 167\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:43.0224513Z",
+      "HostFreePhysicalKiB": 2666904,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125718528,
+          "PrivateBytes": 122552320
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1067757568,
+          "PrivateBytes": 2088816640
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:43.3663279Z",
+      "HostFreePhysicalKiB": 2673496,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125718528,
+          "PrivateBytes": 122552320
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1059004416,
+          "PrivateBytes": 2090921984
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_payload_rss",
+    "Iteration": 2,
+    "Milliseconds": 435.8789,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "\tCommand being timed: \"/bin/sh /workspace/hello.sh\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 50%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.00s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 896\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 165\n\tVoluntary context switches: 5\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:43.6107257Z",
+      "HostFreePhysicalKiB": 2675004,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 157716480,
+          "PrivateBytes": 160927744
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63512576,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125718528,
+          "PrivateBytes": 122552320
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1059004416,
+          "PrivateBytes": 2090921984
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:44.2629556Z",
+      "HostFreePhysicalKiB": 2669408,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160313344,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63520768,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122851328,
+          "PrivateBytes": 119160832
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1061470208,
+          "PrivateBytes": 2091053056
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_run_warm",
+    "Iteration": 3,
+    "Milliseconds": 261.8053,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:44.5119766Z",
+      "HostFreePhysicalKiB": 2681364,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160313344,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63520768,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122851328,
+          "PrivateBytes": 119160832
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1061470208,
+          "PrivateBytes": 2091053056
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:45.0127020Z",
+      "HostFreePhysicalKiB": 2668356,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160313344,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63520768,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122851328,
+          "PrivateBytes": 119160832
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1061470208,
+          "PrivateBytes": 2091053056
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_run_warm",
+    "Iteration": 3,
+    "Milliseconds": 429.841,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:10:45.2473495Z",
+      "HostFreePhysicalKiB": 2673776,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160313344,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63520768,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 122851328,
+          "PrivateBytes": 119160832
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1061470208,
+          "PrivateBytes": 2091053056
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:45.8987177Z",
+      "HostFreePhysicalKiB": 2693140,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160317440,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63528960,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123543552,
+          "PrivateBytes": 120016896
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1051045888,
+          "PrivateBytes": 2091249664
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_restore_transfer",
+    "Iteration": 3,
+    "Milliseconds": 283.679,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified Windows -> WSL: 506c87a77c6a1b8b4aeb50247b8884dc669e76d5edbaf14daf4889d5e313d032\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:46.1209690Z",
+      "HostFreePhysicalKiB": 2681544,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160317440,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63528960,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123543552,
+          "PrivateBytes": 120016896
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1051045888,
+          "PrivateBytes": 2091249664
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:46.6226939Z",
+      "HostFreePhysicalKiB": 2689060,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160317440,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63528960,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123543552,
+          "PrivateBytes": 120016896
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1053159424,
+          "PrivateBytes": 2092302336
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_linux_cli_rss",
+    "Iteration": 3,
+    "Milliseconds": 103.0995,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n\tCommand being timed: \"/usr/local/bin/plx-env run /opt/pocketlinx/plx-measure-71c0b8a485bd/environment\"\n\tUser time (seconds): 0.01\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 100%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.01s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 3712\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 843\n\tVoluntary context switches: 150\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:46.8476948Z",
+      "HostFreePhysicalKiB": 2691584,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160317440,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63528960,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123543552,
+          "PrivateBytes": 120016896
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1053159424,
+          "PrivateBytes": 2092302336
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:47.1742691Z",
+      "HostFreePhysicalKiB": 2676440,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160317440,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63528960,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123543552,
+          "PrivateBytes": 120016896
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1054220288,
+          "PrivateBytes": 2093355008
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_payload_rss",
+    "Iteration": 3,
+    "Milliseconds": 444.8476,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "\tCommand being timed: \"/bin/sh /workspace/hello.sh\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 33%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.00s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 896\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 168\n\tVoluntary context switches: 5\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:47.4146798Z",
+      "HostFreePhysicalKiB": 2678208,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 160317440,
+          "PrivateBytes": 163516416
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63528960,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123543552,
+          "PrivateBytes": 120016896
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1049829376,
+          "PrivateBytes": 2093355008
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:48.0810672Z",
+      "HostFreePhysicalKiB": 2678140,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156938240,
+          "PrivateBytes": 160006144
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63541248,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123686912,
+          "PrivateBytes": 119906304
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1051037696,
+          "PrivateBytes": 2093682688
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_run_warm",
+    "Iteration": 4,
+    "Milliseconds": 432.6777,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:10:48.3186473Z",
+      "HostFreePhysicalKiB": 2681800,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156938240,
+          "PrivateBytes": 160006144
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63655936,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123686912,
+          "PrivateBytes": 119906304
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1051037696,
+          "PrivateBytes": 2093682688
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:48.9793259Z",
+      "HostFreePhysicalKiB": 2675748,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159100928,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123809792,
+          "PrivateBytes": 120041472
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1056722944,
+          "PrivateBytes": 2094272512
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_run_warm",
+    "Iteration": 4,
+    "Milliseconds": 263.2897,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:49.2126196Z",
+      "HostFreePhysicalKiB": 2677516,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159100928,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123809792,
+          "PrivateBytes": 120041472
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1056722944,
+          "PrivateBytes": 2094272512
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:49.6992975Z",
+      "HostFreePhysicalKiB": 2681904,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159105024,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123887616,
+          "PrivateBytes": 120107008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1060945920,
+          "PrivateBytes": 2097426432
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_restore_transfer",
+    "Iteration": 4,
+    "Milliseconds": 281.9826,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified Windows -> WSL: 506c87a77c6a1b8b4aeb50247b8884dc669e76d5edbaf14daf4889d5e313d032\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:49.9419330Z",
+      "HostFreePhysicalKiB": 2672148,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159105024,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123887616,
+          "PrivateBytes": 120107008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1054593024,
+          "PrivateBytes": 2097426432
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:50.4382103Z",
+      "HostFreePhysicalKiB": 2679732,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159105024,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123887616,
+          "PrivateBytes": 120107008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1057767424,
+          "PrivateBytes": 2099531776
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_linux_cli_rss",
+    "Iteration": 4,
+    "Milliseconds": 102.5371,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n\tCommand being timed: \"/usr/local/bin/plx-env run /opt/pocketlinx/plx-measure-71c0b8a485bd/environment\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 100%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.01s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 3456\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 868\n\tVoluntary context switches: 154\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:50.6511860Z",
+      "HostFreePhysicalKiB": 2679808,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159105024,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123887616,
+          "PrivateBytes": 120107008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1057767424,
+          "PrivateBytes": 2099531776
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:50.9836333Z",
+      "HostFreePhysicalKiB": 2670864,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159105024,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123887616,
+          "PrivateBytes": 120107008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1057767424,
+          "PrivateBytes": 2099531776
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_payload_rss",
+    "Iteration": 4,
+    "Milliseconds": 430.1536,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "\tCommand being timed: \"/bin/sh /workspace/hello.sh\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 50%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.00s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 896\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 166\n\tVoluntary context switches: 4\n\tInvoluntary context switches: 1\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:51.2264835Z",
+      "HostFreePhysicalKiB": 2676724,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159105024,
+          "PrivateBytes": 162148352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63672320,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123887616,
+          "PrivateBytes": 120107008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1057964032,
+          "PrivateBytes": 2099531776
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:51.8783574Z",
+      "HostFreePhysicalKiB": 2676856,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159608832,
+          "PrivateBytes": 162639872
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63676416,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125194240,
+          "PrivateBytes": 121516032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1067442176,
+          "PrivateBytes": 2104913920
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_run_warm",
+    "Iteration": 5,
+    "Milliseconds": 261.2956,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:52.1083859Z",
+      "HostFreePhysicalKiB": 2674188,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159608832,
+          "PrivateBytes": 162639872
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63676416,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123826176,
+          "PrivateBytes": 119951360
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1060626432,
+          "PrivateBytes": 2104913920
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:52.5993447Z",
+      "HostFreePhysicalKiB": 2677340,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159608832,
+          "PrivateBytes": 162639872
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63676416,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123826176,
+          "PrivateBytes": 119951360
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1064914944,
+          "PrivateBytes": 2108133376
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_run_warm",
+    "Iteration": 5,
+    "Milliseconds": 437.0768,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:10:52.8324555Z",
+      "HostFreePhysicalKiB": 2677560,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 159608832,
+          "PrivateBytes": 162639872
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63676416,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123826176,
+          "PrivateBytes": 119951360
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1064914944,
+          "PrivateBytes": 2108133376
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:53.4864955Z",
+      "HostFreePhysicalKiB": 2682276,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156430336,
+          "PrivateBytes": 159326208
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63688704,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124362752,
+          "PrivateBytes": 120541184
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1066106880,
+          "PrivateBytes": 2108268544
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_restore_transfer",
+    "Iteration": 5,
+    "Milliseconds": 264.3442,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified Windows -> WSL: 506c87a77c6a1b8b4aeb50247b8884dc669e76d5edbaf14daf4889d5e313d032\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:53.7309108Z",
+      "HostFreePhysicalKiB": 2682756,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156430336,
+          "PrivateBytes": 159326208
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63688704,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124362752,
+          "PrivateBytes": 120541184
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1066106880,
+          "PrivateBytes": 2108268544
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:54.2374403Z",
+      "HostFreePhysicalKiB": 2669456,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156430336,
+          "PrivateBytes": 159326208
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63688704,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124362752,
+          "PrivateBytes": 120541184
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1066106880,
+          "PrivateBytes": 2108268544
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_linux_cli_rss",
+    "Iteration": 5,
+    "Milliseconds": 107.3553,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "Experimental chroot test harness: trusted environments only; not a production isolation boundary.\n\tCommand being timed: \"/usr/local/bin/plx-env run /opt/pocketlinx/plx-measure-71c0b8a485bd/environment\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.01\n\tPercent of CPU this job got: 115%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.01s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 3712\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 896\n\tVoluntary context switches: 168\n\tInvoluntary context switches: 2\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:54.4889961Z",
+      "HostFreePhysicalKiB": 2675456,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156430336,
+          "PrivateBytes": 159326208
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63688704,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124362752,
+          "PrivateBytes": 120541184
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1066106880,
+          "PrivateBytes": 2108268544
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:54.8157969Z",
+      "HostFreePhysicalKiB": 2678712,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156430336,
+          "PrivateBytes": 159326208
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63688704,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124440576,
+          "PrivateBytes": 120619008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1065533440,
+          "PrivateBytes": 2109321216
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_payload_rss",
+    "Iteration": 5,
+    "Milliseconds": 445.9932,
+    "Stdout": "hello|/workspace|persistent-data|uid=1000|gid=1001\n",
+    "Stderr": "\tCommand being timed: \"/bin/sh /workspace/hello.sh\"\n\tUser time (seconds): 0.00\n\tSystem time (seconds): 0.00\n\tPercent of CPU this job got: 50%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 0m 0.00s\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 896\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 0\n\tMinor (reclaiming a frame) page faults: 162\n\tVoluntary context switches: 5\n\tInvoluntary context switches: 0\n\tSwaps: 0\n\tFile system inputs: 0\n\tFile system outputs: 0\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:55.0494020Z",
+      "HostFreePhysicalKiB": 2668428,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156430336,
+          "PrivateBytes": 159326208
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63688704,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124440576,
+          "PrivateBytes": 120619008
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1065533440,
+          "PrivateBytes": 2109321216
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:55.7167991Z",
+      "HostFreePhysicalKiB": 2677320,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 156479488,
+          "PrivateBytes": 159383552
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63705088,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35438592,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 125091840,
+          "PrivateBytes": 121323520
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1071292416,
+          "PrivateBytes": 2111098880
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_resave_transfer",
+    "Iteration": 1,
+    "Milliseconds": 273.4628,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified WSL -> Windows: d4425d2fdda36c13a4a0e266a13702c79a86548a80687971845b695824a3f1b7\n",
+    "Before": {
+      "UTC": "2026-09-23T15:10:58.1418334Z",
+      "HostFreePhysicalKiB": 2645372,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 158130176,
+          "PrivateBytes": 160890880
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63758336,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124338176,
+          "PrivateBytes": 120438784
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1087242240,
+          "PrivateBytes": 2125406208
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:58.6517620Z",
+      "HostFreePhysicalKiB": 2651196,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 158400512,
+          "PrivateBytes": 161124352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63762432,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124338176,
+          "PrivateBytes": 120438784
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1081769984,
+          "PrivateBytes": 2127503360
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_commit",
+    "Iteration": 1,
+    "Milliseconds": 276.9524,
+    "Stdout": "sha256:b0ca5e56c2edd71417a612f515b367daa1de38a87d13eddfb65726bb1f7e29eb\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:10:58.8915672Z",
+      "HostFreePhysicalKiB": 2650064,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 158400512,
+          "PrivateBytes": 161124352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63762432,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124338176,
+          "PrivateBytes": 120438784
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1081769984,
+          "PrivateBytes": 2127503360
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:10:59.3828210Z",
+      "HostFreePhysicalKiB": 2640152,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 158400512,
+          "PrivateBytes": 161124352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63762432,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124366848,
+          "PrivateBytes": 120467456
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1081933824,
+          "PrivateBytes": 2127568896
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_save",
+    "Iteration": 1,
+    "Milliseconds": 252.1453,
+    "Stdout": "",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:10:59.6330103Z",
+      "HostFreePhysicalKiB": 2641296,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 158400512,
+          "PrivateBytes": 161124352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63762432,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124366848,
+          "PrivateBytes": 120463360
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1081933824,
+          "PrivateBytes": 2127568896
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:00.1575065Z",
+      "HostFreePhysicalKiB": 2648120,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 158416896,
+          "PrivateBytes": 161124352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63766528,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123908096,
+          "PrivateBytes": 119930880
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1082888192,
+          "PrivateBytes": 2127699968
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_load_cached",
+    "Iteration": 1,
+    "Milliseconds": 284.7546,
+    "Stdout": "Loaded image: plx-measure-71c0b8a485bd:saved-1\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:00.4216711Z",
+      "HostFreePhysicalKiB": 2652924,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 158416896,
+          "PrivateBytes": 161124352
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63766528,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123908096,
+          "PrivateBytes": 119930880
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1082888192,
+          "PrivateBytes": 2127699968
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:00.9398157Z",
+      "HostFreePhysicalKiB": 2650460,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164147200,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63766528,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123277312,
+          "PrivateBytes": 119169024
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1087078400,
+          "PrivateBytes": 2128617472
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_resave_transfer",
+    "Iteration": 2,
+    "Milliseconds": 273.2807,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified WSL -> Windows: d4425d2fdda36c13a4a0e266a13702c79a86548a80687971845b695824a3f1b7\n",
+    "Before": {
+      "UTC": "2026-09-23T15:11:01.6376823Z",
+      "HostFreePhysicalKiB": 2649756,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164163584,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63811584,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123469824,
+          "PrivateBytes": 119431168
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1087709184,
+          "PrivateBytes": 2128625664
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:02.1330702Z",
+      "HostFreePhysicalKiB": 2638608,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164167680,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63811584,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123498496,
+          "PrivateBytes": 119439360
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1090859008,
+          "PrivateBytes": 2129154048
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_commit",
+    "Iteration": 2,
+    "Milliseconds": 284.1995,
+    "Stdout": "sha256:eef4f341e83b900c6e5f5d7a016ccffc40c455dc62b619790c82b5f3d72eb1d4\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:02.3693391Z",
+      "HostFreePhysicalKiB": 2638868,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164167680,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63811584,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123498496,
+          "PrivateBytes": 119439360
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1090859008,
+          "PrivateBytes": 2129154048
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:02.8722080Z",
+      "HostFreePhysicalKiB": 2650684,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164167680,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63815680,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123514880,
+          "PrivateBytes": 119455744
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1083322368,
+          "PrivateBytes": 2129154048
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_save",
+    "Iteration": 2,
+    "Milliseconds": 224.6703,
+    "Stdout": "",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:03.1086147Z",
+      "HostFreePhysicalKiB": 2642664,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164167680,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63815680,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123514880,
+          "PrivateBytes": 119455744
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1083322368,
+          "PrivateBytes": 2129154048
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:03.5453144Z",
+      "HostFreePhysicalKiB": 2651224,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164171776,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63823872,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123523072,
+          "PrivateBytes": 119463936
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1083396096,
+          "PrivateBytes": 2129154048
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_load_cached",
+    "Iteration": 2,
+    "Milliseconds": 290.0257,
+    "Stdout": "Loaded image: plx-measure-71c0b8a485bd:saved-2\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:03.7739036Z",
+      "HostFreePhysicalKiB": 2653040,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164171776,
+          "PrivateBytes": 166834176
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63823872,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123523072,
+          "PrivateBytes": 119463936
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1083396096,
+          "PrivateBytes": 2129154048
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:04.2821572Z",
+      "HostFreePhysicalKiB": 2644452,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164257792,
+          "PrivateBytes": 166899712
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63827968,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123244544,
+          "PrivateBytes": 119111680
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1084219392,
+          "PrivateBytes": 2129154048
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_resave_transfer",
+    "Iteration": 3,
+    "Milliseconds": 271.1346,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified WSL -> Windows: d4425d2fdda36c13a4a0e266a13702c79a86548a80687971845b695824a3f1b7\n",
+    "Before": {
+      "UTC": "2026-09-23T15:11:04.9401139Z",
+      "HostFreePhysicalKiB": 2649400,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164552704,
+          "PrivateBytes": 167227392
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63877120,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123645952,
+          "PrivateBytes": 119705600
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1085800448,
+          "PrivateBytes": 2135523328
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:05.4397195Z",
+      "HostFreePhysicalKiB": 2648780,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163667968,
+          "PrivateBytes": 166326272
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63877120,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123711488,
+          "PrivateBytes": 119705600
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089470464,
+          "PrivateBytes": 2135523328
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_commit",
+    "Iteration": 3,
+    "Milliseconds": 254.4978,
+    "Stdout": "sha256:229f8ccf32f6fe6a31b5388d512f34a3bf145f2253b1a96b660a3ec2ff51dba0\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:05.6963126Z",
+      "HostFreePhysicalKiB": 2649480,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163672064,
+          "PrivateBytes": 166326272
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63877120,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123711488,
+          "PrivateBytes": 119705600
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089470464,
+          "PrivateBytes": 2135523328
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:06.1653186Z",
+      "HostFreePhysicalKiB": 2643276,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163684352,
+          "PrivateBytes": 166326272
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63881216,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124108800,
+          "PrivateBytes": 120221696
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089531904,
+          "PrivateBytes": 2135527424
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_save",
+    "Iteration": 3,
+    "Milliseconds": 242.2959,
+    "Stdout": "",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:06.4049308Z",
+      "HostFreePhysicalKiB": 2646776,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163684352,
+          "PrivateBytes": 166326272
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63881216,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124145664,
+          "PrivateBytes": 120221696
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089531904,
+          "PrivateBytes": 2135527424
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:06.8441642Z",
+      "HostFreePhysicalKiB": 2652236,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163749888,
+          "PrivateBytes": 166391808
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63881216,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124174336,
+          "PrivateBytes": 120213504
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1083305984,
+          "PrivateBytes": 2135527424
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_load_cached",
+    "Iteration": 3,
+    "Milliseconds": 278.9421,
+    "Stdout": "Loaded image: plx-measure-71c0b8a485bd:saved-3\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:07.0784001Z",
+      "HostFreePhysicalKiB": 2644576,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163749888,
+          "PrivateBytes": 166391808
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63881216,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124186624,
+          "PrivateBytes": 120225792
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1083305984,
+          "PrivateBytes": 2135527424
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:07.5709440Z",
+      "HostFreePhysicalKiB": 2655476,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163758080,
+          "PrivateBytes": 166391808
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 63889408,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124194816,
+          "PrivateBytes": 120233984
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1084317696,
+          "PrivateBytes": 2135592960
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_resave_transfer",
+    "Iteration": 4,
+    "Milliseconds": 274.0198,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified WSL -> Windows: d4425d2fdda36c13a4a0e266a13702c79a86548a80687971845b695824a3f1b7\n",
+    "Before": {
+      "UTC": "2026-09-23T15:11:08.2182737Z",
+      "HostFreePhysicalKiB": 2642128,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163766272,
+          "PrivateBytes": 166408192
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64012288,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123981824,
+          "PrivateBytes": 119980032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1091928064,
+          "PrivateBytes": 2137628672
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:08.7246966Z",
+      "HostFreePhysicalKiB": 2647796,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163766272,
+          "PrivateBytes": 166408192
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64020480,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123981824,
+          "PrivateBytes": 119980032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1096155136,
+          "PrivateBytes": 2140258304
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_commit",
+    "Iteration": 4,
+    "Milliseconds": 272.0846,
+    "Stdout": "sha256:2fc08c68c8ce46c551996fe9eaa7a802ca0f76feda1bf9905898e5ef831b4e0e\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:08.9672615Z",
+      "HostFreePhysicalKiB": 2637716,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163766272,
+          "PrivateBytes": 166408192
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64020480,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123981824,
+          "PrivateBytes": 119980032
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089667072,
+          "PrivateBytes": 2140258304
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:09.4579865Z",
+      "HostFreePhysicalKiB": 2654276,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163774464,
+          "PrivateBytes": 166408192
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64028672,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124030976,
+          "PrivateBytes": 119955456
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089867776,
+          "PrivateBytes": 2140258304
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_save",
+    "Iteration": 4,
+    "Milliseconds": 252.9089,
+    "Stdout": "",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:09.7052435Z",
+      "HostFreePhysicalKiB": 2654096,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 163774464,
+          "PrivateBytes": 166408192
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64028672,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124030976,
+          "PrivateBytes": 119955456
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089867776,
+          "PrivateBytes": 2140258304
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:10.1751104Z",
+      "HostFreePhysicalKiB": 2641984,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164069376,
+          "PrivateBytes": 166678528
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64045056,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124125184,
+          "PrivateBytes": 120082432
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089970176,
+          "PrivateBytes": 2140258304
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_load_cached",
+    "Iteration": 4,
+    "Milliseconds": 299.1168,
+    "Stdout": "Loaded image: plx-measure-71c0b8a485bd:saved-4\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:10.4070654Z",
+      "HostFreePhysicalKiB": 2644400,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 164069376,
+          "PrivateBytes": 166678528
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64045056,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124125184,
+          "PrivateBytes": 120082432
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1089970176,
+          "PrivateBytes": 2140258304
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:10.9338503Z",
+      "HostFreePhysicalKiB": 2652164,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161697792,
+          "PrivateBytes": 164290560
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64069632,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124133376,
+          "PrivateBytes": 120090624
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1093808128,
+          "PrivateBytes": 2140258304
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "pocket_resave_transfer",
+    "Iteration": 5,
+    "Milliseconds": 271.9579,
+    "Stdout": "",
+    "Stderr": "SHA-256 verified WSL -> Windows: d4425d2fdda36c13a4a0e266a13702c79a86548a80687971845b695824a3f1b7\n",
+    "Before": {
+      "UTC": "2026-09-23T15:11:11.6259701Z",
+      "HostFreePhysicalKiB": 2669900,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161718272,
+          "PrivateBytes": 164323328
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64131072,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124108800,
+          "PrivateBytes": 120037376
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1102901248,
+          "PrivateBytes": 2150236160
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:12.1239267Z",
+      "HostFreePhysicalKiB": 2657832,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161730560,
+          "PrivateBytes": 164339712
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64139264,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123998208,
+          "PrivateBytes": 119881728
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1107124224,
+          "PrivateBytes": 2123780096
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_commit",
+    "Iteration": 5,
+    "Milliseconds": 282.8007,
+    "Stdout": "sha256:a3f5d8ab71e0ea51efb1d5814aeba0ae4b1ce2f0f4a950ae8db76a9bb30bb244\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:12.3680876Z",
+      "HostFreePhysicalKiB": 2674300,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161730560,
+          "PrivateBytes": 164339712
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64139264,
+          "PrivateBytes": 89608192
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 123998208,
+          "PrivateBytes": 119881728
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1107124224,
+          "PrivateBytes": 2123780096
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:12.8633961Z",
+      "HostFreePhysicalKiB": 2688096,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161751040,
+          "PrivateBytes": 164339712
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64172032,
+          "PrivateBytes": 89616384
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124280832,
+          "PrivateBytes": 120262656
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1107148800,
+          "PrivateBytes": 2123780096
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_save",
+    "Iteration": 5,
+    "Milliseconds": 228.0682,
+    "Stdout": "",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:13.0900333Z",
+      "HostFreePhysicalKiB": 2673456,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161751040,
+          "PrivateBytes": 164339712
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64172032,
+          "PrivateBytes": 89616384
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124309504,
+          "PrivateBytes": 120270848
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1107156992,
+          "PrivateBytes": 2123780096
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:13.5248113Z",
+      "HostFreePhysicalKiB": 2683216,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161763328,
+          "PrivateBytes": 164347904
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64172032,
+          "PrivateBytes": 89616384
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124321792,
+          "PrivateBytes": 120283136
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1099976704,
+          "PrivateBytes": 2123911168
+        }
+      ]
+    }
+  },
+  {
+    "Operation": "docker_image_load_cached",
+    "Iteration": 5,
+    "Milliseconds": 296.3695,
+    "Stdout": "Loaded image: plx-measure-71c0b8a485bd:saved-5\n",
+    "Stderr": "",
+    "Before": {
+      "UTC": "2026-09-23T15:11:13.7670553Z",
+      "HostFreePhysicalKiB": 2678032,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161763328,
+          "PrivateBytes": 164347904
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64172032,
+          "PrivateBytes": 89616384
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124321792,
+          "PrivateBytes": 120283136
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1099976704,
+          "PrivateBytes": 2123911168
+        }
+      ]
+    },
+    "After": {
+      "UTC": "2026-09-23T15:11:14.2848993Z",
+      "HostFreePhysicalKiB": 2673928,
+      "Processes": [
+        {
+          "Name": "com.docker.backend",
+          "PID": 27712,
+          "WorkingSetBytes": 161767424,
+          "PrivateBytes": 164347904
+        },
+        {
+          "Name": "com.docker.backend",
+          "PID": 31228,
+          "WorkingSetBytes": 64172032,
+          "PrivateBytes": 89616384
+        },
+        {
+          "Name": "com.docker.build",
+          "PID": 2316,
+          "WorkingSetBytes": 35446784,
+          "PrivateBytes": 65622016
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 4396,
+          "WorkingSetBytes": 49401856,
+          "PrivateBytes": 12226560
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 16024,
+          "WorkingSetBytes": 96149504,
+          "PrivateBytes": 107503616
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 27172,
+          "WorkingSetBytes": 11780096,
+          "PrivateBytes": 49819648
+        },
+        {
+          "Name": "Docker Desktop",
+          "PID": 28784,
+          "WorkingSetBytes": 124334080,
+          "PrivateBytes": 120295424
+        },
+        {
+          "Name": "docker-agent",
+          "PID": 27040,
+          "WorkingSetBytes": 60489728,
+          "PrivateBytes": 71364608
+        },
+        {
+          "Name": "vmmemWSL",
+          "PID": 12644,
+          "WorkingSetBytes": 1100685312,
+          "PrivateBytes": 2124435456
+        }
+      ]
+    }
+  }
+]

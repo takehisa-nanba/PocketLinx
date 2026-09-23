@@ -1,0 +1,488 @@
+{
+  "StartedUTC": "2026-09-23T15:10:31.1036271Z",
+  "Id": "plx-measure-71c0b8a485bd",
+  "GitCommit": "f7056d0b71db74a8214479f6b05176be41b9fcef",
+  "CPU": {
+    "Name": "AMD Ryzen 5 7530U with Radeon Graphics         ",
+    "NumberOfCores": 6,
+    "NumberOfLogicalProcessors": 12
+  },
+  "RAMBytes": 16486756352,
+  "OS": {
+    "Caption": "Microsoft Windows 11 Home",
+    "Version": "10.0.26200",
+    "BuildNumber": "26200"
+  },
+  "DockerVersion": {
+    "Client": {
+      "Version": "29.8.0",
+      "ApiVersion": "1.56",
+      "DefaultAPIVersion": "1.56",
+      "GitCommit": "88096ef",
+      "GoVersion": "go1.26.8",
+      "Os": "windows",
+      "Arch": "amd64",
+      "BuildTime": "Thu Sep  3 21:53:38 2026",
+      "Context": "desktop-linux"
+    },
+    "Server": {
+      "Platform": {
+        "Name": "Docker Desktop 4.92.0 (240144)"
+      },
+      "Version": "29.8.0",
+      "ApiVersion": "1.56",
+      "MinAPIVersion": "1.40",
+      "Os": "linux",
+      "Arch": "amd64",
+      "Components": [
+        {
+          "Name": "Engine",
+          "Version": "29.8.0",
+          "Details": {
+            "ApiVersion": "1.56",
+            "Arch": "amd64",
+            "BuildTime": "Thu Sep  3 21:51:20 2026",
+            "Experimental": "false",
+            "GitCommit": "3ce5872",
+            "GoVersion": "go1.26.8",
+            "KernelVersion": "6.6.114.1-microsoft-standard-WSL2",
+            "MinAPIVersion": "1.40",
+            "Module": "github.com/moby/moby/v2",
+            "ModuleVersion": "v2.0.0+unknown",
+            "Os": "linux"
+          }
+        },
+        {
+          "Name": "containerd",
+          "Version": "v2.3.5",
+          "Details": {
+            "GitCommit": "1294c24a7da8e5a793ed378161673abe94118892"
+          }
+        },
+        {
+          "Name": "runc",
+          "Version": "1.5.1",
+          "Details": {
+            "GitCommit": "v1.5.1-0-g8f2685a4"
+          }
+        },
+        {
+          "Name": "docker-init",
+          "Version": "0.19.0",
+          "Details": {
+            "GitCommit": "de40ad0"
+          }
+        }
+      ],
+      "GitCommit": "3ce5872",
+      "GoVersion": "go1.26.8",
+      "KernelVersion": "6.6.114.1-microsoft-standard-WSL2",
+      "BuildTime": "2026-09-03T21:51:20.000000000+00:00"
+    }
+  },
+  "ExistingRunningContainerCount": 3,
+  "WindowsCLISize": 4304384,
+  "WindowsCLISHA256": "6A7D562DF3F902653535BA73EC6D2CF1C97B332C314E389D1F02B4F6DA5C11B6",
+  "Distro": "PocketLinx-Verify",
+  "LinuxRoot": "/opt/pocketlinx/plx-measure-71c0b8a485bd",
+  "Repetitions": 5,
+  "ColdStart": "unmeasured: existing WSL/Docker workloads are not stopped",
+  "WSLVersion": "WSL �0�0�0�0�0: 2.7.3.0\r\n�0�0�0�0 �0�0�0�0�0: 6.6.114.1-1\r\nWSLg �0�0�0�0�0: 1.0.73\r\nMSRDC �0�0�0�0�0: 1.2.6676\r\nDirect3D �0�0�0�0�0: 1.611.1-81528511\r\nDXCore �0�0�0�0�0: 10.0.26100.1-240331-1435.ge-release\r\nWindows �0�0�0�0�0: 10.0.26200.9457\r\n",
+  "WSLListing": "  NAME                 STATE           VERSION\r\n* docker-desktop       Running         2\r\n  PocketLinx-Verify    Stopped         2\r\n",
+  "DiskBefore": {
+    "VHDXFileLengths": [
+      {
+        "FullName": "C:\\Users\\nanba\\AppData\\Local\\PocketLinxVerification\\distro\\ext4.vhdx",
+        "Length": 180355072
+      },
+      {
+        "FullName": "C:\\Users\\nanba\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx",
+        "Length": 4473225216
+      },
+      {
+        "FullName": "C:\\Users\\nanba\\AppData\\Local\\Docker\\wsl\\main\\ext4.vhdx",
+        "Length": 100663296
+      }
+    ],
+    "DockerSystemDF": "{\"Active\":\"4\",\"Reclaimable\":\"375.1MB (28%)\",\"Size\":\"1.327GB\",\"TotalCount\":\"8\",\"Type\":\"Images\"}\n{\"Active\":\"3\",\"Reclaimable\":\"983kB (97%)\",\"Size\":\"1.012MB\",\"TotalCount\":\"5\",\"Type\":\"Containers\"}\n{\"Active\":\"3\",\"Reclaimable\":\"0B (0%)\",\"Size\":\"198.7MB\",\"TotalCount\":\"3\",\"Type\":\"Local Volumes\"}\n{\"Active\":\"0\",\"Reclaimable\":\"1.017MB\",\"Size\":\"533.2MB\",\"TotalCount\":\"26\",\"Type\":\"Build Cache\"}\n",
+    "WindowsArtifactFileBytes": null
+  },
+  "Definition": {
+    "version": 2,
+    "os": "linux",
+    "arch": "amd64",
+    "command": [
+      "/bin/sh",
+      "/workspace/hello.sh"
+    ],
+    "workdir": "/workspace",
+    "uid": 1000,
+    "gid": 1001,
+    "env": {
+      "GREETING": "hello",
+      "DATA_FILE": "/data/message.txt"
+    },
+    "source": {
+      "target": "/workspace"
+    },
+    "volumes": [
+      {
+        "name": "data",
+        "target": "/data"
+      }
+    ]
+  },
+  "LinuxKernel": "Linux LAPTOP-6EK71CIM 6.6.114.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Mon Dec  1 20:46:23 UTC 2025 x86_64 Linux",
+  "LinuxCLI": "6c89a4c56bf9b6d2c2a78790aa8b7ae58a68e8ca4f18a0b9f0934d167e49af7a  /usr/local/bin/plx-env",
+  "LinuxCLIBytes": 4267652,
+  "LinuxMemoryBefore": "MemTotal:        7795808 kB\nMemFree:         6198424 kB\nMemAvailable:    6720820 kB\nBuffers:           55896 kB\nCached:           658016 kB\nSwapCached:            0 kB\nActive:           401100 kB\nInactive:         798528 kB\nActive(anon):      48540 kB\nInactive(anon):   527976 kB\nActive(file):     352560 kB\nInactive(file):   270552 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:       2097152 kB\nSwapFree:        2097152 kB\nDirty:              1644 kB\nWriteback:             0 kB\nAnonPages:        485260 kB\nMapped:           387244 kB\nShmem:             90996 kB\nKReclaimable:      76224 kB\nSlab:             147344 kB\nSReclaimable:      76224 kB\nSUnreclaim:        71120 kB\nKernelStack:        7000 kB\nPageTables:         7884 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     5995056 kB\nCommitted_AS:    2808352 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:       32436 kB\nVmallocChunk:          0 kB\nPercpu:             6784 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:       76800 kB\nDirectMap2M:     4825088 kB\nDirectMap1G:    11534336 kB\n",
+  "LinuxFilesystems": "Filesystem           1K-blocks      Used Available Use% Mounted on\n/dev/sdf             1055762868     71696 1001987700   0% /\n",
+  "LinuxMemoryAfter": "MemTotal:        7795808 kB\nMemFree:         6078024 kB\nMemAvailable:    6667852 kB\nBuffers:           77148 kB\nCached:           703968 kB\nSwapCached:            0 kB\nActive:           433224 kB\nInactive:         889904 kB\nActive(anon):      48480 kB\nInactive(anon):   584584 kB\nActive(file):     384744 kB\nInactive(file):   305320 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:       2097152 kB\nSwapFree:        2097152 kB\nDirty:              3344 kB\nWriteback:             0 kB\nAnonPages:        542284 kB\nMapped:           387476 kB\nShmem:             91052 kB\nKReclaimable:      77180 kB\nSlab:             147984 kB\nSReclaimable:      77180 kB\nSUnreclaim:        70804 kB\nKernelStack:        6944 kB\nPageTables:         7388 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     5995056 kB\nCommitted_AS:    2812724 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:       32596 kB\nVmallocChunk:          0 kB\nPercpu:             6784 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:       76800 kB\nDirectMap2M:     4825088 kB\nDirectMap1G:    11534336 kB\n",
+  "LinuxDataUsage": "10404\t/opt/pocketlinx/plx-measure-71c0b8a485bd\n",
+  "DockerImageInspect": {
+    "Architecture": "amd64",
+    "Config": {
+      "Cmd": [
+        "/bin/sh",
+        "/workspace/hello.sh"
+      ],
+      "Entrypoint": [
+        "/bin/busybox"
+      ],
+      "Env": [
+        "GREETING=hello",
+        "DATA_FILE=/data/message.txt"
+      ],
+      "Labels": {
+        "desktop.docker.io/ports.scheme": "v2"
+      },
+      "User": "1000:1001",
+      "WorkingDir": "/workspace"
+    },
+    "Created": "2026-09-23T15:10:58.99518511Z",
+    "Descriptor": {
+      "annotations": {
+        "io.containerd.image.name": "docker.io/library/plx-measure-71c0b8a485bd:saved-1",
+        "org.opencontainers.image.ref.name": "saved-1"
+      },
+      "digest": "sha256:b0ca5e56c2edd71417a612f515b367daa1de38a87d13eddfb65726bb1f7e29eb",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 957
+    },
+    "Id": "sha256:b0ca5e56c2edd71417a612f515b367daa1de38a87d13eddfb65726bb1f7e29eb",
+    "Metadata": {
+      "LastTagTime": "2026-09-23T15:11:00.600399707Z"
+    },
+    "Os": "linux",
+    "Parent": "sha256:4975c1aea3cb261043cf83a4826d81325a52e7c29984257a9e379bdaa374a16e",
+    "RepoDigests": [
+      "plx-measure-71c0b8a485bd@sha256:b0ca5e56c2edd71417a612f515b367daa1de38a87d13eddfb65726bb1f7e29eb"
+    ],
+    "RepoTags": [
+      "plx-measure-71c0b8a485bd:saved-1"
+    ],
+    "RootFS": {
+      "Layers": [
+        "sha256:95f7ad0ef911b9889b7022f83bfa936bc8fe736b923a4b291255859580b3b948",
+        "sha256:baf7e70d93fe8537d0065685aae7a1511e1afd56eaf4334e7bc3aa8332cecbe9",
+        "sha256:fdec3ccd8bf29d24048089ea22fe02da47bd6e13bae3f91bf452c98bbeab8570"
+      ],
+      "Type": "layers"
+    },
+    "Size": 2531081
+  },
+  "DockerContainerInspect": {
+    "Id": "bd3ea3cd3e1c01ea9fabd6d544410f56440007be7db3b4f611e189c1c88e7158",
+    "Created": "2026-09-23T15:10:57.519937319Z",
+    "Path": "/bin/busybox",
+    "Args": [
+      "chown",
+      "-R",
+      "1000:1001",
+      "/workspace",
+      "/data"
+    ],
+    "State": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-23T15:10:57.590434787Z",
+      "FinishedAt": "2026-09-23T15:10:57.743435492Z"
+    },
+    "Image": "sha256:4975c1aea3cb261043cf83a4826d81325a52e7c29984257a9e379bdaa374a16e",
+    "ResolvConfPath": "/var/lib/docker/containers/bd3ea3cd3e1c01ea9fabd6d544410f56440007be7db3b4f611e189c1c88e7158/resolv.conf",
+    "HostnamePath": "/var/lib/docker/containers/bd3ea3cd3e1c01ea9fabd6d544410f56440007be7db3b4f611e189c1c88e7158/hostname",
+    "HostsPath": "/var/lib/docker/containers/bd3ea3cd3e1c01ea9fabd6d544410f56440007be7db3b4f611e189c1c88e7158/hosts",
+    "LogPath": "/var/lib/docker/containers/bd3ea3cd3e1c01ea9fabd6d544410f56440007be7db3b4f611e189c1c88e7158/bd3ea3cd3e1c01ea9fabd6d544410f56440007be7db3b4f611e189c1c88e7158-json.log",
+    "Name": "/plx-measure-71c0b8a485bd-owned",
+    "RestartCount": 0,
+    "Driver": "overlayfs",
+    "Platform": "linux",
+    "MountLabel": "",
+    "ProcessLabel": "",
+    "AppArmorProfile": "",
+    "ExecIDs": null,
+    "HostConfig": {
+      "Binds": null,
+      "ContainerIDFile": "",
+      "LogConfig": {
+        "Type": "json-file",
+        "Config": {}
+      },
+      "NetworkMode": "none",
+      "PortBindings": {},
+      "RestartPolicy": {
+        "Name": "no",
+        "MaximumRetryCount": 0
+      },
+      "AutoRemove": false,
+      "VolumeDriver": "",
+      "VolumesFrom": null,
+      "ConsoleSize": [
+        0,
+        0
+      ],
+      "CapAdd": null,
+      "CapDrop": null,
+      "CgroupnsMode": "private",
+      "Dns": null,
+      "DnsOptions": [],
+      "DnsSearch": [],
+      "ExtraHosts": null,
+      "GroupAdd": null,
+      "IpcMode": "private",
+      "Cgroup": "",
+      "Links": null,
+      "OomScoreAdj": 0,
+      "PidMode": "",
+      "Privileged": false,
+      "PublishAllPorts": false,
+      "ReadonlyRootfs": false,
+      "SecurityOpt": null,
+      "UTSMode": "",
+      "UsernsMode": "",
+      "ShmSize": 67108864,
+      "Runtime": "runc",
+      "Isolation": "",
+      "CpuShares": 0,
+      "Memory": 0,
+      "NanoCpus": 0,
+      "CgroupParent": "",
+      "BlkioWeight": 0,
+      "BlkioWeightDevice": [],
+      "BlkioDeviceReadBps": [],
+      "BlkioDeviceWriteBps": [],
+      "BlkioDeviceReadIOps": [],
+      "BlkioDeviceWriteIOps": [],
+      "CpuPeriod": 0,
+      "CpuQuota": 0,
+      "CpuRealtimePeriod": 0,
+      "CpuRealtimeRuntime": 0,
+      "CpusetCpus": "",
+      "CpusetMems": "",
+      "Devices": [],
+      "DeviceCgroupRules": null,
+      "DeviceRequests": null,
+      "MemoryReservation": 0,
+      "MemorySwap": 0,
+      "MemorySwappiness": null,
+      "OomKillDisable": null,
+      "PidsLimit": null,
+      "Ulimits": null,
+      "CpuCount": 0,
+      "CpuPercent": 0,
+      "IOMaximumIOps": 0,
+      "IOMaximumBandwidth": 0,
+      "MaskedPaths": [
+        "/proc/acpi",
+        "/proc/asound",
+        "/proc/interrupts",
+        "/proc/kcore",
+        "/proc/keys",
+        "/proc/latency_stats",
+        "/proc/sched_debug",
+        "/proc/scsi",
+        "/proc/timer_list",
+        "/proc/timer_stats",
+        "/sys/devices/virtual/powercap",
+        "/sys/firmware"
+      ],
+      "ReadonlyPaths": [
+        "/proc/bus",
+        "/proc/fs",
+        "/proc/irq",
+        "/proc/sys",
+        "/proc/sysrq-trigger"
+      ]
+    },
+    "Storage": {
+      "RootFS": {
+        "Snapshot": {
+          "Name": "overlayfs"
+        }
+      }
+    },
+    "SizeRw": 32768,
+    "SizeRootFs": 1601536,
+    "Mounts": [],
+    "Config": {
+      "Hostname": "bd3ea3cd3e1c",
+      "Domainname": "",
+      "User": "0:0",
+      "AttachStdin": false,
+      "AttachStdout": true,
+      "AttachStderr": true,
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "GREETING=hello",
+        "DATA_FILE=/data/message.txt"
+      ],
+      "Cmd": [
+        "chown",
+        "-R",
+        "1000:1001",
+        "/workspace",
+        "/data"
+      ],
+      "Image": "plx-measure-71c0b8a485bd:prepared",
+      "Volumes": null,
+      "WorkingDir": "/workspace",
+      "Entrypoint": [
+        "/bin/busybox"
+      ],
+      "Labels": {}
+    },
+    "NetworkSettings": {
+      "SandboxID": "",
+      "SandboxKey": "",
+      "Ports": {},
+      "Networks": {
+        "none": {
+          "IPAMConfig": null,
+          "Links": null,
+          "Aliases": null,
+          "DriverOpts": null,
+          "GwPriority": 0,
+          "NetworkID": "787e526934b61f95bd731952c0a8b4ff276550efc7c419d95295a7fc05d172f6",
+          "EndpointID": "",
+          "Gateway": "",
+          "IPAddress": "",
+          "MacAddress": "",
+          "IPPrefixLen": 0,
+          "IPv6Gateway": "",
+          "GlobalIPv6Address": "",
+          "GlobalIPv6PrefixLen": 0,
+          "DNSNames": null
+        }
+      }
+    },
+    "ImageManifestDescriptor": {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:4975c1aea3cb261043cf83a4826d81325a52e7c29984257a9e379bdaa374a16e",
+      "size": 743,
+      "platform": {
+        "architecture": "amd64",
+        "os": "linux"
+      }
+    }
+  },
+  "Packages": [
+    {
+      "Name": "changed-1.plxenv",
+      "Bytes": 1484800,
+      "SHA256": "D4425D2FDDA36C13A4A0E266A13702C79A86548A80687971845B695824A3F1B7"
+    },
+    {
+      "Name": "changed-2.plxenv",
+      "Bytes": 1484800,
+      "SHA256": "D4425D2FDDA36C13A4A0E266A13702C79A86548A80687971845B695824A3F1B7"
+    },
+    {
+      "Name": "changed-3.plxenv",
+      "Bytes": 1484800,
+      "SHA256": "D4425D2FDDA36C13A4A0E266A13702C79A86548A80687971845B695824A3F1B7"
+    },
+    {
+      "Name": "changed-4.plxenv",
+      "Bytes": 1484800,
+      "SHA256": "D4425D2FDDA36C13A4A0E266A13702C79A86548A80687971845B695824A3F1B7"
+    },
+    {
+      "Name": "changed-5.plxenv",
+      "Bytes": 1484800,
+      "SHA256": "D4425D2FDDA36C13A4A0E266A13702C79A86548A80687971845B695824A3F1B7"
+    },
+    {
+      "Name": "docker-1.tar",
+      "Bytes": 946176,
+      "SHA256": "DA53ED8251ABB7810E34AB607D2B2F4790DB82D07946D86940F9116AD195C620"
+    },
+    {
+      "Name": "docker-2.tar",
+      "Bytes": 946176,
+      "SHA256": "C10B5B46AB70CCF895DDFE3711CD6075C4963D94EA191A00CAF8DDC7ED7F02F9"
+    },
+    {
+      "Name": "docker-3.tar",
+      "Bytes": 946176,
+      "SHA256": "85841A234CA5242D6E1DBE3F069DB5A3A78256B86C808D3352E1008EC55DCCA7"
+    },
+    {
+      "Name": "docker-4.tar",
+      "Bytes": 946176,
+      "SHA256": "1C12450306AB036D7708D1EE98C16D4720A56B1F06DCE48EE947FDF765DB4A0A"
+    },
+    {
+      "Name": "docker-5.tar",
+      "Bytes": 946176,
+      "SHA256": "53639BA4B1083B5A08EA7F7E09C780B4B6E86A8BB09C9DB81AEA47F947EC6981"
+    },
+    {
+      "Name": "initial.plxenv",
+      "Bytes": 1483776,
+      "SHA256": "506C87A77C6A1B8B4AEB50247B8884DC669E76D5EDBAF14DAF4889D5E313D032"
+    },
+    {
+      "Name": "rootfs.tar",
+      "Bytes": 1478656,
+      "SHA256": "95F7AD0EF911B9889B7022F83BFA936BC8FE736B923A4B291255859580B3B948"
+    }
+  ],
+  "DiskAfter": {
+    "VHDXFileLengths": [
+      {
+        "FullName": "C:\\Users\\nanba\\AppData\\Local\\PocketLinxVerification\\distro\\ext4.vhdx",
+        "Length": 213909504
+      },
+      {
+        "FullName": "C:\\Users\\nanba\\AppData\\Local\\Docker\\wsl\\disk\\docker_data.vhdx",
+        "Length": 4473225216
+      },
+      {
+        "FullName": "C:\\Users\\nanba\\AppData\\Local\\Docker\\wsl\\main\\ext4.vhdx",
+        "Length": 100663296
+      }
+    ],
+    "DockerSystemDF": "{\"Active\":\"6\",\"Reclaimable\":\"375.3MB (28%)\",\"Size\":\"1.329GB\",\"TotalCount\":\"15\",\"Type\":\"Images\"}\n{\"Active\":\"3\",\"Reclaimable\":\"1.04MB (97%)\",\"Size\":\"1.069MB\",\"TotalCount\":\"7\",\"Type\":\"Containers\"}\n{\"Active\":\"3\",\"Reclaimable\":\"0B (0%)\",\"Size\":\"198.7MB\",\"TotalCount\":\"3\",\"Type\":\"Local Volumes\"}\n{\"Active\":\"0\",\"Reclaimable\":\"1.017MB\",\"Size\":\"533.2MB\",\"TotalCount\":\"26\",\"Type\":\"Build Cache\"}\n",
+    "WindowsArtifactFileBytes": 15279486.0
+  },
+  "CreatedDockerResources": [
+    "plx-measure-71c0b8a485bd:base",
+    "plx-measure-71c0b8a485bd-changed",
+    "plx-measure-71c0b8a485bd:prepared",
+    "plx-measure-71c0b8a485bd-owned",
+    "plx-measure-71c0b8a485bd:saved-1",
+    "plx-measure-71c0b8a485bd:saved-2",
+    "plx-measure-71c0b8a485bd:saved-3",
+    "plx-measure-71c0b8a485bd:saved-4",
+    "plx-measure-71c0b8a485bd:saved-5"
+  ]
+}
