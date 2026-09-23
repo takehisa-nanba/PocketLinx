@@ -25,20 +25,26 @@ environment/
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "os": "linux",
   "arch": "amd64",
   "command": ["/bin/sh", "/workspace/hello.sh"],
   "workdir": "/workspace",
-  "uid": 0,
-  "gid": 0,
-  "env": {"GREETING": "hello"}
+  "uid": 1000,
+  "gid": 1001,
+  "env": {"GREETING": "hello", "DATA_FILE": "/data/message.txt"},
+  "source": {"target": "/workspace"},
+  "volumes": [{"name": "data", "target": "/data"}]
 }
 ```
 
 コマンドは引数配列のまま保持する。環境変数はシェル評価しない。workdirはコンテナ内の絶対パス。UID/GIDは環境内の実行ユーザーであり、ホストアカウントを表さない。IP、PID、ホスト絶対パス、ホストの環境変数を自動収集しない。
 
-sourceを `/workspace`、volumes/dataを `/data` として利用するのはサンプルの実行テストの約束である。今回の保存形式はディレクトリの役割を保存するだけで、マウントの実行・汎用的なバインディング指定は未実装。
+Definition v2では `source.target` と `volumes[].name/target` に実行時の配置を明示する。ホスト側のパスは保存しない。sourceは必須、volumesは省略可能。uid/gidは明示的な数値が必須で、省略・nullは拒否する。旧Definition v1の保存・復元は維持するが、runでは拒否する。アーカイブの識別子は引き続き `pocketlinx.environment.v1` であり、Definitionのバージョンとは独立する。旧実装はDefinition v2を拒否するため、受信側にも更新が必要。
+
+配置先は正規化済みの絶対パスとし、ルート、`/proc`・`/sys`・`/dev`とその配下、重複・親子関係を拒否する。volume名は英数字で始まる英数字・ピリオド・アンダースコア・ハイフンのみとし、重複を拒否する。未指定volumeも保存対象だが、実行時には接続しない。
+
+実行は独立した `pkg/envrun` が担当する。rootfs内の配置先には事前に空の実ディレクトリを用意する。リンク経由や空でない配置先、欠けたvolumeは実行前に拒否し、自動作成・上書きしない。実験用Backendは専用mount/PID名前空間内でrootfsを読み取り専用、sourceと指定volumeを読み書き可能として接続する。書き込みは元のsource/volumesへ直接残る。実行UID/GIDに必要なファイル権限は構築時に用意し、runで所有者を自動変更しない。
 
 ## 保存形式
 
@@ -116,6 +122,8 @@ Linux/amd64、Go 1.23以上で：
 go build -o /tmp/plx-env ./cmd/plx-env
 /tmp/plx-env save --stopped /path/to/prepared-environment /path/to/example.plxenv
 /tmp/plx-env restore /path/to/example.plxenv /path/to/new-environment
+# 信頼できるサンプル専用。Linuxのmount/chroot/setuid/setgid権限が必要。
+/tmp/plx-env run /path/to/new-environment
 ```
 
 環境を停止して変更したファイルを再保存すると、変更・削除を含む完全パッケージが作られる。同じLinux上での再保存をテストしているが、Windows↔Linuxの往復は未検証。
@@ -127,8 +135,10 @@ go test ./...
 go vet ./...
 go test ./pkg/environment -run '^$' -fuzz FuzzRestore -fuzztime 10s -parallel 2
 go test ./pkg/environment -run '^$' -bench BenchmarkSaveRestore -benchmem
-# 使い捨てのAlpine/amd64テスト環境のみ。chroot用のroot権限が必要。
+# 使い捨てのAlpine/amd64テスト環境のみ。rootと名前空間・mount等の権限が必要。
 sh scripts/verify-environment.sh
 ```
 
 実行テストのchrootは既知の小さなテスト用スクリプトを動かすためのハーネスであり、正式なコンテナ隔離実装ではない。
+
+実行契約・検証結果・未検証事項は [環境実行の実装報告](environment-execution-report.md) を参照。

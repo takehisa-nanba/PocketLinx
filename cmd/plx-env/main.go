@@ -2,17 +2,35 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
+	"os/signal"
 
 	"PocketLinx/pkg/environment"
+	"PocketLinx/pkg/envrun"
 )
 
 func run(args []string, out io.Writer) error {
 	if len(args) == 0 {
-		return fmt.Errorf("usage: plx-env save --stopped SOURCE BUNDLE | plx-env restore BUNDLE DESTINATION")
+		return fmt.Errorf("usage: plx-env save --stopped SOURCE BUNDLE | plx-env restore BUNDLE DESTINATION | plx-env run DIRECTORY")
+	}
+	if args[0] == "run" {
+		if len(args) != 2 {
+			return fmt.Errorf("run requires exactly one environment directory; settings come only from environment.json")
+		}
+		exe, err := os.Executable()
+		if err != nil {
+			return err
+		}
+		fmt.Fprintln(os.Stderr, "Experimental chroot test harness: trusted environments only; not a production isolation boundary.")
+		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+		defer cancel()
+		return envrun.Run(ctx, args[1], envrun.ExperimentalChroot{Executable: exe}, envrun.Streams{Stdin: os.Stdin, Stdout: out, Stderr: os.Stderr})
 	}
 	fs := flag.NewFlagSet(args[0], flag.ContinueOnError)
 	fs.SetOutput(out)
@@ -49,8 +67,18 @@ func run(args []string, out io.Writer) error {
 }
 
 func main() {
-	if err := run(os.Args[1:], os.Stdout); err != nil {
+	var err error
+	if len(os.Args) == 2 && os.Args[1] == envrun.HelperCommand {
+		err = envrun.RunHelper()
+	} else {
+		err = run(os.Args[1:], os.Stdout)
+	}
+	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
+		var exit *exec.ExitError
+		if errors.As(err, &exit) && exit.ExitCode() > 0 {
+			os.Exit(exit.ExitCode())
+		}
 		os.Exit(1)
 	}
 }

@@ -1,10 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "os": "linux",
   "arch": "amd64",
   "command": ["/bin/sh", "/workspace/hello.sh"],
   "workdir": "/workspace",
-  "uid": 0,
-  "gid": 0,
-  "env": {"GREETING": "hello"}
+  "uid": 1000,
+  "gid": 1001,
+  "env": {"GREETING": "hello", "DATA_FILE": "/data/message.txt"},
+  "source": {"target": "/workspace"},
+  "volumes": [{"name": "data", "target": "/data"}]
 }

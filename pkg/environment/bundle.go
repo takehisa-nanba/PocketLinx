@@ -255,23 +255,8 @@ func Restore(bundle, destination string, limits Limits) error {
 }
 
 func readDefinition(p string) error {
-	f, err := openRegular(p)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	info, err := f.Stat()
-	if err != nil {
-		return err
-	}
-	if !info.Mode().IsRegular() || info.Size() > 1<<20 {
-		return fmt.Errorf("invalid environment.json")
-	}
-	var d Definition
-	if err := decodeJSON(io.LimitReader(f, (1<<20)+1), &d); err != nil {
-		return fmt.Errorf("environment.json: %w", err)
-	}
-	return d.validate()
+	_, err := LoadDefinition(p)
+	return err
 }
 
 func canonicalDirectory(p string) (string, error) {

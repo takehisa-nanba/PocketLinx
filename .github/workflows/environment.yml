@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'pkg/environment/**'
+      - 'pkg/envrun/**'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -13,6 +14,7 @@ on:
   pull_request:
     paths:
       - 'pkg/environment/**'
+      - 'pkg/envrun/**'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -33,7 +35,7 @@ jobs:
           go-version: '1.23.x'
       - name: Test and inspect
         run: |
-          go test -race ./pkg/environment ./cmd/plx-env
+          go test -race ./pkg/environment ./pkg/envrun ./cmd/plx-env
           go test ./...
           go vet ./...
           go test ./pkg/environment -run '^$' -fuzz FuzzRestore -fuzztime 10s -parallel 2
@@ -42,6 +44,16 @@ jobs:
           GOOS=windows GOARCH=amd64 go build -o /tmp/plx-env-windows.exe ./cmd/plx-env
       - name: Alpine shell round trip in disposable Linux container
         run: |
-          docker run --rm --mount "type=bind,source=$PWD,target=/work,readonly" -w /work \
+          docker run --rm --network none --cap-add SYS_ADMIN \
+            --security-opt seccomp=unconfined --security-opt apparmor=unconfined \
+            --mount "type=bind,source=$PWD,target=/work,readonly" -w /work \
+            golang:1.23-alpine@sha256:383395b794dffa5b53012a212365d40c8e37109a626ca30d6151c8348d380b5f \
+            sh scripts/verify-environment.sh
+      - name: Credentials fail instead of falling back
+        run: |
+          docker run --rm --network none --cap-add SYS_ADMIN --cap-drop SETUID \
+            --security-opt seccomp=unconfined --security-opt apparmor=unconfined \
+            -e PLX_ENV_EXPECT_CREDENTIAL_DENIED=1 \
+            --mount "type=bind,source=$PWD,target=/work,readonly" -w /work \
             golang:1.23-alpine@sha256:383395b794dffa5b53012a212365d40c8e37109a626ca30d6151c8348d380b5f \
             sh scripts/verify-environment.sh

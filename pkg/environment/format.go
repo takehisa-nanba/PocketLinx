@@ -25,6 +25,16 @@ type Definition struct {
 	UID     uint32            `json:"uid"`
 	GID     uint32            `json:"gid"`
 	Env     map[string]string `json:"env,omitempty"`
+	Source  *SourcePlacement  `json:"source,omitempty"`
+	Volumes []VolumePlacement `json:"volumes,omitempty"`
+}
+
+type SourcePlacement struct {
+	Target string `json:"target"`
+}
+type VolumePlacement struct {
+	Name   string `json:"name"`
+	Target string `json:"target"`
 }
 
 // Entry describes exactly one tar member. Paths always use '/' separators.
@@ -77,13 +87,14 @@ type SaveOptions struct {
 }
 
 var envName = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
+var volumeName = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_.-]*$`)
 
 func (d Definition) validate() error {
 	if d.UID == ^uint32(0) || d.GID == ^uint32(0) {
 		return fmt.Errorf("invalid uid/gid sentinel")
 	}
-	if d.Version != 1 || d.OS != "linux" || d.Arch != "amd64" {
-		return fmt.Errorf("unsupported definition: require version 1, linux/amd64")
+	if (d.Version != 1 && d.Version != 2) || d.OS != "linux" || d.Arch != "amd64" {
+		return fmt.Errorf("unsupported definition: require version 1 or 2, linux/amd64")
 	}
 	if len(d.Command) == 0 || d.Command[0] == "" {
 		return fmt.Errorf("command must be a nonempty argument array")
@@ -99,6 +110,39 @@ func (d Definition) validate() error {
 	for k, v := range d.Env {
 		if !envName.MatchString(k) || strings.ContainsRune(v, 0) {
 			return fmt.Errorf("invalid environment variable %q", k)
+		}
+	}
+	if d.Version == 1 {
+		if d.Source != nil || len(d.Volumes) != 0 {
+			return fmt.Errorf("placements require definition version 2")
+		}
+		return nil
+	}
+	if d.Source == nil {
+		return fmt.Errorf("version 2 requires source.target")
+	}
+	targets := []string{d.Source.Target}
+	names := map[string]bool{}
+	for _, v := range d.Volumes {
+		if !volumeName.MatchString(v.Name) || v.Name == "." || v.Name == ".." || names[v.Name] {
+			return fmt.Errorf("invalid or duplicate volume name %q", v.Name)
+		}
+		names[v.Name] = true
+		targets = append(targets, v.Target)
+	}
+	for i, target := range targets {
+		if !strings.HasPrefix(target, "/") || target == "/" || path.Clean(target) != target || strings.ContainsAny(target, "\\\x00\r\n") {
+			return fmt.Errorf("invalid placement target %q", target)
+		}
+		for _, reserved := range []string{"/proc", "/sys", "/dev"} {
+			if target == reserved || strings.HasPrefix(target, reserved+"/") {
+				return fmt.Errorf("reserved placement target %q", target)
+			}
+		}
+		for _, other := range targets[:i] {
+			if target == other || strings.HasPrefix(target, other+"/") || strings.HasPrefix(other, target+"/") {
+				return fmt.Errorf("overlapping placement targets %q and %q", other, target)
+			}
 		}
 	}
 	return nil
