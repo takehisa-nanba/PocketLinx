@@ -47,6 +47,8 @@ jobs:
   ubuntu-host:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
+    env:
+      PLX_HOST_DIR: /tmp/plx-host-${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,13 +57,13 @@ jobs:
         with:
           go-version: '1.23.x'
       - name: Direct Ubuntu VM execution with pinned Alpine sample
-        run: sudo env "PATH=$PATH" bash scripts/verify-ubuntu-host.sh "$RUNNER_TEMP/plx-host"
+        run: sudo env "PATH=$PATH" bash scripts/verify-ubuntu-host.sh "$PLX_HOST_DIR"
       - name: Collect synthetic packages and host evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ubuntu-host-${{ github.sha }}
-          path: ${{ runner.temp }}/plx-host/evidence/
+          path: ${{ env.PLX_HOST_DIR }}/evidence/
           retention-days: 7
           if-no-files-found: error
   windows-adapter:
