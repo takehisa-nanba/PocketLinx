@@ -12,6 +12,9 @@ on:
       - 'scripts/roundtrip-check/**'
       - 'scripts/verify-roundtrip-smoke.sh'
       - 'scripts/verify-ubuntu-host.sh'
+      - 'scripts/verify-selfhost.sh'
+      - 'examples/selfhost/**'
+      - 'docs/selfhost*'
       - 'docs/ubuntu-host-validation.md'
       - 'docs/ubuntu-host-evidence/**'
       - 'scripts/*baseline.ps1'
@@ -33,6 +36,9 @@ on:
       - 'scripts/roundtrip-check/**'
       - 'scripts/verify-roundtrip-smoke.sh'
       - 'scripts/verify-ubuntu-host.sh'
+      - 'scripts/verify-selfhost.sh'
+      - 'examples/selfhost/**'
+      - 'docs/selfhost*'
       - 'docs/ubuntu-host-validation.md'
       - 'docs/ubuntu-host-evidence/**'
       - 'scripts/*baseline.ps1'
@@ -48,6 +54,41 @@ permissions:
   contents: read
 
 jobs:
+  selfhost:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      PLX_SELFHOST_DIR: /tmp/plx-selfhost-${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.12'
+      - name: Offline development inside PocketLinx and restored environment
+        run: sudo env "PATH=$PATH" bash scripts/verify-selfhost.sh "$PLX_SELFHOST_DIR"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: selfhost-${{ github.sha }}
+          path: ${{ env.PLX_SELFHOST_DIR }}/evidence/
+          retention-days: 7
+          if-no-files-found: error
+  selfhost-windows:
+    needs: selfhost
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: selfhost-${{ github.sha }}
+          path: selfhost
+      - name: Use cross-built CLI without installing Go
+        shell: pwsh
+        run: |
+          $output = & ./selfhost/restored-build/plx-env.exe 2>&1 | Out-String
+          if ($LASTEXITCODE -ne 1 -or $output -notmatch 'usage: plx-env') { throw $output }
+          Write-Output $output
   ubuntu-host:
     runs-on: ubuntu-24.04
     timeout-minutes: 15

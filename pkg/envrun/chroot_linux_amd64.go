@@ -146,6 +146,41 @@ func RunHelper() error {
 			return err
 		}
 	}
+	// Optional empty virtual directories are populated only inside this private
+	// execution namespace. They are never persisted in the stopped rootfs.
+	for _, name := range []string{"proc", "dev"} {
+		target := filepath.Join(p.Rootfs, name)
+		info, err := os.Lstat(target)
+		if os.IsNotExist(err) {
+			continue
+		}
+		if err != nil || !info.IsDir() {
+			return fmt.Errorf("virtual directory %s must be an empty real directory", name)
+		}
+		entries, err := os.ReadDir(target)
+		if err != nil || len(entries) != 0 {
+			return fmt.Errorf("virtual directory %s must be empty", name)
+		}
+		if name == "proc" {
+			if err := syscall.Mount("proc", target, "proc", syscall.MS_RDONLY|syscall.MS_NOSUID|syscall.MS_NODEV|syscall.MS_NOEXEC, ""); err != nil {
+				return fmt.Errorf("mount private proc: %w", err)
+			}
+			continue
+		}
+		if err := syscall.Mount("tmpfs", target, "tmpfs", syscall.MS_NOSUID|syscall.MS_NOEXEC, "size=64k,mode=0755"); err != nil {
+			return fmt.Errorf("mount private dev: %w", err)
+		}
+		null := filepath.Join(target, "null")
+		if err := os.WriteFile(null, nil, 0600); err != nil {
+			return err
+		}
+		if err := syscall.Mount("/dev/null", null, "", syscall.MS_BIND, ""); err != nil {
+			return fmt.Errorf("bind null device: %w", err)
+		}
+		if err := syscall.Mount("", target, "", syscall.MS_REMOUNT|syscall.MS_RDONLY|syscall.MS_NOSUID|syscall.MS_NOEXEC, ""); err != nil {
+			return err
+		}
+	}
 	d := p.Definition
 	// Explicit Path bypasses os/exec's host PATH lookup. Chroot, credential and
 	// chdir are applied in the child before exec. Args and Env are never shell text.

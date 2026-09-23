@@ -211,3 +211,26 @@ func TestIntegrationReadOnlyRootfsAndExitStatus(t *testing.T) {
 	// Failure must release the run lock and namespace mounts, allowing save.
 	invoke(t, bin, "save", "--stopped", root, filepath.Join(t.TempDir(), "after-failure.plxenv"))
 }
+
+func TestIntegrationVirtualFilesystemsAreEphemeral(t *testing.T) {
+	bin := integrationBinary(t)
+	root, d := alpineFixture(t, nil)
+	for _, name := range []string{"proc", "dev"} {
+		must(t, os.Mkdir(filepath.Join(root, "rootfs", name), 0755))
+	}
+	script := filepath.Join(root, "source", path.Base(d.Command[1]))
+	must(t, os.WriteFile(script, []byte("#!/bin/sh\nset -eu\n[ -c /dev/null ]\nprintf test > /dev/null\n/bin/busybox cat /proc/self/mountinfo > /dev/null\nif (printf bad > /dev/extra); then exit 92; fi\nif (printf bad > /rootfs-write); then exit 93; fi\n"), 0755))
+	invoke(t, bin, "run", root)
+	for _, name := range []string{"proc", "dev"} {
+		entries, err := os.ReadDir(filepath.Join(root, "rootfs", name))
+		must(t, err)
+		if len(entries) != 0 {
+			t.Fatal("virtual files leaked into stopped rootfs")
+		}
+	}
+	bundle := filepath.Join(t.TempDir(), "virtual.plxenv")
+	invoke(t, bin, "save", "--stopped", root, bundle)
+	restored := filepath.Join(t.TempDir(), "restored")
+	invoke(t, bin, "restore", bundle, restored)
+	invoke(t, bin, "run", restored)
+}

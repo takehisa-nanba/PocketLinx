@@ -4,3 +4,5 @@
 /scripts/verify-ubuntu-host.sh text eol=lf
 /docs/ubuntu-host-evidence/** -text
 /examples/environment/hello.sh text eol=lf
+/examples/selfhost/*.sh text eol=lf
+/scripts/verify-selfhost.sh text eol=lf

@@ -1,0 +1,16 @@
+{
+  "version": 2, "os": "linux", "arch": "amd64",
+  "command": ["/bin/sh", "/workspace/examples/selfhost/build.sh"],
+  "workdir": "/workspace", "uid": 1000, "gid": 1001,
+  "env": {
+    "PATH": "/usr/local/go/bin:/bin", "GOROOT": "/usr/local/go",
+    "GOCACHE": "/cache/build", "GOPATH": "/cache/gopath",
+    "GOMODCACHE": "/cache/modules", "HOME": "/cache/home",
+    "TMPDIR": "/tmp", "GOTMPDIR": "/tmp", "GOTOOLCHAIN": "local",
+    "GOPROXY": "off", "GOSUMDB": "off", "CGO_ENABLED": "0",
+    "GOFLAGS": "-mod=readonly -trimpath -buildvcs=false",
+    "GOOS": "linux", "GOARCH": "amd64", "GOMAXPROCS": "2"
+  },
+  "source": {"target": "/workspace"},
+  "volumes": [{"name": "cache", "target": "/cache"}, {"name": "tmp", "target": "/tmp"}]
+}
