@@ -1,4 +1,5 @@
 /scripts/verify-environment.sh text eol=lf
 /scripts/roundtrip-linux.sh text eol=lf
 /scripts/verify-roundtrip-smoke.sh text eol=lf
+/scripts/verify-ubuntu-host.sh text eol=lf
 /examples/environment/hello.sh text eol=lf

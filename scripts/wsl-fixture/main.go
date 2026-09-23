@@ -61,7 +61,11 @@ func prepare() error {
 			return err
 		}
 	}
-	for _, pair := range [][2]string{{"/bin/busybox", filepath.Join(root, "rootfs/bin/busybox")}, {"/lib/ld-musl-x86_64.so.1", filepath.Join(root, "rootfs/lib/ld-musl-x86_64.so.1")}, {defFile, filepath.Join(root, "environment.json")}, {filepath.Join(sample, "hello.sh"), script}} {
+	base := os.Getenv("PLX_FIXTURE_BASE")
+	if base == "" {
+		base = "/"
+	}
+	for _, pair := range [][2]string{{filepath.Join(base, "bin/busybox"), filepath.Join(root, "rootfs/bin/busybox")}, {filepath.Join(base, "lib/ld-musl-x86_64.so.1"), filepath.Join(root, "rootfs/lib/ld-musl-x86_64.so.1")}, {defFile, filepath.Join(root, "environment.json")}, {filepath.Join(sample, "hello.sh"), script}} {
 		b, err := os.ReadFile(pair[0])
 		if err != nil {
 			return err
