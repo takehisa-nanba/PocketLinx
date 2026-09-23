@@ -8,6 +8,9 @@ on:
       - 'pkg/wslbridge/**'
       - 'scripts/wsl-fixture/**'
       - 'scripts/verify-wsl.ps1'
+      - 'scripts/roundtrip-*'
+      - 'scripts/roundtrip-check/**'
+      - 'scripts/verify-roundtrip-smoke.sh'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -21,6 +24,9 @@ on:
       - 'pkg/wslbridge/**'
       - 'scripts/wsl-fixture/**'
       - 'scripts/verify-wsl.ps1'
+      - 'scripts/roundtrip-*'
+      - 'scripts/roundtrip-check/**'
+      - 'scripts/verify-roundtrip-smoke.sh'
       - 'cmd/plx-env/**'
       - 'examples/environment/**'
       - 'scripts/verify-environment.sh'
@@ -75,3 +81,10 @@ jobs:
             --mount "type=bind,source=$PWD,target=/work,readonly" -w /work \
             golang:1.23-alpine@sha256:383395b794dffa5b53012a212365d40c8e37109a626ca30d6151c8348d380b5f \
             sh scripts/verify-environment.sh
+      - name: Offline stages smoke test (not independent Linux validation)
+        run: |
+          docker run --rm --network none --cap-add SYS_ADMIN \
+            --security-opt seccomp=unconfined --security-opt apparmor=unconfined \
+            --mount "type=bind,source=$PWD,target=/work,readonly" -w /work \
+            golang:1.23-alpine@sha256:383395b794dffa5b53012a212365d40c8e37109a626ca30d6151c8348d380b5f \
+            sh scripts/verify-roundtrip-smoke.sh
