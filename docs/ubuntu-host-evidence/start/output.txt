@@ -1,0 +1,1 @@
+hello|/workspace|persistent-data|uid=1000|gid=1001

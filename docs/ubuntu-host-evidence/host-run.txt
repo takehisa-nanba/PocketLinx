@@ -1,0 +1,25 @@
+role=linux-vm host=runnervmlun5p kernel=6.17.0-1022-azure
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 3565k  100 3565k    0     0  46.8M      0 --:--:-- --:--:-- --:--:-- 46.4M
+/tmp/plx-host-35930104468/alpine.tar.gz: OK
++ mount --make-rprivate /
++ mkdir /tmp/plx-host-35930104468/probe-a /tmp/plx-host-35930104468/probe-b
++ mount --bind /tmp/plx-host-35930104468/probe-a /tmp/plx-host-35930104468/probe-b
++ umount /tmp/plx-host-35930104468/probe-b
+Experimental chroot test harness: trusted environments only; not a production isolation boundary.
+Completed: /tmp/plx-host-35930104468/evidence/start/package.plxenv
+destination exists or is inaccessible: /tmp/plx-host-35930104468/evidence/start/package.plxenv
+PASS stage=start role=linux-vm (host evidence must establish independence)
+Completed: /tmp/plx-host-35930104468/restored
+destination exists or is inaccessible: /tmp/plx-host-35930104468/restored
+Experimental chroot test harness: trusted environments only; not a production isolation boundary.
+Experimental chroot test harness: trusted environments only; not a production isolation boundary.
+Completed: /tmp/plx-host-35930104468/evidence/changed/package.plxenv
+destination exists or is inaccessible: /tmp/plx-host-35930104468/evidence/changed/package.plxenv
+PASS stage=exchange role=linux-vm (host evidence must establish independence)
+Completed: /tmp/plx-host-35930104468/back
+destination exists or is inaccessible: /tmp/plx-host-35930104468/back
+Experimental chroot test harness: trusted environments only; not a production isolation boundary.
+PASS stage=finish role=linux-vm (host evidence must establish independence)
+PASS: Ubuntu VM host direct execution, not a container or physical host

@@ -1,0 +1,1 @@
+PASS stage=exchange role=linux-vm (host evidence must establish independence)

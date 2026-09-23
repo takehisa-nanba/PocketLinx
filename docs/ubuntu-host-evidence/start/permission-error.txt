@@ -1,0 +1,2 @@
+Experimental chroot test harness: trusted environments only; not a production isolation boundary.
+experimental chroot requires root with mount/chroot/setuid/setgid capabilities; no user fallback
